@@ -1,0 +1,5 @@
+<resources>
+    <!-- Compose owns all real theming (core/theme/Theme.kt); this is just the
+         pre-Compose window background so there's no flash-of-unstyled-window. -->
+    <style name="Theme.PatFlow" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>
