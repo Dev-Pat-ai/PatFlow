@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.patflow.app-mergeDebugResources-72:/values-da/values-da.xml",
+            "outputFile": "com.patflow.app-mergeDebugResources-73:/values-da/values-da.xml",
             "map": [
                 {
                     "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\a2885fd1507402a3f301e7a4a56a4ecf\\workspace\\transformed\\biometric-1.2.0-alpha05\\res\\values-da\\values-da.xml",

@@ -88,8 +88,8 @@ fun PatFlowTheme(
 
 /** Convenience accessor for the fixed status-color set matching the current theme brightness. */
 @Composable
-fun patFlowStatusColors() = if (isSystemInDarkTheme()) PatFlowStatusColors.Dark else PatFlowStatusColors.Light
+fun patFlowStatusColors(): StatusColors = if (isSystemInDarkTheme()) PatFlowStatusColors.Dark else PatFlowStatusColors.Light
 
 /** Convenience accessor for the fixed category-color set matching the current theme brightness. */
 @Composable
-fun patFlowCategoryColors() = if (isSystemInDarkTheme()) PatFlowCategoryColors.Dark else PatFlowCategoryColors.Light
+fun patFlowCategoryColors(): CategoryColors = if (isSystemInDarkTheme()) PatFlowCategoryColors.Dark else PatFlowCategoryColors.Light

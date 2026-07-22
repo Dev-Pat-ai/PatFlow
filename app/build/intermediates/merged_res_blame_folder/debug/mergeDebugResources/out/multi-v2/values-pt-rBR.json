@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.patflow.app-mergeDebugResources-72:/values-pt-rBR/values-pt-rBR.xml",
+            "outputFile": "com.patflow.app-mergeDebugResources-73:/values-pt-rBR/values-pt-rBR.xml",
             "map": [
                 {
                     "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\7d97ff0dfe277f280e22b0d49ddc2659\\workspace\\transformed\\foundation-release\\res\\values-pt-rBR\\values-pt-rBR.xml",

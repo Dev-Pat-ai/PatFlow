@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.patflow.app-mergeDebugResources-72:/values-hu/values-hu.xml",
+            "outputFile": "com.patflow.app-mergeDebugResources-73:/values-hu/values-hu.xml",
             "map": [
                 {
                     "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\b47a837481d07e05365defe9ffda59e8\\workspace\\transformed\\appcompat-1.7.0\\res\\values-hu\\values-hu.xml",

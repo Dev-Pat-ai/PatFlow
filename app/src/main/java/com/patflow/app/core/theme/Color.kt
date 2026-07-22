@@ -67,18 +67,25 @@ object PatFlowDarkColors {
  */
 data class StatusColorPair(val onColor: Color, val containerColor: Color)
 
+interface StatusColors {
+    val paid: StatusColorPair
+    val partiallyPaid: StatusColorPair
+    val unpaid: StatusColorPair
+    val overdue: StatusColorPair
+}
+
 object PatFlowStatusColors {
-    object Light {
-        val paid = StatusColorPair(Color(0xFF2E8B57), Color(0xFFD7F0E2))
-        val partiallyPaid = StatusColorPair(Color(0xFF8C5A00), Color(0xFFFFE9C2))
-        val unpaid = StatusColorPair(Color(0xFF3D4E85), Color(0xFFDCE1FF))
-        val overdue = StatusColorPair(Color(0xFFBA1A1A), Color(0xFFFFDAD6))
+    object Light : StatusColors {
+        override val paid = StatusColorPair(Color(0xFF2E8B57), Color(0xFFD7F0E2))
+        override val partiallyPaid = StatusColorPair(Color(0xFF8C5A00), Color(0xFFFFE9C2))
+        override val unpaid = StatusColorPair(Color(0xFF3D4E85), Color(0xFFDCE1FF))
+        override val overdue = StatusColorPair(Color(0xFFBA1A1A), Color(0xFFFFDAD6))
     }
-    object Dark {
-        val paid = StatusColorPair(Color(0xFF8FD9A8), Color(0xFF0F3D22))
-        val partiallyPaid = StatusColorPair(Color(0xFFFFB945), Color(0xFF4A3200))
-        val unpaid = StatusColorPair(Color(0xFFB7C3FF), Color(0xFF28376E))
-        val overdue = StatusColorPair(Color(0xFFFFB4AB), Color(0xFF93000A))
+    object Dark : StatusColors {
+        override val paid = StatusColorPair(Color(0xFF8FD9A8), Color(0xFF0F3D22))
+        override val partiallyPaid = StatusColorPair(Color(0xFFFFB945), Color(0xFF4A3200))
+        override val unpaid = StatusColorPair(Color(0xFFB7C3FF), Color(0xFF28376E))
+        override val overdue = StatusColorPair(Color(0xFFFFB4AB), Color(0xFF93000A))
     }
 }
 
@@ -93,33 +100,45 @@ object PatFlowStatusColors {
  */
 data class CategoryColorPair(val onColor: Color, val containerColor: Color)
 
+interface CategoryColors {
+    val electricity: CategoryColorPair
+    val water: CategoryColorPair
+    val internet: CategoryColorPair
+    val rent: CategoryColorPair
+    val phone: CategoryColorPair
+    val insurance: CategoryColorPair
+    val tuition: CategoryColorPair
+    val subscription: CategoryColorPair
+    val loan: CategoryColorPair
+    val savings: CategoryColorPair
+    val hoaFees: CategoryColorPair
+}
+
 object PatFlowCategoryColors {
-    object Light {
-        val electricity = CategoryColorPair(Color(0xFF8C5A00), Color(0xFFFFE9C2))
-        val water = CategoryColorPair(Color(0xFF00658F), Color(0xFFC3E8FF))
-        val internet = CategoryColorPair(Color(0xFF3D4E85), Color(0xFFDCE1FF))
-        val rent = CategoryColorPair(Color(0xFF6B4F1C), Color(0xFFF3E0BC))
-        val phone = CategoryColorPair(Color(0xFF5C5F00), Color(0xFFE2E792))
-        val insurance = CategoryColorPair(Color(0xFF00658F), Color(0xFFC3E8FF))
-        val tuition = CategoryColorPair(Color(0xFF7D2E68), Color(0xFFFFD8EC))
-        val subscription = CategoryColorPair(Color(0xFF8C3B00), Color(0xFFFFDBC7))
-        // Loan: Brown — distinct from the Overdue/error red family (Phase 0 lock resolution).
-        val loan = CategoryColorPair(Color(0xFF8B5000), Color(0xFFFFDEAD))
-        // Savings: Teal — distinct from the Paid/Sea Green family (Phase 0 lock resolution).
-        val savings = CategoryColorPair(Color(0xFF006874), Color(0xFF97F0FF))
-        val hoaFees = CategoryColorPair(Color(0xFF5B5D72), Color(0xFFE0E1F9))
+    object Light : CategoryColors {
+        override val electricity = CategoryColorPair(Color(0xFF8C5A00), Color(0xFFFFE9C2))
+        override val water = CategoryColorPair(Color(0xFF00658F), Color(0xFFC3E8FF))
+        override val internet = CategoryColorPair(Color(0xFF3D4E85), Color(0xFFDCE1FF))
+        override val rent = CategoryColorPair(Color(0xFF6B4F1C), Color(0xFFF3E0BC))
+        override val phone = CategoryColorPair(Color(0xFF5C5F00), Color(0xFFE2E792))
+        override val insurance = CategoryColorPair(Color(0xFF00658F), Color(0xFFC3E8FF))
+        override val tuition = CategoryColorPair(Color(0xFF7D2E68), Color(0xFFFFD8EC))
+        override val subscription = CategoryColorPair(Color(0xFF8C3B00), Color(0xFFFFDBC7))
+        override val loan = CategoryColorPair(Color(0xFF8B5000), Color(0xFFFFDEAD))
+        override val savings = CategoryColorPair(Color(0xFF006874), Color(0xFF97F0FF))
+        override val hoaFees = CategoryColorPair(Color(0xFF5B5D72), Color(0xFFE0E1F9))
     }
-    object Dark {
-        val electricity = CategoryColorPair(Color(0xFFFFB945), Color(0xFF4A3200))
-        val water = CategoryColorPair(Color(0xFF89CFF4), Color(0xFF003548))
-        val internet = CategoryColorPair(Color(0xFFB7C3FF), Color(0xFF28376E))
-        val rent = CategoryColorPair(Color(0xFFE3C57F), Color(0xFF3D2C00))
-        val phone = CategoryColorPair(Color(0xFFC6CC5E), Color(0xFF2E3000))
-        val insurance = CategoryColorPair(Color(0xFF89CFF4), Color(0xFF003548))
-        val tuition = CategoryColorPair(Color(0xFFF2A6D7), Color(0xFF4B1339))
-        val subscription = CategoryColorPair(Color(0xFFFFB68B), Color(0xFF4A2100))
-        val loan = CategoryColorPair(Color(0xFFFFB870), Color(0xFF5C3900))
-        val savings = CategoryColorPair(Color(0xFF4FD8EB), Color(0xFF00363D))
-        val hoaFees = CategoryColorPair(Color(0xFFC4C5DD), Color(0xFF434659))
+    object Dark : CategoryColors {
+        override val electricity = CategoryColorPair(Color(0xFFFFB945), Color(0xFF4A3200))
+        override val water = CategoryColorPair(Color(0xFF89CFF4), Color(0xFF003548))
+        override val internet = CategoryColorPair(Color(0xFFB7C3FF), Color(0xFF28376E))
+        override val rent = CategoryColorPair(Color(0xFFE3C57F), Color(0xFF3D2C00))
+        override val phone = CategoryColorPair(Color(0xFFC6CC5E), Color(0xFF2E3000))
+        override val insurance = CategoryColorPair(Color(0xFF89CFF4), Color(0xFF003548))
+        override val tuition = CategoryColorPair(Color(0xFFF2A6D7), Color(0xFF4B1339))
+        override val subscription = CategoryColorPair(Color(0xFFFFB68B), Color(0xFF4A2100))
+        override val loan = CategoryColorPair(Color(0xFFFFB870), Color(0xFF5C3900))
+        override val savings = CategoryColorPair(Color(0xFF4FD8EB), Color(0xFF00363D))
+        override val hoaFees = CategoryColorPair(Color(0xFFC4C5DD), Color(0xFF434659))
     }
 }

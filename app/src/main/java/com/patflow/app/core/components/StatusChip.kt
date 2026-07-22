@@ -1,0 +1,99 @@
+package com.patflow.app.core.components
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.Error
+import androidx.compose.material.icons.rounded.Pending
+import androidx.compose.material.icons.rounded.Schedule
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.patflow.app.core.theme.PatFlowShapes
+import com.patflow.app.core.theme.PatFlowTheme
+import com.patflow.app.core.theme.StatusColorPair
+import com.patflow.app.core.theme.patFlowStatusColors
+
+/**
+ * Design System §1.4 & §7.4 — Status Chips.
+ */
+enum class BillStatus {
+    PAID, PARTIALLY_PAID, UNPAID, OVERDUE
+}
+
+@Composable
+fun StatusChip(
+    status: BillStatus,
+    modifier: Modifier = Modifier
+) {
+    val statusColors = patFlowStatusColors()
+    
+    val (label, icon, colors) = when (status) {
+        BillStatus.PAID -> Triple("Paid", Icons.Rounded.CheckCircle, statusColors.paid)
+        BillStatus.PARTIALLY_PAID -> Triple("Partially Paid", Icons.Rounded.Pending, statusColors.partiallyPaid)
+        BillStatus.UNPAID -> Triple("Unpaid", Icons.Rounded.Schedule, statusColors.unpaid)
+        BillStatus.OVERDUE -> Triple("Overdue", Icons.Rounded.Error, statusColors.overdue)
+    }
+
+    StatusChipContent(
+        label = label,
+        icon = icon,
+        colors = colors,
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun StatusChipContent(
+    label: String,
+    icon: ImageVector,
+    colors: StatusColorPair,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .background(color = colors.containerColor, shape = PatFlowShapes.xs)
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(16.dp),
+            tint = colors.onColor
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            color = colors.onColor
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun StatusChipPreview() {
+    PatFlowTheme {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            StatusChip(status = BillStatus.PAID)
+            StatusChip(status = BillStatus.PARTIALLY_PAID)
+            StatusChip(status = BillStatus.UNPAID)
+            StatusChip(status = BillStatus.OVERDUE)
+        }
+    }
+}
