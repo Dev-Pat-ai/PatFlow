@@ -81,15 +81,15 @@ class AddEditBillViewModel @Inject constructor(
     }
 
     fun onNameChange(name: String) {
-        _uiState.value = _uiState.value.copy(name = name)
+        _uiState.value = _uiState.value.copy(name = name, nameError = null)
     }
 
     fun onAmountChange(amount: String) {
-        _uiState.value = _uiState.value.copy(amount = amount)
+        _uiState.value = _uiState.value.copy(amount = amount, amountError = null)
     }
 
     fun onCategoryChange(category: Category) {
-        _uiState.value = _uiState.value.copy(category = category)
+        _uiState.value = _uiState.value.copy(category = category, categoryError = null)
     }
 
     fun onDateChange(date: LocalDate?) {
@@ -108,8 +108,16 @@ class AddEditBillViewModel @Inject constructor(
 
     fun saveBill() {
         val state = _uiState.value
-        if (state.name.isBlank() || state.amount.toDoubleOrNull() == null || state.category == null) {
-            // Basic validation
+        val nameError = state.name.isBlank()
+        val amountError = state.amount.toDoubleOrNull() == null
+        val categoryError = state.category == null
+
+        if (nameError || amountError || categoryError) {
+            _uiState.value = state.copy(
+                nameError = if (nameError) "Name cannot be empty" else null,
+                amountError = if (amountError) "Enter a valid amount" else null,
+                categoryError = if (categoryError) "Select a category" else null
+            )
             return
         }
 
@@ -142,8 +150,11 @@ class AddEditBillViewModel @Inject constructor(
 
 data class AddEditBillUiState(
     val name: String = "",
+    val nameError: String? = null,
     val amount: String = "",
+    val amountError: String? = null,
     val category: Category? = null,
+    val categoryError: String? = null,
     val startDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
     val recurrenceType: RecurrenceType = RecurrenceType.MONTHLY,
     val notes: String = "",

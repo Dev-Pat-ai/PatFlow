@@ -87,6 +87,18 @@ class BillRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getCyclesByDateRange(start: String, end: String): Flow<List<BillCycle>> {
+        return billCycleDao.getByDateRange(start, end).map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+
+    override fun getUpcomingCycles(limit: Int): Flow<List<BillCycle>> {
+        return billCycleDao.getUpcoming(limit).map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+
     override suspend fun getCycleById(id: Long): BillCycle? {
         return billCycleDao.getById(id)?.toDomain()
     }

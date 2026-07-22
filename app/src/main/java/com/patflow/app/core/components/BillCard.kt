@@ -1,6 +1,10 @@
 package com.patflow.app.core.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +26,7 @@ import androidx.compose.material.icons.rounded.WaterDrop
 import androidx.compose.material.icons.rounded.Wifi
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,11 +40,13 @@ import com.patflow.app.core.theme.PatFlowSpacing
 import com.patflow.app.core.theme.PatFlowTheme
 import com.patflow.app.core.theme.patFlowCategoryColors
 import com.patflow.app.core.utils.CurrencyFormatter
+import com.patflow.app.domain.model.BillStatus
 
 /**
  * Design System §7.2 — BillCard.
  * The central list item component for displaying bill cycles.
  */
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 fun BillCard(
     name: String,
@@ -49,6 +56,9 @@ fun BillCard(
     status: BillStatus,
     modifier: Modifier = Modifier,
     currencyCode: String = "PHP",
+    isSelected: Boolean = false,
+    showSelection: Boolean = false,
+    onLongClick: () -> Unit = {},
     onClick: () -> Unit = {}
 ) {
     val categoryColors = patFlowCategoryColors()
@@ -68,11 +78,15 @@ fun BillCard(
     }
 
     Card(
-        onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            ),
         shape = PatFlowShapes.lg,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
@@ -83,6 +97,17 @@ fun BillCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space4)
         ) {
+            AnimatedVisibility(
+                visible = showSelection,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                Checkbox(
+                    checked = isSelected,
+                    onCheckedChange = { onClick() }
+                )
+            }
+
             // Category Icon
             Box(
                 modifier = Modifier

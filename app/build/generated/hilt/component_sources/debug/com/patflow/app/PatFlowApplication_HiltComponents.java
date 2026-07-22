@@ -4,6 +4,13 @@ import com.patflow.app.di.DataStoreModule;
 import com.patflow.app.di.DatabaseModule;
 import com.patflow.app.di.DispatcherModule;
 import com.patflow.app.di.RepositoryModule;
+import com.patflow.app.feature.bills.AddEditBillViewModel_HiltModules;
+import com.patflow.app.feature.bills.BillDetailViewModel_HiltModules;
+import com.patflow.app.feature.bills.BillListViewModel_HiltModules;
+import com.patflow.app.feature.dashboard.DashboardViewModel_HiltModules;
+import com.patflow.app.feature.payment.PaymentDetailViewModel_HiltModules;
+import com.patflow.app.feature.payment.PaymentHistoryViewModel_HiltModules;
+import com.patflow.app.feature.reports.ReportsViewModel_HiltModules;
 import dagger.Binds;
 import dagger.Component;
 import dagger.Module;
@@ -158,10 +165,17 @@ public final class PatFlowApplication_HiltComponents {
 
   @Subcomponent(
       modules = {
+          AddEditBillViewModel_HiltModules.KeyModule.class,
+          BillDetailViewModel_HiltModules.KeyModule.class,
+          BillListViewModel_HiltModules.KeyModule.class,
+          DashboardViewModel_HiltModules.KeyModule.class,
           HiltWrapper_ActivityRetainedComponentManager_LifecycleModule.class,
           HiltWrapper_SavedStateHandleModule.class,
           ActivityCBuilderModule.class,
-          ViewModelCBuilderModule.class
+          ViewModelCBuilderModule.class,
+          PaymentDetailViewModel_HiltModules.KeyModule.class,
+          PaymentHistoryViewModel_HiltModules.KeyModule.class,
+          ReportsViewModel_HiltModules.KeyModule.class
       }
   )
   @ActivityRetainedScoped
@@ -196,7 +210,16 @@ public final class PatFlowApplication_HiltComponents {
   }
 
   @Subcomponent(
-      modules = HiltWrapper_HiltViewModelFactory_ViewModelModule.class
+      modules = {
+          AddEditBillViewModel_HiltModules.BindsModule.class,
+          BillDetailViewModel_HiltModules.BindsModule.class,
+          BillListViewModel_HiltModules.BindsModule.class,
+          DashboardViewModel_HiltModules.BindsModule.class,
+          HiltWrapper_HiltViewModelFactory_ViewModelModule.class,
+          PaymentDetailViewModel_HiltModules.BindsModule.class,
+          PaymentHistoryViewModel_HiltModules.BindsModule.class,
+          ReportsViewModel_HiltModules.BindsModule.class
+      }
   )
   @ViewModelScoped
   public abstract static class ViewModelC implements ViewModelComponent,

@@ -8,7 +8,30 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AccountBalance
+import androidx.compose.material.icons.rounded.CalendarMonth
+import androidx.compose.material.icons.rounded.Dashboard
+import androidx.compose.material.icons.rounded.PieChart
+import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.getValue
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.compose.foundation.layout.Column
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
+import com.patflow.app.core.components.BottomNavigationBar
+import com.patflow.app.core.components.NavigationItem
+import com.patflow.app.feature.bills.AddEditBillScreen
+import com.patflow.app.feature.bills.BillDetailScreen
+import com.patflow.app.feature.dashboard.DashboardScreen
+import com.patflow.app.feature.money.MoneyScreen
+import com.patflow.app.feature.payment.PaymentDetailScreen
+import com.patflow.app.feature.payment.PaymentHistoryScreen
+import com.patflow.app.feature.reports.ReportsScreen
 import com.patflow.app.feature.showcase.DesignSystemShowcaseScreen
 
 /**
@@ -21,15 +44,129 @@ import com.patflow.app.feature.showcase.DesignSystemShowcaseScreen
 fun PatFlowNavGraph(
     navController: NavHostController = rememberNavController(),
 ) {
-    NavHost(
-        navController = navController,
-        startDestination = Destinations.DASHBOARD,
-    ) {
-        composable(Destinations.DASHBOARD) { DesignSystemShowcaseScreen() }
-        composable(Destinations.MONEY) { PlaceholderScreen("Money") }
-        composable(Destinations.CALENDAR) { PlaceholderScreen("Calendar / Timeline") }
-        composable(Destinations.REPORTS) { PlaceholderScreen("Reports") }
-        composable(Destinations.SETTINGS) { PlaceholderScreen("Settings") }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    val topLevelDestinations = listOf(
+        Destinations.DASHBOARD,
+        Destinations.MONEY,
+        Destinations.CALENDAR,
+        Destinations.REPORTS,
+        Destinations.SETTINGS
+    )
+
+    val showBottomBar = currentRoute in topLevelDestinations
+
+    val navItems = listOf(
+        NavigationItem("Dashboard", Destinations.DASHBOARD, Icons.Rounded.Dashboard, Icons.Rounded.Dashboard),
+        NavigationItem("Money", Destinations.MONEY, Icons.Rounded.AccountBalance, Icons.Rounded.AccountBalance),
+        NavigationItem("Calendar", Destinations.CALENDAR, Icons.Rounded.CalendarMonth, Icons.Rounded.CalendarMonth),
+        NavigationItem("Reports", Destinations.REPORTS, Icons.Rounded.PieChart, Icons.Rounded.PieChart),
+        NavigationItem("Settings", Destinations.SETTINGS, Icons.Rounded.Settings, Icons.Rounded.Settings)
+    )
+
+    Scaffold(
+        bottomBar = {
+            if (showBottomBar) {
+                BottomNavigationBar(
+                    items = navItems,
+                    selectedRoute = currentRoute ?: Destinations.DASHBOARD,
+                    onItemClick = { item ->
+                        navController.navigate(item.route) {
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                )
+            }
+        }
+    ) { padding ->
+        NavHost(
+            navController = navController,
+            startDestination = Destinations.DASHBOARD,
+            modifier = Modifier.padding(padding)
+        ) {
+            composable(Destinations.DASHBOARD) { 
+                DashboardScreen(
+                    onBillClick = { billId ->
+                        navController.navigate(Destinations.billDetail(billId))
+                    },
+                    onPaymentClick = { paymentId ->
+                        navController.navigate(Destinations.paymentDetail(paymentId))
+                    },
+                    onAddBillClick = {
+                        navController.navigate(Destinations.ADD_EDIT_BILL)
+                    },
+                    onLogPaymentClick = {
+                        // For now, navigate to Money/Bills to use swipe or detail flow
+                        // or future payment sheet.
+                        navController.navigate(Destinations.MONEY)
+                    }
+                )
+            }
+            
+            composable(Destinations.MONEY) { 
+                MoneyScreen(
+                    onBillClick = { billId ->
+                        navController.navigate(Destinations.billDetail(billId))
+                    },
+                    onEditBillClick = { billId ->
+                        navController.navigate("${Destinations.ADD_EDIT_BILL}?billId=$billId")
+                    },
+                    onAddBillClick = {
+                        navController.navigate(Destinations.ADD_EDIT_BILL)
+                    }
+                )
+            }
+
+            composable(
+                route = Destinations.BILL_DETAIL,
+                arguments = listOf(navArgument("billId") { type = androidx.navigation.NavType.LongType })
+            ) {
+                BillDetailScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onEditClick = { billId ->
+                        navController.navigate("${Destinations.ADD_EDIT_BILL}?billId=$billId")
+                    }
+                )
+            }
+
+            composable(
+                route = "${Destinations.ADD_EDIT_BILL}?billId={billId}",
+                arguments = listOf(navArgument("billId") { 
+                    type = androidx.navigation.NavType.StringType
+                    nullable = true
+                    defaultValue = null 
+                })
+            ) {
+                AddEditBillScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(Destinations.CALENDAR) { PlaceholderScreen("Calendar / Timeline") }
+            composable(Destinations.REPORTS) { ReportsScreen() }
+            composable(Destinations.SETTINGS) { PlaceholderScreen("Settings") }
+
+            composable(Destinations.PAYMENT_HISTORY) {
+                PaymentHistoryScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onPaymentClick = { paymentId ->
+                        navController.navigate(Destinations.paymentDetail(paymentId))
+                    }
+                )
+            }
+
+            composable(
+                route = Destinations.PAYMENT_DETAIL,
+                arguments = listOf(navArgument("paymentId") { type = androidx.navigation.NavType.LongType })
+            ) {
+                PaymentDetailScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+        }
     }
 }
 

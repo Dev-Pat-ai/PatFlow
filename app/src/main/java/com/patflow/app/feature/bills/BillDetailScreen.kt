@@ -30,7 +30,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.patflow.app.core.components.AppButton
 import com.patflow.app.core.components.AppSnackbarHost
@@ -43,6 +42,8 @@ import com.patflow.app.core.components.StatusChip
 import com.patflow.app.core.theme.PatFlowSpacing
 import com.patflow.app.core.utils.CurrencyFormatter
 
+import com.patflow.app.core.utils.rememberHapticFeedbackController
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BillDetailScreen(
@@ -53,15 +54,18 @@ fun BillDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val haptic = rememberHapticFeedbackController()
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.eventFlow.collect { event ->
             when (event) {
                 is BillDetailViewModel.UiEvent.ActionSuccess -> {
+                    haptic.confirm()
                     snackbarHostState.showSnackbar(event.message)
                 }
                 BillDetailViewModel.UiEvent.DeleteSuccess -> {
+                    haptic.confirm()
                     onNavigateBack()
                 }
             }
@@ -79,7 +83,7 @@ fun BillDetailScreen(
                 },
                 actions = {
                     val state = uiState
-                    if (state is BillDetailViewModel.BillDetailUiState.Success) {
+                    if (state is BillDetailUiState.Success) {
                         IconButton(onClick = { onEditClick(state.detail.bill.id) }) {
                             Icon(Icons.Rounded.Edit, contentDescription = "Edit")
                         }
@@ -93,12 +97,12 @@ fun BillDetailScreen(
         snackbarHost = { AppSnackbarHost(hostState = snackbarHostState) }
     ) { padding ->
         when (val state = uiState) {
-            BillDetailViewModel.BillDetailUiState.Loading -> {
+            BillDetailUiState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize().padding(padding)) {
                     Text(text = "Loading...", modifier = Modifier.align(Alignment.Center))
                 }
             }
-            is BillDetailViewModel.BillDetailUiState.Success -> {
+            is BillDetailUiState.Success -> {
                 val detail = state.detail
                 Column(
                     modifier = modifier
@@ -138,8 +142,10 @@ fun BillDetailScreen(
                     }
                 }
             }
-            is BillDetailViewModel.BillDetailUiState.Error -> {
-                // Error state UI
+            is BillDetailUiState.Error -> {
+                Box(modifier = Modifier.fillMaxSize().padding(padding)) {
+                    Text(text = "Error: ${state.message}", modifier = Modifier.align(Alignment.Center))
+                }
             }
         }
     }
@@ -211,7 +217,7 @@ private fun DetailInfoRow(
 private fun mapCategoryToType(name: String): CategoryType {
     return try {
         CategoryType.valueOf(name.uppercase().replace(" ", "_"))
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         CategoryType.ELECTRICITY
     }
 }

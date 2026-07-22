@@ -14,6 +14,8 @@ interface BillRepository {
     suspend fun deleteBill(id: Long)
     
     fun getCyclesForBill(billId: Long): Flow<List<BillCycle>>
+    fun getCyclesByDateRange(start: String, end: String): Flow<List<BillCycle>>
+    fun getUpcomingCycles(limit: Int): Flow<List<BillCycle>>
     suspend fun getCycleById(id: Long): BillCycle?
     suspend fun markCycleAsPaid(cycleId: Long, amount: Double, method: PaymentMethod)
 }

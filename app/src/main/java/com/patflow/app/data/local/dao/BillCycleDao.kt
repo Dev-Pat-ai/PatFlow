@@ -32,4 +32,15 @@ interface BillCycleDao {
 
     @Query("SELECT * FROM bill_cycle WHERE status = :status")
     fun getByStatus(status: String): Flow<List<BillCycleEntity>>
+
+    @Query("SELECT * FROM bill_cycle WHERE due_date BETWEEN :start AND :end ORDER BY due_date ASC")
+    fun getByDateRange(start: String, end: String): Flow<List<BillCycleEntity>>
+
+    @Query("""
+        SELECT * FROM bill_cycle 
+        WHERE status != 'PAID' 
+        ORDER BY due_date ASC 
+        LIMIT :limit
+    """)
+    fun getUpcoming(limit: Int): Flow<List<BillCycleEntity>>
 }

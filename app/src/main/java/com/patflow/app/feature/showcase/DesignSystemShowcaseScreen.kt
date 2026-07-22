@@ -13,15 +13,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ReceiptLong
+import androidx.compose.material.icons.automirrored.rounded.TrendingUp
 import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.CalendarToday
 import androidx.compose.material.icons.rounded.Dashboard
 import androidx.compose.material.icons.rounded.Payments
 import androidx.compose.material.icons.rounded.PieChart
-import androidx.compose.material.icons.rounded.ReceiptLong
 import androidx.compose.material.icons.rounded.Savings
 import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material.icons.rounded.TrendingUp
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -34,6 +34,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.patflow.app.core.components.AmountTextField
@@ -45,7 +46,6 @@ import com.patflow.app.core.components.AppSnackbarHost
 import com.patflow.app.core.components.AppTextField
 import com.patflow.app.core.components.AppTopBar
 import com.patflow.app.core.components.BillCard
-import com.patflow.app.core.components.BillStatus
 import com.patflow.app.core.components.BottomNavigationBar
 import com.patflow.app.core.components.CategoryChip
 import com.patflow.app.core.components.CategoryType
@@ -53,6 +53,7 @@ import com.patflow.app.core.components.ConfirmationDialog
 import com.patflow.app.core.components.DeleteConfirmationDialog
 import com.patflow.app.core.components.EmptyState
 import com.patflow.app.core.components.NavigationItem
+import com.patflow.app.core.components.SectionHeader
 import com.patflow.app.core.components.SkeletonBox
 import com.patflow.app.core.components.SpeedDialAction
 import com.patflow.app.core.components.SpeedDialFab
@@ -61,6 +62,7 @@ import com.patflow.app.core.components.StatusChip
 import com.patflow.app.core.components.SummaryCard
 import com.patflow.app.core.theme.PatFlowSpacing
 import com.patflow.app.core.utils.CurrencyFormatter
+import com.patflow.app.domain.model.BillStatus
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
@@ -96,13 +98,13 @@ fun DesignSystemShowcaseScreen() {
         },
         floatingActionButton = {
             val speedDialActions = listOf(
-                SpeedDialAction("Add Bill", Icons.Rounded.ReceiptLong) {
+                SpeedDialAction("Add Bill", Icons.AutoMirrored.Rounded.ReceiptLong) {
                     scope.launch { snackbarHostState.showSnackbar("Add Bill Clicked") }
                 },
                 SpeedDialAction("Log Payment", Icons.Rounded.Payments) {
                     scope.launch { snackbarHostState.showSnackbar("Log Payment Clicked") }
                 },
-                SpeedDialAction("Add Income", Icons.Rounded.TrendingUp) {
+                SpeedDialAction("Add Income", Icons.AutoMirrored.Rounded.TrendingUp) {
                     scope.launch { snackbarHostState.showSnackbar("Add Income Clicked") }
                 },
                 SpeedDialAction("Add Savings", Icons.Rounded.Savings) {
@@ -242,7 +244,7 @@ fun DesignSystemShowcaseScreen() {
                 EmptyState(
                     title = "No data found",
                     description = "Try adjusting your filters or adding a new record.",
-                    icon = Icons.Rounded.ReceiptLong,
+                    icon = Icons.AutoMirrored.Rounded.ReceiptLong,
                     modifier = Modifier.height(300.dp),
                     action = {
                         AppButton(onClick = {}) { Text("Add Item") }

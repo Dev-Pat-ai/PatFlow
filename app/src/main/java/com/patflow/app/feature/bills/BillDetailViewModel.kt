@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BillDetailViewModel @Inject constructor(
-    private val getBillDetailUseCase: GetBillDetailUseCase,
+    getBillDetailUseCase: GetBillDetailUseCase,
     private val deleteBillUseCase: DeleteBillUseCase,
     private val markBillAsPaidUseCase: MarkBillAsPaidUseCase,
     savedStateHandle: SavedStateHandle

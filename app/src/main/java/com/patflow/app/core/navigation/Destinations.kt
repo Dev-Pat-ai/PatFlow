@@ -18,9 +18,11 @@ object Destinations {
     const val BILL_DETAIL = "bill_detail/{billId}"
     const val ADD_EDIT_BILL = "add_edit_bill" // ?billId= via optional query arg
     const val PAYMENT_SHEET = "payment_sheet/{billCycleId}"
-    const val PAYMENT_HISTORY = "payment_history/{billId}"
+    const val PAYMENT_HISTORY = "payment_history"
+    const val PAYMENT_DETAIL = "payment_detail/{paymentId}"
 
     fun billDetail(billId: Long) = "bill_detail/$billId"
     fun paymentSheet(billCycleId: Long) = "payment_sheet/$billCycleId"
-    fun paymentHistory(billId: Long) = "payment_history/$billId"
+    fun paymentHistory() = "payment_history"
+    fun paymentDetail(paymentId: Long) = "payment_detail/$paymentId"
 }

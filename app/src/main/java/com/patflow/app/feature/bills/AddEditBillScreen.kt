@@ -40,7 +40,10 @@ import com.patflow.app.core.components.CategoryChip
 import com.patflow.app.core.components.CategoryType
 import com.patflow.app.core.theme.PatFlowSpacing
 import com.patflow.app.domain.model.RecurrenceType
+import kotlinx.datetime.LocalDate
 import java.util.Locale
+
+import com.patflow.app.core.utils.rememberHapticFeedbackController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,12 +54,16 @@ fun AddEditBillScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val categories by viewModel.categories.collectAsState()
+    val haptic = rememberHapticFeedbackController()
     var showDatePicker by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.eventFlow.collect { event ->
             when (event) {
-                AddEditBillViewModel.UiEvent.SaveSuccess -> onNavigateBack()
+                AddEditBillViewModel.UiEvent.SaveSuccess -> {
+                    haptic.confirm()
+                    onNavigateBack()
+                }
             }
         }
     }
@@ -85,19 +92,25 @@ fun AddEditBillScreen(
                 value = uiState.name,
                 onValueChange = viewModel::onNameChange,
                 label = "Bill Name",
-                placeholder = "e.g. Meralco"
+                placeholder = "e.g. Meralco",
+                isError = uiState.nameError != null,
+                helperText = uiState.nameError
             )
 
             AmountTextField(
                 value = uiState.amount,
                 onValueChange = viewModel::onAmountChange,
-                label = "Amount"
+                label = "Amount",
+                isError = uiState.amountError != null,
+                helperText = uiState.amountError
             )
 
             CategoryDropdown(
                 categories = categories,
                 selectedCategory = uiState.category,
-                onCategorySelected = viewModel::onCategoryChange
+                onCategorySelected = viewModel::onCategoryChange,
+                isError = uiState.categoryError != null,
+                helperText = uiState.categoryError
             )
 
             AppTextField(
@@ -136,7 +149,7 @@ fun AddEditBillScreen(
 
     if (showDatePicker) {
         AppDatePickerDialog(
-            onDateSelected = viewModel::onDateChange,
+            onDateSelected = { date: LocalDate? -> viewModel.onDateChange(date) },
             onDismiss = { showDatePicker = false },
             initialDate = uiState.startDate
         )
@@ -148,7 +161,9 @@ fun AddEditBillScreen(
 private fun CategoryDropdown(
     categories: List<com.patflow.app.domain.model.Category>,
     selectedCategory: com.patflow.app.domain.model.Category?,
-    onCategorySelected: (com.patflow.app.domain.model.Category) -> Unit
+    onCategorySelected: (com.patflow.app.domain.model.Category) -> Unit,
+    isError: Boolean = false,
+    helperText: String? = null
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -161,6 +176,8 @@ private fun CategoryDropdown(
             onValueChange = {},
             readOnly = true,
             label = "Category",
+            isError = isError,
+            helperText = helperText,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable)
         )
@@ -199,7 +216,7 @@ private fun RecurrenceDropdown(
         onExpandedChange = { expanded = !expanded }
     ) {
         AppTextField(
-            value = selectedType.name.lowercase().replaceFirstChar { it.titlecase() },
+            value = selectedType.name.lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
             onValueChange = {},
             readOnly = true,
             label = "Recurrence",
@@ -213,7 +230,7 @@ private fun RecurrenceDropdown(
         ) {
             RecurrenceType.entries.forEach { type ->
                 DropdownMenuItem(
-                    text = { Text(type.name.lowercase().replaceFirstChar { it.titlecase() }) },
+                    text = { Text(type.name.lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }) },
                     onClick = {
                         onTypeSelected(type)
                         expanded = false
@@ -227,7 +244,7 @@ private fun RecurrenceDropdown(
 private fun mapCategoryToType(name: String): CategoryType {
     return try {
         CategoryType.valueOf(name.uppercase().replace(" ", "_"))
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         CategoryType.ELECTRICITY
     }
 }
