@@ -1,15 +1,32 @@
 package com.patflow.app.di
 
+import com.patflow.app.data.repository.BillRepositoryImpl
+import com.patflow.app.data.repository.CategoryRepositoryImpl
+import com.patflow.app.domain.repository.BillRepository
+import com.patflow.app.domain.repository.CategoryRepository
+import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 /**
- * Reserved — repository implementations (BillRepositoryImpl, PaymentRepositoryImpl,
- * etc.) bind to their domain interfaces here once they're built alongside the
- * Bills feature. Left empty and present (not omitted) since DatabaseModule
- * already depends on it existing as a sibling module in di/.
+ * Repository implementations (BillRepositoryImpl, CategoryRepositoryImpl) 
+ * bind to their domain interfaces here.
  */
 @Module
 @InstallIn(SingletonComponent::class)
-object RepositoryModule
+abstract class RepositoryModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindBillRepository(
+        impl: BillRepositoryImpl
+    ): BillRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCategoryRepository(
+        impl: CategoryRepositoryImpl
+    ): CategoryRepository
+}

@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.patflow.app.feature.showcase.DesignSystemShowcaseScreen
 
 /**
  * MainNavGraph shell (Architecture §6). Only the Dashboard destination has a
@@ -24,7 +25,7 @@ fun PatFlowNavGraph(
         navController = navController,
         startDestination = Destinations.DASHBOARD,
     ) {
-        composable(Destinations.DASHBOARD) { PlaceholderScreen("Dashboard") }
+        composable(Destinations.DASHBOARD) { DesignSystemShowcaseScreen() }
         composable(Destinations.MONEY) { PlaceholderScreen("Money") }
         composable(Destinations.CALENDAR) { PlaceholderScreen("Calendar / Timeline") }
         composable(Destinations.REPORTS) { PlaceholderScreen("Reports") }

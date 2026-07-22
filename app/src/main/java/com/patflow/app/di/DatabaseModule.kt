@@ -2,6 +2,8 @@ package com.patflow.app.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.patflow.app.data.local.dao.BillCycleDao
 import com.patflow.app.data.local.dao.BillDao
 import com.patflow.app.data.local.dao.BudgetDao
@@ -11,12 +13,18 @@ import com.patflow.app.data.local.dao.PaymentDao
 import com.patflow.app.data.local.dao.ReminderDao
 import com.patflow.app.data.local.dao.SavingsGoalDao
 import com.patflow.app.data.local.dao.SearchDao
+import com.patflow.app.data.local.database.DatabaseSeeder
 import com.patflow.app.data.local.database.PatFlowDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import javax.inject.Provider
 import javax.inject.Singleton
 
 /** Provides the single Room database instance and its DAOs (Architecture §9 — di/). */
@@ -26,14 +34,27 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): PatFlowDatabase =
+    fun provideDatabase(
+        @ApplicationContext context: Context,
+        categoryDaoProvider: Provider<CategoryDao>
+    ): PatFlowDatabase =
         Room.databaseBuilder(
             context,
             PatFlowDatabase::class.java,
             PatFlowDatabase.DATABASE_NAME,
         )
-            // No destructive fallback in the shipped module — schema changes
-            // must add a real Migration (see PatFlowMigrations).
+            .addCallback(object : RoomDatabase.Callback() {
+                override fun onCreate(db: SupportSQLiteDatabase) {
+                    super.onCreate(db)
+                    // Seed categories on first creation
+                    CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+                        val dao = categoryDaoProvider.get()
+                        DatabaseSeeder.getPredefinedCategories().forEach {
+                            dao.insert(it)
+                        }
+                    }
+                }
+            })
             .build()
 
     @Provides

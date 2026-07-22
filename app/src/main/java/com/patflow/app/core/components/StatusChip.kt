@@ -24,13 +24,7 @@ import com.patflow.app.core.theme.PatFlowShapes
 import com.patflow.app.core.theme.PatFlowTheme
 import com.patflow.app.core.theme.StatusColorPair
 import com.patflow.app.core.theme.patFlowStatusColors
-
-/**
- * Design System §1.4 & §7.4 — Status Chips.
- */
-enum class BillStatus {
-    PAID, PARTIALLY_PAID, UNPAID, OVERDUE
-}
+import com.patflow.app.domain.model.BillStatus
 
 @Composable
 fun StatusChip(

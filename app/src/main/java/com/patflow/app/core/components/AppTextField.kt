@@ -32,6 +32,7 @@ fun AppTextField(
     trailingIcon: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     singleLine: Boolean = true,
+    readOnly: Boolean = false,
 ) {
     OutlinedTextField(
         value = value,
@@ -45,6 +46,7 @@ fun AppTextField(
         trailingIcon = trailingIcon,
         leadingIcon = leadingIcon,
         singleLine = singleLine,
+        readOnly = readOnly,
         shape = PatFlowShapes.sm,
     )
 }
