@@ -3,8 +3,11 @@
 
     <application
         android:name=".PatFlowApplication"
-        android:allowBackup="false"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.PatFlow">
@@ -23,8 +26,12 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="patflow" android:host="bill" />
-                <data android:scheme="patflow" android:host="payment" />
+                <data
+                    android:host="bill"
+                    android:scheme="patflow" />
+                <data
+                    android:host="payment"
+                    android:scheme="patflow" />
             </intent-filter>
         </activity>
 
