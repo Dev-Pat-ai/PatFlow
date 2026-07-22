@@ -38,6 +38,23 @@ fun SkeletonBox(
     Box(modifier = boxModifier)
 }
 
+/**
+ * A generic full-screen loading state using skeletons.
+ */
+@Composable
+fun LoadingState(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        repeat(5) {
+            SkeletonBox(height = 80.dp, shape = PatFlowShapes.lg)
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun LoadingStatePreview() {
