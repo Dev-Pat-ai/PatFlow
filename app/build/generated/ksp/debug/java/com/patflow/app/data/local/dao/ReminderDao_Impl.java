@@ -3,11 +3,13 @@ package com.patflow.app.data.local.dao;
 import android.database.Cursor;
 import android.os.CancellationSignal;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.CoroutinesRoom;
 import androidx.room.EntityDeletionOrUpdateAdapter;
 import androidx.room.EntityInsertionAdapter;
 import androidx.room.RoomDatabase;
 import androidx.room.RoomSQLiteQuery;
+import androidx.room.SharedSQLiteStatement;
 import androidx.room.util.CursorUtil;
 import androidx.room.util.DBUtil;
 import androidx.sqlite.db.SupportSQLiteStatement;
@@ -43,6 +45,8 @@ public final class ReminderDao_Impl implements ReminderDao {
   private final EntityDeletionOrUpdateAdapter<ReminderEntity> __deletionAdapterOfReminderEntity;
 
   private final EntityDeletionOrUpdateAdapter<ReminderEntity> __updateAdapterOfReminderEntity;
+
+  private final SharedSQLiteStatement __preparedStmtOfDeleteByCycle;
 
   public ReminderDao_Impl(@NonNull final RoomDatabase __db) {
     this.__db = __db;
@@ -106,6 +110,14 @@ public final class ReminderDao_Impl implements ReminderDao {
         statement.bindLong(6, entity.getId());
       }
     };
+    this.__preparedStmtOfDeleteByCycle = new SharedSQLiteStatement(__db) {
+      @Override
+      @NonNull
+      public String createQuery() {
+        final String _query = "DELETE FROM reminder WHERE bill_cycle_id = ?";
+        return _query;
+      }
+    };
   }
 
   @Override
@@ -160,6 +172,31 @@ public final class ReminderDao_Impl implements ReminderDao {
           return Unit.INSTANCE;
         } finally {
           __db.endTransaction();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object deleteByCycle(final long cycleId, final Continuation<? super Unit> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        final SupportSQLiteStatement _stmt = __preparedStmtOfDeleteByCycle.acquire();
+        int _argIndex = 1;
+        _stmt.bindLong(_argIndex, cycleId);
+        try {
+          __db.beginTransaction();
+          try {
+            _stmt.executeUpdateDelete();
+            __db.setTransactionSuccessful();
+            return Unit.INSTANCE;
+          } finally {
+            __db.endTransaction();
+          }
+        } finally {
+          __preparedStmtOfDeleteByCycle.release(_stmt);
         }
       }
     }, $completion);
@@ -271,6 +308,62 @@ public final class ReminderDao_Impl implements ReminderDao {
             _tmpOffsetDays = _cursor.getInt(_cursorIndexOfOffsetDays);
             _item = new ReminderEntity(_tmpId,_tmpBillCycleId,_tmpRemindAt,_tmpIsSent,_tmpOffsetDays);
             _result.add(_item);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+          _statement.release();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object getById(final long id, final Continuation<? super ReminderEntity> $completion) {
+    final String _sql = "SELECT * FROM reminder WHERE id = ?";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+    int _argIndex = 1;
+    _statement.bindLong(_argIndex, id);
+    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
+    return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<ReminderEntity>() {
+      @Override
+      @Nullable
+      public ReminderEntity call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfBillCycleId = CursorUtil.getColumnIndexOrThrow(_cursor, "bill_cycle_id");
+          final int _cursorIndexOfRemindAt = CursorUtil.getColumnIndexOrThrow(_cursor, "remind_at");
+          final int _cursorIndexOfIsSent = CursorUtil.getColumnIndexOrThrow(_cursor, "is_sent");
+          final int _cursorIndexOfOffsetDays = CursorUtil.getColumnIndexOrThrow(_cursor, "offset_days");
+          final ReminderEntity _result;
+          if (_cursor.moveToFirst()) {
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final long _tmpBillCycleId;
+            _tmpBillCycleId = _cursor.getLong(_cursorIndexOfBillCycleId);
+            final LocalDateTime _tmpRemindAt;
+            final String _tmp;
+            if (_cursor.isNull(_cursorIndexOfRemindAt)) {
+              _tmp = null;
+            } else {
+              _tmp = _cursor.getString(_cursorIndexOfRemindAt);
+            }
+            final LocalDateTime _tmp_1 = __converters.toLocalDateTime(_tmp);
+            if (_tmp_1 == null) {
+              throw new IllegalStateException("Expected NON-NULL 'kotlinx.datetime.LocalDateTime', but it was NULL.");
+            } else {
+              _tmpRemindAt = _tmp_1;
+            }
+            final boolean _tmpIsSent;
+            final int _tmp_2;
+            _tmp_2 = _cursor.getInt(_cursorIndexOfIsSent);
+            _tmpIsSent = _tmp_2 != 0;
+            final int _tmpOffsetDays;
+            _tmpOffsetDays = _cursor.getInt(_cursorIndexOfOffsetDays);
+            _result = new ReminderEntity(_tmpId,_tmpBillCycleId,_tmpRemindAt,_tmpIsSent,_tmpOffsetDays);
+          } else {
+            _result = null;
           }
           return _result;
         } finally {

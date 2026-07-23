@@ -71,4 +71,9 @@ object DatabaseModule {
 
     @Provides
     fun provideSearchDao(db: PatFlowDatabase): SearchDao = db.searchDao()
+
+    @Provides
+    @Singleton
+    fun provideWorkManager(@ApplicationContext context: Context): androidx.work.WorkManager =
+        androidx.work.WorkManager.getInstance(context)
 }

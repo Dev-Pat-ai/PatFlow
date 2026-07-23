@@ -27,6 +27,7 @@ import com.patflow.app.core.components.SpeedDialAction
 import com.patflow.app.core.components.SpeedDialFab
 import com.patflow.app.core.theme.PatFlowSpacing
 import com.patflow.app.feature.bills.BillListScreen
+import com.patflow.app.feature.income.IncomeListScreen
 import kotlinx.coroutines.launch
 
 /**
@@ -38,6 +39,8 @@ fun MoneyScreen(
     onBillClick: (Long) -> Unit,
     onEditBillClick: (Long) -> Unit,
     onAddBillClick: () -> Unit,
+    onAddIncomeClick: () -> Unit,
+    onIncomeClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
@@ -64,11 +67,7 @@ fun MoneyScreen(
             SpeedDialAction(
                 label = "Add Income",
                 icon = Icons.AutoMirrored.Rounded.TrendingUp,
-                onClick = {
-                    scope.launch {
-                        snackbarHostState.showSnackbar("Income tracking coming soon")
-                    }
-                }
+                onClick = onAddIncomeClick
             ),
             SpeedDialAction(
                 label = "Add Savings",
@@ -113,7 +112,10 @@ fun MoneyScreen(
                     onBillClick = onBillClick,
                     onEditClick = onEditBillClick
                 )
-                1 -> ComingSoonState(title = "Income tracking is coming soon")
+                1 -> IncomeListScreen(
+                    onAddIncomeClick = onAddIncomeClick,
+                    onEntryClick = onIncomeClick
+                )
                 2 -> ComingSoonState(title = "Savings goals are coming soon")
             }
         }

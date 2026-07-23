@@ -24,8 +24,46 @@ data class AppDataBackup(
     val bills: List<BillBackup>,
     val billCycles: List<BillCycleBackup>,
     val payments: List<PaymentBackup>,
+    val incomeCategories: List<IncomeCategoryBackup>,
+    val incomeSources: List<IncomeSourceBackup>,
+    val incomeEntries: List<IncomeEntryBackup>,
     val profile: UserProfileBackup,
     val preferences: UserPreferencesBackup
+)
+
+@Serializable
+data class IncomeCategoryBackup(
+    val id: Long,
+    val name: String,
+    val iconKey: String,
+    val colorHex: String,
+    val isCustom: Boolean
+)
+
+@Serializable
+data class IncomeSourceBackup(
+    val id: Long,
+    val categoryId: Long,
+    val name: String,
+    val defaultAmount: Double,
+    val recurrenceType: String,
+    val recurrenceInterval: Int,
+    val startDate: String,
+    val endDate: String?,
+    val isActive: Boolean,
+    val isDeleted: Boolean
+)
+
+@Serializable
+data class IncomeEntryBackup(
+    val id: Long,
+    val incomeSourceId: Long?,
+    val categoryId: Long,
+    val amount: Double,
+    val currencyCode: String,
+    val entryDate: String,
+    val note: String?,
+    val createdAt: String
 )
 
 @Serializable

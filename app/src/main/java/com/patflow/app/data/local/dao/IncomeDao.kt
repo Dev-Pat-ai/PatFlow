@@ -65,4 +65,31 @@ interface IncomeDao {
 
     @Query("SELECT * FROM income_entry WHERE category_id = :categoryId ORDER BY entry_date DESC")
     fun getEntriesByCategory(categoryId: Long): Flow<List<IncomeEntryEntity>>
+
+    @Query("SELECT * FROM income_category")
+    suspend fun getAllCategoryEntities(): List<IncomeCategoryEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllCategories(categories: List<IncomeCategoryEntity>)
+
+    @Query("DELETE FROM income_category")
+    suspend fun deleteAllCategories()
+
+    @Query("SELECT * FROM income_source")
+    suspend fun getAllSourceEntities(): List<IncomeSourceEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllSources(sources: List<IncomeSourceEntity>)
+
+    @Query("DELETE FROM income_source")
+    suspend fun deleteAllSources()
+
+    @Query("SELECT * FROM income_entry")
+    suspend fun getAllEntryEntities(): List<IncomeEntryEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllEntries(entries: List<IncomeEntryEntity>)
+
+    @Query("DELETE FROM income_entry")
+    suspend fun deleteAllEntries()
 }

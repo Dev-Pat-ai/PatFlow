@@ -113,12 +113,21 @@ private fun ReportContent(
     preferences: UserPreferences?
 ) {
     val trendModelProducer = remember { CartesianChartModelProducer() }
+    val incomeTrendModelProducer = remember { CartesianChartModelProducer() }
     val currencyCode = preferences?.profile?.preferredCurrency ?: "PHP"
 
     LaunchedEffect(data.trendAnalysis.monthlySpending) {
         if (data.trendAnalysis.monthlySpending.isNotEmpty()) {
             trendModelProducer.runTransaction {
                 lineSeries { series(data.trendAnalysis.monthlySpending.values) }
+            }
+        }
+    }
+
+    LaunchedEffect(data.trendAnalysis.monthlyIncome) {
+        if (data.trendAnalysis.monthlyIncome.isNotEmpty()) {
+            incomeTrendModelProducer.runTransaction {
+                lineSeries { series(data.trendAnalysis.monthlyIncome.values) }
             }
         }
     }
@@ -147,12 +156,26 @@ private fun ReportContent(
             }
         }
 
-        // 3. Category Breakdown
+        // 3. Income Trend
+        if (data.trendAnalysis.monthlyIncome.isNotEmpty()) {
+            item {
+                Column(verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
+                    SectionHeader(title = "Monthly Income Trend")
+                    CartesianChartHost(
+                        chart = rememberCartesianChart(rememberLineCartesianLayer()),
+                        modelProducer = incomeTrendModelProducer,
+                        modifier = Modifier.height(200.dp)
+                    )
+                }
+            }
+        }
+
+        // 4. Category Breakdown
         item {
             CategoryBreakdownSection(data, currencyCode)
         }
 
-        // 4. Performance & Insights
+        // 5. Performance & Insights
         item {
             PerformanceSection(data)
         }
@@ -165,13 +188,31 @@ private fun FinancialSummarySection(data: ReportData, currencyCode: String) {
         SectionHeader(title = "Financial Summary")
         Row(horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
             SummaryCard(
+                title = "Total Income",
+                value = CurrencyFormatter.formatAmount(data.summary.totalIncome, currencyCode),
+                icon = Icons.Rounded.Payments,
+                modifier = Modifier.weight(1f),
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+            SummaryCard(
+                title = "Net Flow",
+                value = CurrencyFormatter.formatAmount(data.summary.netCashFlow, currencyCode),
+                icon = Icons.Rounded.Payments,
+                modifier = Modifier.weight(1f),
+                containerColor = if (data.summary.netCashFlow >= 0) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer,
+                contentColor = if (data.summary.netCashFlow >= 0) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer
+            )
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
+            SummaryCard(
                 title = "Expenses",
                 value = CurrencyFormatter.formatAmount(data.summary.totalExpenses, currencyCode),
                 icon = Icons.Rounded.CalendarToday,
                 modifier = Modifier.weight(1f)
             )
             SummaryCard(
-                title = "Paid",
+                title = "Total Paid",
                 value = CurrencyFormatter.formatAmount(data.summary.totalPaid, currencyCode),
                 icon = Icons.Rounded.Payments,
                 modifier = Modifier.weight(1f),

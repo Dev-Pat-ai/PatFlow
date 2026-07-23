@@ -1,5 +1,6 @@
 package com.patflow.app.feature.settings;
 
+import com.patflow.app.domain.repository.NotificationRepository;
 import com.patflow.app.domain.usecase.settings.GetUserSettingsUseCase;
 import com.patflow.app.domain.usecase.settings.UpdateUserPreferenceUseCase;
 import dagger.internal.DaggerGenerated;
@@ -29,25 +30,30 @@ public final class SettingsViewModel_Factory implements Factory<SettingsViewMode
 
   private final Provider<UpdateUserPreferenceUseCase> updatePreferenceProvider;
 
+  private final Provider<NotificationRepository> notificationRepositoryProvider;
+
   public SettingsViewModel_Factory(Provider<GetUserSettingsUseCase> getUserSettingsUseCaseProvider,
-      Provider<UpdateUserPreferenceUseCase> updatePreferenceProvider) {
+      Provider<UpdateUserPreferenceUseCase> updatePreferenceProvider,
+      Provider<NotificationRepository> notificationRepositoryProvider) {
     this.getUserSettingsUseCaseProvider = getUserSettingsUseCaseProvider;
     this.updatePreferenceProvider = updatePreferenceProvider;
+    this.notificationRepositoryProvider = notificationRepositoryProvider;
   }
 
   @Override
   public SettingsViewModel get() {
-    return newInstance(getUserSettingsUseCaseProvider.get(), updatePreferenceProvider.get());
+    return newInstance(getUserSettingsUseCaseProvider.get(), updatePreferenceProvider.get(), notificationRepositoryProvider.get());
   }
 
   public static SettingsViewModel_Factory create(
       Provider<GetUserSettingsUseCase> getUserSettingsUseCaseProvider,
-      Provider<UpdateUserPreferenceUseCase> updatePreferenceProvider) {
-    return new SettingsViewModel_Factory(getUserSettingsUseCaseProvider, updatePreferenceProvider);
+      Provider<UpdateUserPreferenceUseCase> updatePreferenceProvider,
+      Provider<NotificationRepository> notificationRepositoryProvider) {
+    return new SettingsViewModel_Factory(getUserSettingsUseCaseProvider, updatePreferenceProvider, notificationRepositoryProvider);
   }
 
   public static SettingsViewModel newInstance(GetUserSettingsUseCase getUserSettingsUseCase,
-      UpdateUserPreferenceUseCase updatePreference) {
-    return new SettingsViewModel(getUserSettingsUseCase, updatePreference);
+      UpdateUserPreferenceUseCase updatePreference, NotificationRepository notificationRepository) {
+    return new SettingsViewModel(getUserSettingsUseCase, updatePreference, notificationRepository);
   }
 }

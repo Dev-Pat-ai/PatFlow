@@ -2,6 +2,7 @@ package com.patflow.app.domain.usecase.report
 
 import com.patflow.app.domain.model.*
 import com.patflow.app.domain.repository.BillRepository
+import com.patflow.app.domain.repository.IncomeRepository
 import com.patflow.app.domain.repository.PaymentRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -11,11 +12,12 @@ import javax.inject.Inject
 
 /**
  * Use case for generating comprehensive financial analytics for a specific range (Architecture §1.6).
- * Computes summaries, category distributions, and trends.
+ * Computes summaries, category distributions, and trends for both Income and Expenses.
  */
 class GetReportDataUseCase @Inject constructor(
     private val billRepository: BillRepository,
-    private val paymentRepository: PaymentRepository
+    private val paymentRepository: PaymentRepository,
+    private val incomeRepository: IncomeRepository
 ) {
     operator fun invoke(filter: ReportFilter): Flow<ReportData> {
         val (start, end) = getRange(filter)
@@ -23,25 +25,34 @@ class GetReportDataUseCase @Inject constructor(
         return combine(
             billRepository.getBillsWithCycles(),
             billRepository.getCyclesByDateRange(start.toString(), end.toString()),
-            paymentRepository.getPayments()
-        ) { allBills, cycles, allPayments ->
+            paymentRepository.getPayments(),
+            incomeRepository.getEntries()
+        ) { allBills, cycles, allPayments, allIncome ->
             
             // 1. Filtering data to the requested range
             val filteredPayments = allPayments.asSequence()
                 .filter { it.payment.paymentDate in start..end }
                 .toList()
+            val filteredIncome = allIncome.asSequence()
+                .filter { it.entry.entryDate in start..end }
+                .toList()
             
             // 2. Financial Summary
             val totalExpenses = cycles.sumOf { it.amountDue }
             val totalPaid = cycles.sumOf { it.amountPaid }
+            val totalIncome = filteredIncome.sumOf { it.entry.amount }
             val balance = (totalExpenses - totalPaid).coerceAtLeast(0.0)
+            val netCashFlow = totalIncome - totalPaid
             
             val summary = FinancialSummary(
                 totalExpenses = totalExpenses,
                 totalPaid = totalPaid,
+                totalIncome = totalIncome,
                 outstandingBalance = balance,
+                netCashFlow = netCashFlow,
                 totalBills = cycles.size,
-                totalPayments = filteredPayments.size
+                totalPayments = filteredPayments.size,
+                totalIncomeEntries = filteredIncome.size
             )
 
             // 3. Category Analysis
@@ -51,13 +62,19 @@ class GetReportDataUseCase @Inject constructor(
                 category?.let { it to cycles.sumOf { c -> c.amountPaid } }
             }.toMap()
 
-            val highestCategory = categorySpending.maxByOrNull { it.value }?.key
-            val lowestCategory = categorySpending.minByOrNull { it.value }?.key
+            val categoryIncome = filteredIncome.groupBy { it.entry.category }
+                .mapValues { it.value.sumOf { e -> e.entry.amount } }
+
+            val highestSpending = categorySpending.maxByOrNull { it.value }?.key
+            val lowestSpending = categorySpending.minByOrNull { it.value }?.key
+            val highestIncome = categoryIncome.maxByOrNull { it.value }?.key
 
             val categoryAnalysis = CategoryAnalysis(
                 spendingByCategory = categorySpending,
-                highestSpendingCategory = highestCategory,
-                lowestSpendingCategory = lowestCategory
+                incomeByCategory = categoryIncome,
+                highestSpendingCategory = highestSpending,
+                lowestSpendingCategory = lowestSpending,
+                highestIncomeCategory = highestIncome
             )
 
             // 4. Trend Analysis
@@ -66,29 +83,37 @@ class GetReportDataUseCase @Inject constructor(
                 "${d.month.name.take(3)} ${d.year}"
             }.mapValues { it.value.sumOf { p -> p.payment.amount } }
 
+            val trendIncome = filteredIncome.groupBy {
+                val d = it.entry.entryDate
+                "${d.month.name.take(3)} ${d.year}"
+            }.mapValues { it.value.sumOf { e -> e.entry.amount } }
+
             val trendAnalysis = TrendAnalysis(
                 monthlySpending = trendSpending,
-                billsCreatedPerMonth = emptyMap(), // Simplification for MVP
+                monthlyIncome = trendIncome,
+                billsCreatedPerMonth = emptyMap(),
                 paymentsCompletedPerMonth = emptyMap()
             )
 
             // 5. Payment Performance
-            val paidOnTime = cycles.count { it.status == BillStatus.PAID } // Simplified: assume all PAID are on-time for MVP
+            val paidOnTime = cycles.count { it.status == BillStatus.PAID }
             val onTimePct = if (cycles.isNotEmpty()) (paidOnTime.toFloat() / cycles.size) * 100 else 0f
             
             val performance = PaymentPerformance(
                 onTimePercentage = onTimePct,
                 latePercentage = 100 - onTimePct,
-                averagePaymentDelayDays = 0, // Placeholder
+                averagePaymentDelayDays = 0,
                 overdueBillsCount = cycles.count { it.status == BillStatus.OVERDUE }
             )
 
             // 6. Insights
             val insights = mutableListOf<String>()
             insights.add("You spent ₱${String.format(Locale.getDefault(), "%.2f", totalPaid)} in this period.")
-            if (highestCategory != null) {
-                val pct = if (totalPaid > 0) (categorySpending[highestCategory]!! / totalPaid) * 100 else 0.0
-                insights.add("${highestCategory.name} accounts for ${String.format(Locale.getDefault(), "%.0f", pct)}% of your spending.")
+            insights.add("You received ₱${String.format(Locale.getDefault(), "%.2f", totalIncome)} in this period.")
+            
+            if (highestSpending != null) {
+                val pct = if (totalPaid > 0) (categorySpending[highestSpending]!! / totalPaid) * 100 else 0.0
+                insights.add("${highestSpending.name} accounts for ${String.format(Locale.getDefault(), "%.0f", pct)}% of your spending.")
             }
             insights.add("You paid ${String.format(Locale.getDefault(), "%.0f", onTimePct)}% of your bills on time.")
 

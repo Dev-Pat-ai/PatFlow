@@ -20,8 +20,13 @@ object Destinations {
     const val PAYMENT_HISTORY = "payment_history"
     const val PAYMENT_DETAIL = "payment_detail/{paymentId}"
 
+    const val INCOME_LIST = "income_list"
+    const val ADD_EDIT_INCOME = "add_edit_income" // ?entryId= via optional query arg
+
     fun billDetail(billId: Long) = "bill_detail/$billId"
     fun paymentSheet(billCycleId: Long) = "payment_sheet/$billCycleId"
     fun paymentHistory() = "payment_history"
     fun paymentDetail(paymentId: Long) = "payment_detail/$paymentId"
+    fun incomeList() = "income_list"
+    fun addEditIncome(entryId: Long? = null) = if (entryId != null) "add_edit_income?entryId=$entryId" else "add_edit_income"
 }

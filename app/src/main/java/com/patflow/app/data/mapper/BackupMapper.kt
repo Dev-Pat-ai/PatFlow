@@ -18,6 +18,14 @@ fun PaymentEntity.toBackup(): PaymentBackup = PaymentBackup(
     id, billCycleId, amount, paymentDate.toString(), method, note
 )
 
+fun IncomeCategoryEntity.toBackup(): IncomeCategoryBackup = IncomeCategoryBackup(id, name, iconKey, colorHex, isCustom)
+fun IncomeSourceEntity.toBackup(): IncomeSourceBackup = IncomeSourceBackup(
+    id, categoryId, name, defaultAmount, recurrenceType, recurrenceInterval, startDate.toString(), endDate?.toString(), isActive, isDeleted
+)
+fun IncomeEntryEntity.toBackup(): IncomeEntryBackup = IncomeEntryBackup(
+    id, incomeSourceId, categoryId, amount, currencyCode, entryDate.toString(), note, createdAt.toString()
+)
+
 fun CategoryBackup.toEntity(): BillCategoryEntity = BillCategoryEntity(id, name, iconKey, colorHex, isCustom)
 fun BillBackup.toEntity(): BillEntity = BillEntity(
     id = id, categoryId = categoryId, name = name, defaultAmount = defaultAmount, currencyCode = currencyCode,

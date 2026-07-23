@@ -3,6 +3,7 @@ package com.patflow.app.di
 import com.patflow.app.data.repository.BillRepositoryImpl
 import com.patflow.app.data.repository.CategoryRepositoryImpl
 import com.patflow.app.data.repository.DataManagementRepositoryImpl
+import com.patflow.app.data.repository.IncomeRepositoryImpl
 import com.patflow.app.data.repository.NotificationRepositoryImpl
 import com.patflow.app.data.repository.PaymentRepositoryImpl
 import com.patflow.app.data.repository.ReminderRepositoryImpl
@@ -10,6 +11,7 @@ import com.patflow.app.data.repository.SettingsRepositoryImpl
 import com.patflow.app.domain.repository.BillRepository
 import com.patflow.app.domain.repository.CategoryRepository
 import com.patflow.app.domain.repository.DataManagementRepository
+import com.patflow.app.domain.repository.IncomeRepository
 import com.patflow.app.domain.repository.NotificationRepository
 import com.patflow.app.domain.repository.PaymentRepository
 import com.patflow.app.domain.repository.ReminderRepository
@@ -68,4 +70,10 @@ abstract class RepositoryModule {
     abstract fun bindReminderRepository(
         impl: ReminderRepositoryImpl
     ): ReminderRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindIncomeRepository(
+        impl: IncomeRepositoryImpl
+    ): IncomeRepository
 }

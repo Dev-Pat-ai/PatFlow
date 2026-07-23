@@ -270,6 +270,27 @@ private fun SummaryRow(data: DashboardData, currencyCode: String) {
             horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)
         ) {
             SummaryCard(
+                title = "Monthly Income",
+                value = CurrencyFormatter.formatAmount(data.totalIncomeThisMonth, currencyCode),
+                icon = Icons.Rounded.Payments,
+                modifier = Modifier.weight(1f),
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+            SummaryCard(
+                title = "Net Cash Flow",
+                value = CurrencyFormatter.formatAmount(data.netCashFlow, currencyCode),
+                icon = Icons.Rounded.Payments,
+                modifier = Modifier.weight(1f),
+                containerColor = if (data.netCashFlow >= 0) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer,
+                contentColor = if (data.netCashFlow >= 0) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)
+        ) {
+            SummaryCard(
                 title = "Total Due",
                 value = CurrencyFormatter.formatAmount(data.totalBillsThisMonth, currencyCode),
                 icon = Icons.Rounded.CalendarToday,

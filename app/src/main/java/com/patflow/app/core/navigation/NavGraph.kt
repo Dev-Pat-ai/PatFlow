@@ -27,6 +27,8 @@ import com.patflow.app.core.components.NavigationItem
 import com.patflow.app.feature.bills.AddEditBillScreen
 import com.patflow.app.feature.bills.BillDetailScreen
 import com.patflow.app.feature.dashboard.DashboardScreen
+import com.patflow.app.feature.income.AddEditIncomeScreen
+import com.patflow.app.feature.income.IncomeListScreen
 import com.patflow.app.feature.money.MoneyScreen
 import com.patflow.app.feature.payment.PaymentDetailScreen
 import com.patflow.app.feature.payment.PaymentHistoryScreen
@@ -116,6 +118,12 @@ fun PatFlowNavGraph(
                     },
                     onAddBillClick = {
                         navController.navigate(Destinations.ADD_EDIT_BILL)
+                    },
+                    onAddIncomeClick = {
+                        navController.navigate(Destinations.ADD_EDIT_INCOME)
+                    },
+                    onIncomeClick = { entryId ->
+                        navController.navigate(Destinations.addEditIncome(entryId))
                     }
                 )
             }
@@ -141,6 +149,19 @@ fun PatFlowNavGraph(
                 })
             ) {
                 AddEditBillScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(
+                route = "${Destinations.ADD_EDIT_INCOME}?entryId={entryId}",
+                arguments = listOf(navArgument("entryId") { 
+                    type = androidx.navigation.NavType.StringType
+                    nullable = true
+                    defaultValue = null 
+                })
+            ) {
+                AddEditIncomeScreen(
                     onNavigateBack = { navController.popBackStack() }
                 )
             }

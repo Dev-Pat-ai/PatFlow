@@ -16,19 +16,25 @@ data class ReportData(
 data class FinancialSummary(
     val totalExpenses: Double,
     val totalPaid: Double,
+    val totalIncome: Double,
     val outstandingBalance: Double,
+    val netCashFlow: Double,
     val totalBills: Int,
-    val totalPayments: Int
+    val totalPayments: Int,
+    val totalIncomeEntries: Int
 )
 
 data class CategoryAnalysis(
     val spendingByCategory: Map<Category, Double>,
+    val incomeByCategory: Map<IncomeCategory, Double>,
     val highestSpendingCategory: Category?,
-    val lowestSpendingCategory: Category?
+    val lowestSpendingCategory: Category?,
+    val highestIncomeCategory: IncomeCategory?
 )
 
 data class TrendAnalysis(
-    val monthlySpending: Map<String, Double>, // Month name -> Amount
+    val monthlySpending: Map<String, Double>,
+    val monthlyIncome: Map<String, Double>,
     val billsCreatedPerMonth: Map<String, Int>,
     val paymentsCompletedPerMonth: Map<String, Int>
 )
