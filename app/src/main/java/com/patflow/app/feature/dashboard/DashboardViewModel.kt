@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.patflow.app.domain.model.DashboardData
 import com.patflow.app.domain.model.UserPreferences
 import com.patflow.app.domain.usecase.dashboard.GetDashboardDataUseCase
+import com.patflow.app.domain.usecase.insights.GetSmartInsightsUseCase
 import com.patflow.app.domain.usecase.settings.GetUserSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val getDashboardDataUseCase: GetDashboardDataUseCase,
+    private val getSmartInsightsUseCase: GetSmartInsightsUseCase,
     getUserSettingsUseCase: GetUserSettingsUseCase
 ) : ViewModel() {
 
@@ -31,36 +33,28 @@ class DashboardViewModel @Inject constructor(
             initialValue = null
         )
 
-    val uiState: StateFlow<DashboardUiState> = getDashboardDataUseCase()
-        .map<DashboardData, DashboardUiState> { data ->
-            if (data.totalBillsThisMonth == 0.0 && data.recentPayments.isEmpty()) {
-                DashboardUiState.Empty
-            } else {
-                DashboardUiState.Success(data)
-            }
+    val uiState: StateFlow<DashboardUiState> = combine(
+        getDashboardDataUseCase(),
+        getSmartInsightsUseCase()
+    ) { data, smartInsights ->
+        val combinedInsights = (data.insights + smartInsights.map { "${it.title}: ${it.message}" }).distinct()
+        val successData = data.copy(insights = combinedInsights)
+        
+        if (successData.totalBillsThisMonth == 0.0 && successData.upcomingBills.isEmpty() && successData.recentPayments.isEmpty()) {
+            DashboardUiState.Empty
+        } else {
+            DashboardUiState.Success(successData)
         }
-        .onStart { 
-            // Delay emit slightly to show loading if needed, or rely on initialValue
-        }
-        .catch { e ->
-            emit(DashboardUiState.Error(e.message ?: "An unexpected error occurred"))
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = DashboardUiState.Loading
-        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = DashboardUiState.Loading
+    )
 
-    /**
-     * Triggers a manual refresh of the dashboard data.
-     */
     fun refresh() {
         viewModelScope.launch {
             _isRefreshing.value = true
-            // Data will automatically update via Flow, we just simulate a refresh trigger
-            // if we had a manual refresh mechanism or remote source.
-            // For offline-first with Flow, this is mostly for UI feedback.
-            kotlinx.coroutines.delay(1000L)
+            // WorkManager jobs are periodic, manual refresh just triggers state re-emission
             _isRefreshing.value = false
         }
     }
