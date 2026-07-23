@@ -1,5 +1,9 @@
 package com.patflow.app;
 
+import androidx.hilt.work.HiltWrapper_WorkerFactoryModule;
+import com.patflow.app.core.notifications.NotificationReceiver_GeneratedInjector;
+import com.patflow.app.core.notifications.OverdueCheckWorker_HiltModule;
+import com.patflow.app.core.notifications.ReminderSyncWorker_HiltModule;
 import com.patflow.app.core.theme.ThemeViewModel_HiltModules;
 import com.patflow.app.core.utils.HapticViewModel_HiltModules;
 import com.patflow.app.di.DataStoreModule;
@@ -13,6 +17,7 @@ import com.patflow.app.feature.dashboard.DashboardViewModel_HiltModules;
 import com.patflow.app.feature.payment.PaymentDetailViewModel_HiltModules;
 import com.patflow.app.feature.payment.PaymentHistoryViewModel_HiltModules;
 import com.patflow.app.feature.reports.ReportsViewModel_HiltModules;
+import com.patflow.app.feature.settings.DataManagementViewModel_HiltModules;
 import com.patflow.app.feature.settings.SettingsViewModel_HiltModules;
 import dagger.Binds;
 import dagger.Component;
@@ -143,13 +148,17 @@ public final class PatFlowApplication_HiltComponents {
           DatabaseModule.class,
           DispatcherModule.class,
           HiltWrapper_FragmentGetContextFix_FragmentGetContextFixModule.class,
+          HiltWrapper_WorkerFactoryModule.class,
+          OverdueCheckWorker_HiltModule.class,
           ActivityRetainedCBuilderModule.class,
           ServiceCBuilderModule.class,
+          ReminderSyncWorker_HiltModule.class,
           RepositoryModule.class
       }
   )
   @Singleton
   public abstract static class SingletonC implements PatFlowApplication_GeneratedInjector,
+      NotificationReceiver_GeneratedInjector,
       FragmentGetContextFix.FragmentGetContextFixEntryPoint,
       HiltWrapper_ActivityRetainedComponentManager_ActivityRetainedComponentBuilderEntryPoint,
       ServiceComponentManager.ServiceComponentBuilderEntryPoint,
@@ -172,6 +181,7 @@ public final class PatFlowApplication_HiltComponents {
           BillDetailViewModel_HiltModules.KeyModule.class,
           BillListViewModel_HiltModules.KeyModule.class,
           DashboardViewModel_HiltModules.KeyModule.class,
+          DataManagementViewModel_HiltModules.KeyModule.class,
           HapticViewModel_HiltModules.KeyModule.class,
           HiltWrapper_ActivityRetainedComponentManager_LifecycleModule.class,
           HiltWrapper_SavedStateHandleModule.class,
@@ -221,6 +231,7 @@ public final class PatFlowApplication_HiltComponents {
           BillDetailViewModel_HiltModules.BindsModule.class,
           BillListViewModel_HiltModules.BindsModule.class,
           DashboardViewModel_HiltModules.BindsModule.class,
+          DataManagementViewModel_HiltModules.BindsModule.class,
           HapticViewModel_HiltModules.BindsModule.class,
           HiltWrapper_HiltViewModelFactory_ViewModelModule.class,
           PaymentDetailViewModel_HiltModules.BindsModule.class,

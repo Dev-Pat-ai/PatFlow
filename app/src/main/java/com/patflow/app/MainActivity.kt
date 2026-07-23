@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.patflow.app.core.navigation.PatFlowNavGraph
+import com.patflow.app.core.notifications.NotificationScheduler
 import com.patflow.app.core.theme.PatFlowTheme
 import com.patflow.app.data.local.database.DatabaseInitializer
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,9 +23,14 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var databaseInitializer: DatabaseInitializer
 
+    @Inject
+    lateinit var notificationScheduler: NotificationScheduler
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         databaseInitializer.initialize()
+        notificationScheduler.scheduleReminderSync()
+        notificationScheduler.scheduleOverdueCheck()
         enableEdgeToEdge()
         setContent {
             PatFlowTheme {

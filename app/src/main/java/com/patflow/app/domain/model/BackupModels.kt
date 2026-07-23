@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 /**
  * Root model for application data backup (Architecture §1.10 / Phase 7B).
+ * Supports structured versioning for future-proof migrations.
  */
 @Serializable
 data class BackupModel(

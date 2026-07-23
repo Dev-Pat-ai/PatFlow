@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.patflow.app.domain.model.UserPreferences
 import com.patflow.app.domain.usecase.settings.GetUserSettingsUseCase
 import com.patflow.app.domain.usecase.settings.UpdateUserPreferenceUseCase
+import com.patflow.app.domain.model.NotificationType
+import com.patflow.app.domain.repository.NotificationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     getUserSettingsUseCase: GetUserSettingsUseCase,
-    private val updatePreference: UpdateUserPreferenceUseCase
+    private val updatePreference: UpdateUserPreferenceUseCase,
+    private val notificationRepository: NotificationRepository
 ) : ViewModel() {
 
     val uiState: StateFlow<UserPreferences?> = getUserSettingsUseCase()
@@ -61,15 +64,41 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch { updatePreference.setHapticFeedbackEnabled(enabled) }
     }
 
-    fun updateNotifDueTomorrow(enabled: Boolean) {
-        viewModelScope.launch { updatePreference.setNotificationDueTomorrow(enabled) }
+    fun updateNotifMaster(enabled: Boolean) {
+        viewModelScope.launch { updatePreference.setNotificationsMasterEnabled(enabled) }
+    }
+
+    fun updateNotifUpcoming(enabled: Boolean) {
+        viewModelScope.launch { updatePreference.setNotificationUpcomingEnabled(enabled) }
     }
 
     fun updateNotifDueToday(enabled: Boolean) {
-        viewModelScope.launch { updatePreference.setNotificationDueToday(enabled) }
+        viewModelScope.launch { updatePreference.setNotificationDueTodayEnabled(enabled) }
     }
 
     fun updateNotifOverdue(enabled: Boolean) {
-        viewModelScope.launch { updatePreference.setNotificationOverdue(enabled) }
+        viewModelScope.launch { updatePreference.setNotificationOverdueEnabled(enabled) }
+    }
+
+    fun updateNotifPaymentSuccess(enabled: Boolean) {
+        viewModelScope.launch { updatePreference.setNotificationPaymentSuccessEnabled(enabled) }
+    }
+
+    fun updateNotifBackupSuccess(enabled: Boolean) {
+        viewModelScope.launch { updatePreference.setNotificationBackupSuccessEnabled(enabled) }
+    }
+
+    fun updateQuietHoursEnabled(enabled: Boolean) {
+        viewModelScope.launch { updatePreference.setQuietHoursEnabled(enabled) }
+    }
+
+    fun testNotification() {
+        viewModelScope.launch {
+            notificationRepository.showSystemNotification(
+                NotificationType.RECURRING_GENERATED,
+                "Test Notification",
+                "This is a sample notification from PatFlow."
+            )
+        }
     }
 }

@@ -26,4 +26,13 @@ interface CategoryDao {
 
     @Query("SELECT * FROM bill_category WHERE is_deleted = 0 ORDER BY name ASC")
     fun getAll(): Flow<List<BillCategoryEntity>>
+
+    @Query("SELECT * FROM bill_category")
+    suspend fun getAllEntities(): List<BillCategoryEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(categories: List<BillCategoryEntity>)
+
+    @Query("DELETE FROM bill_category")
+    suspend fun deleteAll()
 }

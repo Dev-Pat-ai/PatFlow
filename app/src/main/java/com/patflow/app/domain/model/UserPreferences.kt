@@ -9,7 +9,14 @@ data class UserPreferences(
     val dateFormat: String = "MM/dd/yyyy",
     val firstDayOfWeek: Int = 1, // 1 = Sunday, 2 = Monday
     val hapticFeedbackEnabled: Boolean = true,
-    val notificationDueTomorrow: Boolean = true,
-    val notificationDueToday: Boolean = true,
-    val notificationOverdue: Boolean = true
+    val notificationsMasterEnabled: Boolean = true,
+    val reminderOffsets: Set<Int> = setOf(0, 1, 3), // days before due date
+    val notificationUpcomingEnabled: Boolean = true,
+    val notificationDueTodayEnabled: Boolean = true,
+    val notificationOverdueEnabled: Boolean = true,
+    val notificationPaymentSuccessEnabled: Boolean = true,
+    val notificationBackupSuccessEnabled: Boolean = true,
+    val quietHoursEnabled: Boolean = false,
+    val quietHoursStart: String = "22:00",
+    val quietHoursEnd: String = "07:00"
 )

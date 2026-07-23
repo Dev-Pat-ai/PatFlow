@@ -68,6 +68,15 @@ interface PaymentDao {
             updatedAt = kotlinx.datetime.Clock.System.now().toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault())
         ))
     }
+
+    @Query("SELECT * FROM payment")
+    suspend fun getAllEntities(): List<PaymentEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(payments: List<PaymentEntity>)
+
+    @Query("DELETE FROM payment")
+    suspend fun deleteAll()
 }
 
 data class PaymentWithBillDetails(

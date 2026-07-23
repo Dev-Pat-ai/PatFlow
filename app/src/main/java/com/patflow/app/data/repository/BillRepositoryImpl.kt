@@ -9,12 +9,18 @@ import com.patflow.app.domain.model.Bill
 import com.patflow.app.domain.model.BillCycle
 import com.patflow.app.domain.model.BillStatus
 import com.patflow.app.domain.model.BillWithCycle
+import com.patflow.app.domain.model.Reminder
 import com.patflow.app.domain.repository.BillRepository
+import com.patflow.app.domain.repository.ReminderRepository
+import com.patflow.app.domain.usecase.settings.GetUserSettingsUseCase
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Clock
+import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
 import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 
@@ -25,6 +31,8 @@ import javax.inject.Inject
 class BillRepositoryImpl @Inject constructor(
     private val billDao: BillDao,
     private val billCycleDao: BillCycleDao,
+    private val reminderRepository: ReminderRepository,
+    private val getUserSettingsUseCase: GetUserSettingsUseCase
 ) : BillRepository {
 
     override fun getBillsWithCycles(): Flow<List<BillWithCycle>> {
@@ -63,9 +71,32 @@ class BillRepositoryImpl @Inject constructor(
             createdAt = now,
             updatedAt = now
         )
-        billCycleDao.insert(firstCycle)
+        val cycleId = billCycleDao.insert(firstCycle)
+        
+        scheduleRemindersForCycle(cycleId, bill.recurrence.startDate)
         
         return billId
+    }
+
+    private suspend fun scheduleRemindersForCycle(cycleId: Long, dueDate: kotlinx.datetime.LocalDate) {
+        val settings = getUserSettingsUseCase().first()
+        if (!settings.notificationsMasterEnabled) return
+
+        for (offset in settings.reminderOffsets) {
+            val remindAtDate = dueDate.minus(DatePeriod(days = offset))
+            // Remind at 9:00 AM on the calculated day
+            val remindAt = kotlinx.datetime.LocalDateTime(
+                remindAtDate.year, remindAtDate.month, remindAtDate.dayOfMonth, 9, 0
+            )
+            
+            reminderRepository.insertReminder(
+                com.patflow.app.domain.model.Reminder(
+                    billCycleId = cycleId,
+                    remindAt = remindAt,
+                    offsetDays = offset
+                )
+            )
+        }
     }
 
     override suspend fun updateBill(bill: Bill) {
@@ -118,5 +149,9 @@ class BillRepositoryImpl @Inject constructor(
             status = newStatus.name,
             updatedAt = now
         ))
+
+        if (newStatus == BillStatus.PAID) {
+            reminderRepository.deleteRemindersForCycle(cycleId)
+        }
     }
 }

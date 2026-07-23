@@ -17,7 +17,15 @@ interface SettingsRepository {
     suspend fun setDateFormat(format: String)
     suspend fun setFirstDayOfWeek(day: Int)
     suspend fun setHapticFeedbackEnabled(enabled: Boolean)
-    suspend fun setNotificationDueTomorrow(enabled: Boolean)
-    suspend fun setNotificationDueToday(enabled: Boolean)
-    suspend fun setNotificationOverdue(enabled: Boolean)
+    suspend fun setNotificationsMasterEnabled(enabled: Boolean)
+    suspend fun setReminderOffsets(offsets: Set<Int>)
+    suspend fun setNotificationUpcomingEnabled(enabled: Boolean)
+    suspend fun setNotificationDueTodayEnabled(enabled: Boolean)
+    suspend fun setNotificationOverdueEnabled(enabled: Boolean)
+    suspend fun setNotificationPaymentSuccessEnabled(enabled: Boolean)
+    suspend fun setNotificationBackupSuccessEnabled(enabled: Boolean)
+    suspend fun setQuietHoursEnabled(enabled: Boolean)
+    suspend fun setQuietHoursRange(start: String, end: String)
+    
+    suspend fun restoreAll(preferences: UserPreferences)
 }

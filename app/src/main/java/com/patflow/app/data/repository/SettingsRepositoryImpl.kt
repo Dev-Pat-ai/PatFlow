@@ -44,9 +44,16 @@ class SettingsRepositoryImpl @Inject constructor(
                 dateFormat = preferences[PreferenceKeys.DATE_FORMAT] ?: "MM/dd/yyyy",
                 firstDayOfWeek = preferences[PreferenceKeys.FIRST_DAY_OF_WEEK] ?: 1,
                 hapticFeedbackEnabled = preferences[PreferenceKeys.HAPTIC_FEEDBACK_ENABLED] ?: true,
-                notificationDueTomorrow = preferences[PreferenceKeys.NOTIF_DUE_TOMORROW] ?: true,
-                notificationDueToday = preferences[PreferenceKeys.NOTIF_DUE_TODAY] ?: true,
-                notificationOverdue = preferences[PreferenceKeys.NOTIF_OVERDUE] ?: true
+                notificationsMasterEnabled = preferences[PreferenceKeys.NOTIF_MASTER_ENABLED] ?: true,
+                reminderOffsets = preferences[PreferenceKeys.REMINDER_OFFSETS]?.split(",")?.mapNotNull { it.toIntOrNull() }?.toSet() ?: setOf(0, 1, 3),
+                notificationUpcomingEnabled = preferences[PreferenceKeys.NOTIF_UPCOMING_ENABLED] ?: true,
+                notificationDueTodayEnabled = preferences[PreferenceKeys.NOTIF_DUE_TODAY_ENABLED] ?: true,
+                notificationOverdueEnabled = preferences[PreferenceKeys.NOTIF_OVERDUE_ENABLED] ?: true,
+                notificationPaymentSuccessEnabled = preferences[PreferenceKeys.NOTIF_PAYMENT_SUCCESS_ENABLED] ?: true,
+                notificationBackupSuccessEnabled = preferences[PreferenceKeys.NOTIF_BACKUP_SUCCESS_ENABLED] ?: true,
+                quietHoursEnabled = preferences[PreferenceKeys.QUIET_HOURS_ENABLED] ?: false,
+                quietHoursStart = preferences[PreferenceKeys.QUIET_HOURS_START] ?: "22:00",
+                quietHoursEnd = preferences[PreferenceKeys.QUIET_HOURS_END] ?: "07:00"
             )
         }
 
@@ -85,15 +92,69 @@ class SettingsRepositoryImpl @Inject constructor(
         dataStore.edit { it[PreferenceKeys.HAPTIC_FEEDBACK_ENABLED] = enabled }
     }
 
-    override suspend fun setNotificationDueTomorrow(enabled: Boolean) {
-        dataStore.edit { it[PreferenceKeys.NOTIF_DUE_TOMORROW] = enabled }
+    override suspend fun setNotificationsMasterEnabled(enabled: Boolean) {
+        dataStore.edit { it[PreferenceKeys.NOTIF_MASTER_ENABLED] = enabled }
     }
 
-    override suspend fun setNotificationDueToday(enabled: Boolean) {
-        dataStore.edit { it[PreferenceKeys.NOTIF_DUE_TODAY] = enabled }
+    override suspend fun setReminderOffsets(offsets: Set<Int>) {
+        dataStore.edit { it[PreferenceKeys.REMINDER_OFFSETS] = offsets.joinToString(",") }
     }
 
-    override suspend fun setNotificationOverdue(enabled: Boolean) {
-        dataStore.edit { it[PreferenceKeys.NOTIF_OVERDUE] = enabled }
+    override suspend fun setNotificationUpcomingEnabled(enabled: Boolean) {
+        dataStore.edit { it[PreferenceKeys.NOTIF_UPCOMING_ENABLED] = enabled }
+    }
+
+    override suspend fun setNotificationDueTodayEnabled(enabled: Boolean) {
+        dataStore.edit { it[PreferenceKeys.NOTIF_DUE_TODAY_ENABLED] = enabled }
+    }
+
+    override suspend fun setNotificationOverdueEnabled(enabled: Boolean) {
+        dataStore.edit { it[PreferenceKeys.NOTIF_OVERDUE_ENABLED] = enabled }
+    }
+
+    override suspend fun setNotificationPaymentSuccessEnabled(enabled: Boolean) {
+        dataStore.edit { it[PreferenceKeys.NOTIF_PAYMENT_SUCCESS_ENABLED] = enabled }
+    }
+
+    override suspend fun setNotificationBackupSuccessEnabled(enabled: Boolean) {
+        dataStore.edit { it[PreferenceKeys.NOTIF_BACKUP_SUCCESS_ENABLED] = enabled }
+    }
+
+    override suspend fun setQuietHoursEnabled(enabled: Boolean) {
+        dataStore.edit { it[PreferenceKeys.QUIET_HOURS_ENABLED] = enabled }
+    }
+
+    override suspend fun setQuietHoursRange(start: String, end: String) {
+        dataStore.edit { 
+            it[PreferenceKeys.QUIET_HOURS_START] = start
+            it[PreferenceKeys.QUIET_HOURS_END] = end
+        }
+    }
+
+    override suspend fun restoreAll(preferences: UserPreferences) {
+        dataStore.edit {
+            it[PreferenceKeys.USER_DISPLAY_NAME] = preferences.profile.displayName
+            if (preferences.profile.monthlyBudget != null) {
+                it[PreferenceKeys.MONTHLY_BUDGET] = preferences.profile.monthlyBudget
+            } else {
+                it.remove(PreferenceKeys.MONTHLY_BUDGET)
+            }
+            it[PreferenceKeys.THEME_MODE] = preferences.profile.preferredTheme.name
+            it[PreferenceKeys.DYNAMIC_COLOR_ENABLED] = preferences.useDynamicColor
+            it[PreferenceKeys.DEFAULT_CURRENCY_CODE] = preferences.profile.preferredCurrency
+            it[PreferenceKeys.DATE_FORMAT] = preferences.dateFormat
+            it[PreferenceKeys.FIRST_DAY_OF_WEEK] = preferences.firstDayOfWeek
+            it[PreferenceKeys.HAPTIC_FEEDBACK_ENABLED] = preferences.hapticFeedbackEnabled
+            it[PreferenceKeys.NOTIF_MASTER_ENABLED] = preferences.notificationsMasterEnabled
+            it[PreferenceKeys.REMINDER_OFFSETS] = preferences.reminderOffsets.joinToString(",")
+            it[PreferenceKeys.NOTIF_UPCOMING_ENABLED] = preferences.notificationUpcomingEnabled
+            it[PreferenceKeys.NOTIF_DUE_TODAY_ENABLED] = preferences.notificationDueTodayEnabled
+            it[PreferenceKeys.NOTIF_OVERDUE_ENABLED] = preferences.notificationOverdueEnabled
+            it[PreferenceKeys.NOTIF_PAYMENT_SUCCESS_ENABLED] = preferences.notificationPaymentSuccessEnabled
+            it[PreferenceKeys.NOTIF_BACKUP_SUCCESS_ENABLED] = preferences.notificationBackupSuccessEnabled
+            it[PreferenceKeys.QUIET_HOURS_ENABLED] = preferences.quietHoursEnabled
+            it[PreferenceKeys.QUIET_HOURS_START] = preferences.quietHoursStart
+            it[PreferenceKeys.QUIET_HOURS_END] = preferences.quietHoursEnd
+        }
     }
 }

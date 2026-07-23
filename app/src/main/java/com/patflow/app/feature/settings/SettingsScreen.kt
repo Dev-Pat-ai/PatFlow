@@ -1,5 +1,8 @@
 package com.patflow.app.feature.settings
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -13,16 +16,20 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.AccountCircle
+import androidx.compose.material.icons.rounded.Backup
 import androidx.compose.material.icons.rounded.BrightnessMedium
 import androidx.compose.material.icons.rounded.CalendarToday
-import androidx.compose.material.icons.rounded.ColorLens
 import androidx.compose.material.icons.rounded.CurrencyExchange
 import androidx.compose.material.icons.rounded.DateRange
+import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Feedback
+import androidx.compose.material.icons.rounded.FileDownload
+import androidx.compose.material.icons.rounded.FileUpload
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.TouchApp
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,35 +38,87 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.patflow.app.core.components.AppTopBar
 import com.patflow.app.core.components.SectionHeader
 import com.patflow.app.core.theme.PatFlowSpacing
-import com.patflow.app.domain.model.ThemeMode
 import com.patflow.app.domain.model.UserPreferences
 import java.util.Locale
 
 /**
  * Screen for managing application settings and user profile (Architecture §6).
+ * Expanded with Data Management features in Phase 7B.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: SettingsViewModel = hiltViewModel()
+    viewModel: SettingsViewModel = hiltViewModel(),
+    dataViewModel: DataManagementViewModel = hiltViewModel()
 ) {
     val settings by viewModel.uiState.collectAsState()
+    val dataState by dataViewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    var pendingFileContent by remember { mutableStateOf<String?>(null) }
+    var pendingMimeType by remember { mutableStateOf<String?>(null) }
+    var showRestoreConfirm by remember { mutableStateOf(false) }
+    var selectedRestoreUri by remember { mutableStateOf<Uri?>(null) }
+
+    val createDocLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("*/*")
+    ) { uri ->
+        uri?.let {
+            context.contentResolver.openOutputStream(it)?.use { stream ->
+                stream.write(pendingFileContent?.toByteArray() ?: byteArrayOf())
+            }
+            pendingFileContent = null
+        }
+    }
+
+    val openDocLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        uri?.let {
+            selectedRestoreUri = it
+            showRestoreConfirm = true
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        dataViewModel.eventFlow.collect { event ->
+            when (event) {
+                is DataManagementViewModel.UiEvent.SaveFile -> {
+                    pendingFileContent = event.content
+                    pendingMimeType = event.mimeType
+                    createDocLauncher.launch(event.filename)
+                }
+                is DataManagementViewModel.UiEvent.ShowSuccess -> {
+                    snackbarHostState.showSnackbar(event.message)
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -71,7 +130,8 @@ fun SettingsScreen(
                     }
                 }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { padding ->
         Column(
             modifier = modifier
@@ -84,10 +144,49 @@ fun SettingsScreen(
                 ProfileSection(prefs, viewModel)
                 AppearanceSection(prefs, viewModel)
                 PreferencesSection(prefs, viewModel)
+                DataManagementSection(
+                    onBackup = dataViewModel::createBackup,
+                    onRestore = { openDocLauncher.launch(arrayOf("application/json")) },
+                    onExportJson = dataViewModel::createBackup, // Reuses logic for JSON dump
+                    onExportCsv = dataViewModel::exportCsv
+                )
                 NotificationsSection(prefs, viewModel)
                 AboutSection()
             }
         }
+    }
+
+    if (showRestoreConfirm) {
+        AlertDialog(
+            onDismissRequest = { showRestoreConfirm = false },
+            title = { Text("Restore Backup?") },
+            text = { Text("This will PERMANENTLY overwrite your existing data with the selected backup. This action cannot be undone.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showRestoreConfirm = false
+                    selectedRestoreUri?.let { uri ->
+                        val content = context.contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() }
+                        content?.let { dataViewModel.restoreBackup(it) }
+                    }
+                }) {
+                    Text("Restore", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showRestoreConfirm = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
+    // Loading overlay
+    if (dataState is DataManagementViewModel.DataManagementUiState.Loading) {
+        AlertDialog(
+            onDismissRequest = {},
+            title = { Text((dataState as DataManagementViewModel.DataManagementUiState.Loading).message) },
+            confirmButton = {}
+        )
     }
 }
 
@@ -163,27 +262,85 @@ private fun PreferencesSection(prefs: UserPreferences, viewModel: SettingsViewMo
 }
 
 @Composable
+private fun DataManagementSection(
+    onBackup: () -> Unit,
+    onRestore: () -> Unit,
+    onExportJson: () -> Unit,
+    onExportCsv: () -> Unit
+) {
+    SectionHeader(title = "Data Management", modifier = Modifier.padding(horizontal = PatFlowSpacing.space4))
+    PreferenceCard {
+        PreferenceRow(
+            title = "Backup Data",
+            subtitle = "Create a JSON backup file",
+            icon = Icons.Rounded.Backup,
+            onClick = onBackup
+        )
+        PreferenceRow(
+            title = "Import Backup",
+            subtitle = "Restore data from a file",
+            icon = Icons.Rounded.FileUpload,
+            onClick = onRestore
+        )
+        PreferenceRow(
+            title = "Export as JSON",
+            icon = Icons.Rounded.FileDownload,
+            onClick = onExportJson
+        )
+        PreferenceRow(
+            title = "Export as CSV",
+            subtitle = "Bills and Payments history",
+            icon = Icons.Rounded.Download,
+            onClick = onExportCsv
+        )
+        ComingSoonRow(title = "Cloud Sync")
+    }
+}
+
+@Composable
 private fun NotificationsSection(prefs: UserPreferences, viewModel: SettingsViewModel) {
-    SectionHeader(title = "Notifications (Coming Soon)", modifier = Modifier.padding(horizontal = PatFlowSpacing.space4))
+    SectionHeader(title = "Notifications", modifier = Modifier.padding(horizontal = PatFlowSpacing.space4))
     PreferenceCard {
         SwitchRow(
-            title = "Due Tomorrow",
-            checked = prefs.notificationDueTomorrow,
-            onCheckedChange = viewModel::updateNotifDueTomorrow,
-            enabled = false
+            title = "Master Toggle",
+            subtitle = "Enable or disable all notifications",
+            checked = prefs.notificationsMasterEnabled,
+            onCheckedChange = viewModel::updateNotifMaster
         )
-        SwitchRow(
-            title = "Due Today",
-            checked = prefs.notificationDueToday,
-            onCheckedChange = viewModel::updateNotifDueToday,
-            enabled = false
-        )
-        SwitchRow(
-            title = "Overdue",
-            checked = prefs.notificationOverdue,
-            onCheckedChange = viewModel::updateNotifOverdue,
-            enabled = false
-        )
+        if (prefs.notificationsMasterEnabled) {
+            SwitchRow(
+                title = "Upcoming Bills",
+                checked = prefs.notificationUpcomingEnabled,
+                onCheckedChange = viewModel::updateNotifUpcoming
+            )
+            SwitchRow(
+                title = "Due Today",
+                checked = prefs.notificationDueTodayEnabled,
+                onCheckedChange = viewModel::updateNotifDueToday
+            )
+            SwitchRow(
+                title = "Overdue Alerts",
+                checked = prefs.notificationOverdueEnabled,
+                onCheckedChange = viewModel::updateNotifOverdue
+            )
+            SwitchRow(
+                title = "Payment Success",
+                checked = prefs.notificationPaymentSuccessEnabled,
+                onCheckedChange = viewModel::updateNotifPaymentSuccess
+            )
+            SwitchRow(
+                title = "Quiet Hours",
+                subtitle = "Suppress notifications at night",
+                checked = prefs.quietHoursEnabled,
+                onCheckedChange = viewModel::updateQuietHoursEnabled
+            )
+            PreferenceRow(
+                title = "Test Notification",
+                subtitle = "Fire a sample reminder",
+                icon = Icons.Rounded.Notifications,
+                onClick = viewModel::testNotification
+            )
+        }
     }
 }
 
@@ -201,9 +358,6 @@ private fun AboutSection() {
             icon = Icons.Rounded.Feedback,
             onClick = { /* TODO: Navigate to licenses */ }
         )
-        ComingSoonRow(title = "Backup & Restore")
-        ComingSoonRow(title = "Export Data")
-        ComingSoonRow(title = "Cloud Sync")
     }
 }
 

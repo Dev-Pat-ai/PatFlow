@@ -1,10 +1,20 @@
 {
     "logs": [
         {
-            "outputFile": "com.patflow.app-mergeDebugResources-73:/values-v23/values-v23.xml",
+            "outputFile": "com.patflow.app-mergeDebugResources-74:/values-v23/values-v23.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\b47a837481d07e05365defe9ffda59e8\\workspace\\transformed\\appcompat-1.7.0\\res\\values-v23\\values-v23.xml",
+                    "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\b79118ba12ca337dc104ec3d8caecd81\\workspace\\transformed\\work-runtime-2.10.0\\res\\values-v23\\values-v23.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,121",
+                        "endColumns": "65,62",
+                        "endOffsets": "116,179"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\8288eb23306262be7006f7c60d859eb9\\workspace\\transformed\\appcompat-1.7.0\\res\\values-v23\\values-v23.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,20,34,35,36,39,43,44,45,46",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -20,16 +30,6 @@
                         "endLines": "4,5,6,7,21,35,36,37,40,44,45,46,47,51",
                         "endColumns": "134,134,74,86,12,12,118,126,12,12,114,106,112,12",
                         "endOffsets": "314,449,524,611,1349,2099,2218,2345,2567,2791,2906,3013,3126,3356"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\770277146181bb3217a16ea412b5e994\\workspace\\transformed\\work-runtime-2.10.0\\res\\values-v23\\values-v23.xml",
-                    "from": {
-                        "startLines": "2,3",
-                        "startColumns": "4,4",
-                        "startOffsets": "55,121",
-                        "endColumns": "65,62",
-                        "endOffsets": "116,179"
                     }
                 }
             ]

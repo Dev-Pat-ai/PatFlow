@@ -2,11 +2,17 @@ package com.patflow.app.di
 
 import com.patflow.app.data.repository.BillRepositoryImpl
 import com.patflow.app.data.repository.CategoryRepositoryImpl
+import com.patflow.app.data.repository.DataManagementRepositoryImpl
+import com.patflow.app.data.repository.NotificationRepositoryImpl
 import com.patflow.app.data.repository.PaymentRepositoryImpl
+import com.patflow.app.data.repository.ReminderRepositoryImpl
 import com.patflow.app.data.repository.SettingsRepositoryImpl
 import com.patflow.app.domain.repository.BillRepository
 import com.patflow.app.domain.repository.CategoryRepository
+import com.patflow.app.domain.repository.DataManagementRepository
+import com.patflow.app.domain.repository.NotificationRepository
 import com.patflow.app.domain.repository.PaymentRepository
+import com.patflow.app.domain.repository.ReminderRepository
 import com.patflow.app.domain.repository.SettingsRepository
 import dagger.Binds
 import dagger.Module
@@ -44,4 +50,22 @@ abstract class RepositoryModule {
     abstract fun bindSettingsRepository(
         impl: SettingsRepositoryImpl
     ): SettingsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindDataManagementRepository(
+        impl: DataManagementRepositoryImpl
+    ): DataManagementRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindNotificationRepository(
+        impl: NotificationRepositoryImpl
+    ): NotificationRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindReminderRepository(
+        impl: ReminderRepositoryImpl
+    ): ReminderRepository
 }

@@ -43,4 +43,13 @@ interface BillCycleDao {
         LIMIT :limit
     """)
     fun getUpcoming(limit: Int): Flow<List<BillCycleEntity>>
+
+    @Query("SELECT * FROM bill_cycle")
+    suspend fun getAllEntities(): List<BillCycleEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(cycles: List<BillCycleEntity>)
+
+    @Query("DELETE FROM bill_cycle")
+    suspend fun deleteAll()
 }

@@ -1,27 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.patflow.app-mergeDebugResources-73:/values-gu/values-gu.xml",
+            "outputFile": "com.patflow.app-mergeDebugResources-74:/values-gu/values-gu.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\c585a2f5590c959f5f17bdd93f004ac7\\workspace\\transformed\\core-1.13.1\\res\\values-gu\\values-gu.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7,8,9",
-                        "startColumns": "4,4,4,4,4,4,4,4",
-                        "startOffsets": "55,149,252,349,451,553,651,773",
-                        "endColumns": "93,102,96,101,101,97,121,100",
-                        "endOffsets": "144,247,344,446,548,646,768,869"
-                    },
-                    "to": {
-                        "startLines": "31,32,33,34,35,36,37,129",
-                        "startColumns": "4,4,4,4,4,4,4,4",
-                        "startOffsets": "3068,3162,3265,3362,3464,3566,3664,13675",
-                        "endColumns": "93,102,96,101,101,97,121,100",
-                        "endOffsets": "3157,3260,3357,3459,3561,3659,3781,13771"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\882f9e29c3138d42e846d0cb9898ca28\\workspace\\transformed\\material3-release\\res\\values-gu\\values-gu.xml",
+                    "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\3e2568ea708ae9e2a56252443036e378\\workspace\\transformed\\material3-release\\res\\values-gu\\values-gu.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -38,24 +21,41 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\7d97ff0dfe277f280e22b0d49ddc2659\\workspace\\transformed\\foundation-release\\res\\values-gu\\values-gu.xml",
+                    "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\45992694a5ed6d57e90516fea5032d4a\\workspace\\transformed\\core-1.13.1\\res\\values-gu\\values-gu.xml",
                     "from": {
-                        "startLines": "2,3",
-                        "startColumns": "4,4",
-                        "startOffsets": "55,140",
-                        "endColumns": "84,84",
-                        "endOffsets": "135,220"
+                        "startLines": "2,3,4,5,6,7,8,9",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,149,252,349,451,553,651,773",
+                        "endColumns": "93,102,96,101,101,97,121,100",
+                        "endOffsets": "144,247,344,446,548,646,768,869"
                     },
                     "to": {
-                        "startLines": "133,134",
-                        "startColumns": "4,4",
-                        "startOffsets": "14034,14119",
-                        "endColumns": "84,84",
-                        "endOffsets": "14114,14199"
+                        "startLines": "31,32,33,34,35,36,37,129",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "3068,3162,3265,3362,3464,3566,3664,13675",
+                        "endColumns": "93,102,96,101,101,97,121,100",
+                        "endOffsets": "3157,3260,3357,3459,3561,3659,3781,13771"
                     }
                 },
                 {
-                    "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\a2885fd1507402a3f301e7a4a56a4ecf\\workspace\\transformed\\biometric-1.2.0-alpha05\\res\\values-gu\\values-gu.xml",
+                    "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\e0b2b8f943292f9cb90e26a1828a2a62\\workspace\\transformed\\ui-release\\res\\values-gu\\values-gu.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "105,197,279,372,471,558,644,745,832,918,1001,1084,1159,1234,1309,1384,1460,1526",
+                        "endColumns": "91,81,92,98,86,85,100,86,85,82,82,74,74,74,74,75,65,115",
+                        "endOffsets": "192,274,367,466,553,639,740,827,913,996,1079,1154,1229,1304,1379,1455,1521,1637"
+                    },
+                    "to": {
+                        "startLines": "38,39,41,43,44,60,61,119,120,121,122,125,126,127,128,130,131,132",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "3786,3878,4073,4252,4351,6403,6489,12828,12915,13001,13084,13375,13450,13525,13600,13776,13852,13918",
+                        "endColumns": "91,81,92,98,86,85,100,86,85,82,82,74,74,74,74,75,65,115",
+                        "endOffsets": "3873,3955,4161,4346,4433,6484,6585,12910,12996,13079,13162,13445,13520,13595,13670,13847,13913,14029"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\f53f54627ae329b22f25d1ee73c1c83c\\workspace\\transformed\\biometric-1.2.0-alpha05\\res\\values-gu\\values-gu.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -72,7 +72,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\b47a837481d07e05365defe9ffda59e8\\workspace\\transformed\\appcompat-1.7.0\\res\\values-gu\\values-gu.xml",
+                    "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\8288eb23306262be7006f7c60d859eb9\\workspace\\transformed\\appcompat-1.7.0\\res\\values-gu\\values-gu.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -89,20 +89,20 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\fc911b2e2d79d4b66740892c431ed1e6\\workspace\\transformed\\ui-release\\res\\values-gu\\values-gu.xml",
+                    "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\bb95e941ab13df4111df15e226f5c05b\\workspace\\transformed\\foundation-release\\res\\values-gu\\values-gu.xml",
                     "from": {
-                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "105,197,279,372,471,558,644,745,832,918,1001,1084,1159,1234,1309,1384,1460,1526",
-                        "endColumns": "91,81,92,98,86,85,100,86,85,82,82,74,74,74,74,75,65,115",
-                        "endOffsets": "192,274,367,466,553,639,740,827,913,996,1079,1154,1229,1304,1379,1455,1521,1637"
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,140",
+                        "endColumns": "84,84",
+                        "endOffsets": "135,220"
                     },
                     "to": {
-                        "startLines": "38,39,41,43,44,60,61,119,120,121,122,125,126,127,128,130,131,132",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "3786,3878,4073,4252,4351,6403,6489,12828,12915,13001,13084,13375,13450,13525,13600,13776,13852,13918",
-                        "endColumns": "91,81,92,98,86,85,100,86,85,82,82,74,74,74,74,75,65,115",
-                        "endOffsets": "3873,3955,4161,4346,4433,6484,6585,12910,12996,13079,13162,13445,13520,13595,13670,13847,13913,14029"
+                        "startLines": "133,134",
+                        "startColumns": "4,4",
+                        "startOffsets": "14034,14119",
+                        "endColumns": "84,84",
+                        "endOffsets": "14114,14199"
                     }
                 }
             ]
