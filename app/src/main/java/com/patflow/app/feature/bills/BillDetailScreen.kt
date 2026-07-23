@@ -40,10 +40,14 @@ import com.patflow.app.core.components.DeleteConfirmationDialog
 import com.patflow.app.core.components.SectionHeader
 import com.patflow.app.core.components.StatusChip
 import com.patflow.app.core.theme.PatFlowSpacing
+import com.patflow.app.core.utils.CategoryMapper
 import com.patflow.app.core.utils.CurrencyFormatter
 
 import com.patflow.app.core.utils.rememberHapticFeedbackController
 
+/**
+ * Screen for viewing bill details (Architecture §6).
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BillDetailScreen(
@@ -116,7 +120,7 @@ fun BillDetailScreen(
                     
                     SectionHeader(title = "Information")
                     DetailInfoRow("Category", content = {
-                        CategoryChip(category = mapCategoryToType(detail.bill.category.name))
+                        CategoryChip(category = CategoryMapper.mapToType(detail.bill.category.name))
                     })
                     DetailInfoRow("Recurrence", value = detail.bill.recurrence.type.name)
                     
@@ -211,13 +215,5 @@ private fun DetailInfoRow(
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
-    }
-}
-
-private fun mapCategoryToType(name: String): CategoryType {
-    return try {
-        CategoryType.valueOf(name.uppercase().replace(" ", "_"))
-    } catch (_: Exception) {
-        CategoryType.ELECTRICITY
     }
 }

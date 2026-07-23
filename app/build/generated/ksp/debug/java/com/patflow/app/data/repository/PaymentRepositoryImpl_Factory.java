@@ -1,6 +1,6 @@
 package com.patflow.app.data.repository;
 
-import com.patflow.app.data.local.dao.BillDao;
+import com.patflow.app.data.local.dao.BillCycleDao;
 import com.patflow.app.data.local.dao.PaymentDao;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
@@ -27,25 +27,26 @@ import javax.inject.Provider;
 public final class PaymentRepositoryImpl_Factory implements Factory<PaymentRepositoryImpl> {
   private final Provider<PaymentDao> paymentDaoProvider;
 
-  private final Provider<BillDao> billDaoProvider;
+  private final Provider<BillCycleDao> billCycleDaoProvider;
 
   public PaymentRepositoryImpl_Factory(Provider<PaymentDao> paymentDaoProvider,
-      Provider<BillDao> billDaoProvider) {
+      Provider<BillCycleDao> billCycleDaoProvider) {
     this.paymentDaoProvider = paymentDaoProvider;
-    this.billDaoProvider = billDaoProvider;
+    this.billCycleDaoProvider = billCycleDaoProvider;
   }
 
   @Override
   public PaymentRepositoryImpl get() {
-    return newInstance(paymentDaoProvider.get(), billDaoProvider.get());
+    return newInstance(paymentDaoProvider.get(), billCycleDaoProvider.get());
   }
 
   public static PaymentRepositoryImpl_Factory create(Provider<PaymentDao> paymentDaoProvider,
-      Provider<BillDao> billDaoProvider) {
-    return new PaymentRepositoryImpl_Factory(paymentDaoProvider, billDaoProvider);
+      Provider<BillCycleDao> billCycleDaoProvider) {
+    return new PaymentRepositoryImpl_Factory(paymentDaoProvider, billCycleDaoProvider);
   }
 
-  public static PaymentRepositoryImpl newInstance(PaymentDao paymentDao, BillDao billDao) {
-    return new PaymentRepositoryImpl(paymentDao, billDao);
+  public static PaymentRepositoryImpl newInstance(PaymentDao paymentDao,
+      BillCycleDao billCycleDao) {
+    return new PaymentRepositoryImpl(paymentDao, billCycleDao);
   }
 }

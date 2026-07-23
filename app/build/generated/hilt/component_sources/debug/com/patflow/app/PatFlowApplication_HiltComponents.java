@@ -1,5 +1,7 @@
 package com.patflow.app;
 
+import com.patflow.app.core.theme.ThemeViewModel_HiltModules;
+import com.patflow.app.core.utils.HapticViewModel_HiltModules;
 import com.patflow.app.di.DataStoreModule;
 import com.patflow.app.di.DatabaseModule;
 import com.patflow.app.di.DispatcherModule;
@@ -11,6 +13,7 @@ import com.patflow.app.feature.dashboard.DashboardViewModel_HiltModules;
 import com.patflow.app.feature.payment.PaymentDetailViewModel_HiltModules;
 import com.patflow.app.feature.payment.PaymentHistoryViewModel_HiltModules;
 import com.patflow.app.feature.reports.ReportsViewModel_HiltModules;
+import com.patflow.app.feature.settings.SettingsViewModel_HiltModules;
 import dagger.Binds;
 import dagger.Component;
 import dagger.Module;
@@ -169,13 +172,16 @@ public final class PatFlowApplication_HiltComponents {
           BillDetailViewModel_HiltModules.KeyModule.class,
           BillListViewModel_HiltModules.KeyModule.class,
           DashboardViewModel_HiltModules.KeyModule.class,
+          HapticViewModel_HiltModules.KeyModule.class,
           HiltWrapper_ActivityRetainedComponentManager_LifecycleModule.class,
           HiltWrapper_SavedStateHandleModule.class,
           ActivityCBuilderModule.class,
           ViewModelCBuilderModule.class,
           PaymentDetailViewModel_HiltModules.KeyModule.class,
           PaymentHistoryViewModel_HiltModules.KeyModule.class,
-          ReportsViewModel_HiltModules.KeyModule.class
+          ReportsViewModel_HiltModules.KeyModule.class,
+          SettingsViewModel_HiltModules.KeyModule.class,
+          ThemeViewModel_HiltModules.KeyModule.class
       }
   )
   @ActivityRetainedScoped
@@ -215,10 +221,13 @@ public final class PatFlowApplication_HiltComponents {
           BillDetailViewModel_HiltModules.BindsModule.class,
           BillListViewModel_HiltModules.BindsModule.class,
           DashboardViewModel_HiltModules.BindsModule.class,
+          HapticViewModel_HiltModules.BindsModule.class,
           HiltWrapper_HiltViewModelFactory_ViewModelModule.class,
           PaymentDetailViewModel_HiltModules.BindsModule.class,
           PaymentHistoryViewModel_HiltModules.BindsModule.class,
-          ReportsViewModel_HiltModules.BindsModule.class
+          ReportsViewModel_HiltModules.BindsModule.class,
+          SettingsViewModel_HiltModules.BindsModule.class,
+          ThemeViewModel_HiltModules.BindsModule.class
       }
   )
   @ViewModelScoped

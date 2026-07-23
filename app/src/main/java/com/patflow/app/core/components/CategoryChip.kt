@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -46,18 +47,20 @@ fun CategoryChip(
 ) {
     val categoryColors = patFlowCategoryColors()
     
-    val (label, icon, colors) = when (category) {
-        CategoryType.ELECTRICITY -> Triple("Electricity", Icons.Rounded.Bolt, categoryColors.electricity)
-        CategoryType.WATER -> Triple("Water", Icons.Rounded.WaterDrop, categoryColors.water)
-        CategoryType.INTERNET -> Triple("Internet", Icons.Rounded.Wifi, categoryColors.internet)
-        CategoryType.RENT -> Triple("Rent", Icons.Rounded.House, categoryColors.rent)
-        CategoryType.PHONE -> Triple("Phone", Icons.Rounded.Smartphone, categoryColors.phone)
-        CategoryType.INSURANCE -> Triple("Insurance", Icons.Rounded.Shield, categoryColors.insurance)
-        CategoryType.TUITION -> Triple("Tuition", Icons.Rounded.School, categoryColors.tuition)
-        CategoryType.SUBSCRIPTION -> Triple("Subscription", Icons.Rounded.Subscriptions, categoryColors.subscription)
-        CategoryType.LOAN -> Triple("Loan", Icons.Rounded.AccountBalance, categoryColors.loan)
-        CategoryType.SAVINGS -> Triple("Savings", Icons.Rounded.Savings, categoryColors.savings)
-        CategoryType.HOA_FEES -> Triple("HOA Fees", Icons.Rounded.Apartment, categoryColors.hoaFees)
+    val (label, icon, colors) = remember(category, categoryColors) {
+        when (category) {
+            CategoryType.ELECTRICITY -> Triple("Electricity", Icons.Rounded.Bolt, categoryColors.electricity)
+            CategoryType.WATER -> Triple("Water", Icons.Rounded.WaterDrop, categoryColors.water)
+            CategoryType.INTERNET -> Triple("Internet", Icons.Rounded.Wifi, categoryColors.internet)
+            CategoryType.RENT -> Triple("Rent", Icons.Rounded.House, categoryColors.rent)
+            CategoryType.PHONE -> Triple("Phone", Icons.Rounded.Smartphone, categoryColors.phone)
+            CategoryType.INSURANCE -> Triple("Insurance", Icons.Rounded.Shield, categoryColors.insurance)
+            CategoryType.TUITION -> Triple("Tuition", Icons.Rounded.School, categoryColors.tuition)
+            CategoryType.SUBSCRIPTION -> Triple("Subscription", Icons.Rounded.Subscriptions, categoryColors.subscription)
+            CategoryType.LOAN -> Triple("Loan", Icons.Rounded.AccountBalance, categoryColors.loan)
+            CategoryType.SAVINGS -> Triple("Savings", Icons.Rounded.Savings, categoryColors.savings)
+            CategoryType.HOA_FEES -> Triple("HOA Fees", Icons.Rounded.Apartment, categoryColors.hoaFees)
+        }
     }
 
     CategoryChipContent(

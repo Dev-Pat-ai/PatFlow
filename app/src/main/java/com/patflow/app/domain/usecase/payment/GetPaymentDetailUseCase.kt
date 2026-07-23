@@ -8,6 +8,9 @@ import javax.inject.Inject
 /**
  * Logic to fetch a single payment's details.
  */
+/**
+ * Use case for fetching detailed information about a specific transaction.
+ */
 class GetPaymentDetailUseCase @Inject constructor(
     private val repository: PaymentRepository
 ) {

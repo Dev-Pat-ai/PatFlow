@@ -1,9 +1,8 @@
 package com.patflow.app.core.navigation
 
 /**
- * Screen graph destinations (Architecture §6). Routes are stubbed here;
- * each feature module wires its own composable(route) { ... } into
- * NavGraph.kt as that feature is built — starting with Bills next.
+ * Screen graph destinations and route factory methods (Architecture §6).
+ * Routes are consumed by NavGraph.kt to wire feature screens.
  */
 object Destinations {
     const val ONBOARDING = "onboarding"

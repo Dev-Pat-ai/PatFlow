@@ -3,6 +3,9 @@ package com.patflow.app
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 
-/** Hilt entry point — enables @AndroidEntryPoint / @Inject throughout the app. */
+/**
+ * Application class for PatFlow.
+ * Entry point for Hilt dependency injection initialization.
+ */
 @HiltAndroidApp
 class PatFlowApplication : Application()

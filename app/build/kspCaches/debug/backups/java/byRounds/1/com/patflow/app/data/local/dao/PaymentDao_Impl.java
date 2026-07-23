@@ -8,6 +8,7 @@ import androidx.room.CoroutinesRoom;
 import androidx.room.EntityDeletionOrUpdateAdapter;
 import androidx.room.EntityInsertionAdapter;
 import androidx.room.RoomDatabase;
+import androidx.room.RoomDatabaseKt;
 import androidx.room.RoomSQLiteQuery;
 import androidx.room.util.CursorUtil;
 import androidx.room.util.DBUtil;
@@ -182,6 +183,12 @@ public final class PaymentDao_Impl implements PaymentDao {
         }
       }
     }, $completion);
+  }
+
+  @Override
+  public Object deletePaymentAndAdjustCycle(final long paymentId, final BillCycleDao cycleDao,
+      final Continuation<? super Unit> $completion) {
+    return RoomDatabaseKt.withTransaction(__db, (__cont) -> PaymentDao.DefaultImpls.deletePaymentAndAdjustCycle(PaymentDao_Impl.this, paymentId, cycleDao, __cont), $completion);
   }
 
   @Override
@@ -402,6 +409,115 @@ public final class PaymentDao_Impl implements PaymentDao {
               _tmpCreatedAt = _tmp_3;
             }
             _item = new PaymentEntity(_tmpId,_tmpBillCycleId,_tmpAmount,_tmpPaymentDate,_tmpMethod,_tmpNote,_tmpCreatedAt);
+            _result.add(_item);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+        }
+      }
+
+      @Override
+      protected void finalize() {
+        _statement.release();
+      }
+    });
+  }
+
+  @Override
+  public Flow<List<PaymentWithBillDetails>> getAllWithBillDetails() {
+    final String _sql = "\n"
+            + "        SELECT \n"
+            + "            p.*, \n"
+            + "            b.name AS billName, \n"
+            + "            bc.id AS categoryId, bc.name AS categoryName, bc.icon_key AS categoryIcon, bc.color_hex AS categoryColor, bc.is_custom AS categoryIsCustom\n"
+            + "        FROM payment p\n"
+            + "        JOIN bill_cycle cycle ON p.bill_cycle_id = cycle.id\n"
+            + "        JOIN bill b ON cycle.bill_id = b.id\n"
+            + "        JOIN bill_category bc ON b.category_id = bc.id\n"
+            + "        ORDER BY p.payment_date DESC\n"
+            + "    ";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
+    return CoroutinesRoom.createFlow(__db, false, new String[] {"payment", "bill_cycle", "bill",
+        "bill_category"}, new Callable<List<PaymentWithBillDetails>>() {
+      @Override
+      @NonNull
+      public List<PaymentWithBillDetails> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfBillCycleId = CursorUtil.getColumnIndexOrThrow(_cursor, "bill_cycle_id");
+          final int _cursorIndexOfAmount = CursorUtil.getColumnIndexOrThrow(_cursor, "amount");
+          final int _cursorIndexOfPaymentDate = CursorUtil.getColumnIndexOrThrow(_cursor, "payment_date");
+          final int _cursorIndexOfMethod = CursorUtil.getColumnIndexOrThrow(_cursor, "method");
+          final int _cursorIndexOfNote = CursorUtil.getColumnIndexOrThrow(_cursor, "note");
+          final int _cursorIndexOfCreatedAt = CursorUtil.getColumnIndexOrThrow(_cursor, "created_at");
+          final int _cursorIndexOfBillName = CursorUtil.getColumnIndexOrThrow(_cursor, "billName");
+          final int _cursorIndexOfCategoryId = CursorUtil.getColumnIndexOrThrow(_cursor, "categoryId");
+          final int _cursorIndexOfCategoryName = CursorUtil.getColumnIndexOrThrow(_cursor, "categoryName");
+          final int _cursorIndexOfCategoryIcon = CursorUtil.getColumnIndexOrThrow(_cursor, "categoryIcon");
+          final int _cursorIndexOfCategoryColor = CursorUtil.getColumnIndexOrThrow(_cursor, "categoryColor");
+          final int _cursorIndexOfCategoryIsCustom = CursorUtil.getColumnIndexOrThrow(_cursor, "categoryIsCustom");
+          final List<PaymentWithBillDetails> _result = new ArrayList<PaymentWithBillDetails>(_cursor.getCount());
+          while (_cursor.moveToNext()) {
+            final PaymentWithBillDetails _item;
+            final String _tmpBillName;
+            _tmpBillName = _cursor.getString(_cursorIndexOfBillName);
+            final long _tmpCategoryId;
+            _tmpCategoryId = _cursor.getLong(_cursorIndexOfCategoryId);
+            final String _tmpCategoryName;
+            _tmpCategoryName = _cursor.getString(_cursorIndexOfCategoryName);
+            final String _tmpCategoryIcon;
+            _tmpCategoryIcon = _cursor.getString(_cursorIndexOfCategoryIcon);
+            final String _tmpCategoryColor;
+            _tmpCategoryColor = _cursor.getString(_cursorIndexOfCategoryColor);
+            final boolean _tmpCategoryIsCustom;
+            final int _tmp;
+            _tmp = _cursor.getInt(_cursorIndexOfCategoryIsCustom);
+            _tmpCategoryIsCustom = _tmp != 0;
+            final PaymentEntity _tmpPayment;
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final long _tmpBillCycleId;
+            _tmpBillCycleId = _cursor.getLong(_cursorIndexOfBillCycleId);
+            final double _tmpAmount;
+            _tmpAmount = _cursor.getDouble(_cursorIndexOfAmount);
+            final LocalDate _tmpPaymentDate;
+            final String _tmp_1;
+            if (_cursor.isNull(_cursorIndexOfPaymentDate)) {
+              _tmp_1 = null;
+            } else {
+              _tmp_1 = _cursor.getString(_cursorIndexOfPaymentDate);
+            }
+            final LocalDate _tmp_2 = __converters.toLocalDate(_tmp_1);
+            if (_tmp_2 == null) {
+              throw new IllegalStateException("Expected NON-NULL 'kotlinx.datetime.LocalDate', but it was NULL.");
+            } else {
+              _tmpPaymentDate = _tmp_2;
+            }
+            final String _tmpMethod;
+            _tmpMethod = _cursor.getString(_cursorIndexOfMethod);
+            final String _tmpNote;
+            if (_cursor.isNull(_cursorIndexOfNote)) {
+              _tmpNote = null;
+            } else {
+              _tmpNote = _cursor.getString(_cursorIndexOfNote);
+            }
+            final LocalDateTime _tmpCreatedAt;
+            final String _tmp_3;
+            if (_cursor.isNull(_cursorIndexOfCreatedAt)) {
+              _tmp_3 = null;
+            } else {
+              _tmp_3 = _cursor.getString(_cursorIndexOfCreatedAt);
+            }
+            final LocalDateTime _tmp_4 = __converters.toLocalDateTime(_tmp_3);
+            if (_tmp_4 == null) {
+              throw new IllegalStateException("Expected NON-NULL 'kotlinx.datetime.LocalDateTime', but it was NULL.");
+            } else {
+              _tmpCreatedAt = _tmp_4;
+            }
+            _tmpPayment = new PaymentEntity(_tmpId,_tmpBillCycleId,_tmpAmount,_tmpPaymentDate,_tmpMethod,_tmpNote,_tmpCreatedAt);
+            _item = new PaymentWithBillDetails(_tmpPayment,_tmpBillName,_tmpCategoryId,_tmpCategoryName,_tmpCategoryIcon,_tmpCategoryColor,_tmpCategoryIsCustom);
             _result.add(_item);
           }
           return _result;

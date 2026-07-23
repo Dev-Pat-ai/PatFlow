@@ -5,6 +5,9 @@ import com.patflow.app.domain.repository.BillRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+/**
+ * Use case for fetching all active bills with their latest cycle information (Architecture §1.1).
+ */
 class GetBillsUseCase @Inject constructor(
     private val repository: BillRepository
 ) {

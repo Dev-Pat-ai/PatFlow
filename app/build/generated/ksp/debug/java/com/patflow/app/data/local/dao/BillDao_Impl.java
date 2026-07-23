@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.os.CancellationSignal;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.collection.LongSparseArray;
 import androidx.room.AmbiguousColumnResolver;
 import androidx.room.CoroutinesRoom;
 import androidx.room.EntityDeletionOrUpdateAdapter;
@@ -12,10 +13,14 @@ import androidx.room.RoomDatabase;
 import androidx.room.RoomSQLiteQuery;
 import androidx.room.util.CursorUtil;
 import androidx.room.util.DBUtil;
+import androidx.room.util.RelationUtil;
+import androidx.room.util.StringUtil;
 import androidx.sqlite.db.SupportSQLiteStatement;
 import com.patflow.app.data.local.database.Converters;
 import com.patflow.app.data.local.entity.BillCategoryEntity;
+import com.patflow.app.data.local.entity.BillCycleEntity;
 import com.patflow.app.data.local.entity.BillEntity;
+import com.patflow.app.data.local.entity.BillWithDetailsEntity;
 import java.lang.Class;
 import java.lang.Exception;
 import java.lang.IllegalStateException;
@@ -24,6 +29,7 @@ import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.StringBuilder;
 import java.lang.SuppressWarnings;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -862,8 +868,416 @@ public final class BillDao_Impl implements BillDao {
     });
   }
 
+  @Override
+  public Flow<List<BillWithDetailsEntity>> getBillsWithDetails() {
+    final String _sql = "SELECT * FROM bill WHERE is_deleted = 0 ORDER BY name ASC";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
+    return CoroutinesRoom.createFlow(__db, true, new String[] {"bill_category", "bill_cycle",
+        "bill"}, new Callable<List<BillWithDetailsEntity>>() {
+      @Override
+      @NonNull
+      public List<BillWithDetailsEntity> call() throws Exception {
+        __db.beginTransaction();
+        try {
+          final Cursor _cursor = DBUtil.query(__db, _statement, true, null);
+          try {
+            final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+            final int _cursorIndexOfCategoryId = CursorUtil.getColumnIndexOrThrow(_cursor, "category_id");
+            final int _cursorIndexOfName = CursorUtil.getColumnIndexOrThrow(_cursor, "name");
+            final int _cursorIndexOfDefaultAmount = CursorUtil.getColumnIndexOrThrow(_cursor, "default_amount");
+            final int _cursorIndexOfCurrencyCode = CursorUtil.getColumnIndexOrThrow(_cursor, "currency_code");
+            final int _cursorIndexOfMerchant = CursorUtil.getColumnIndexOrThrow(_cursor, "merchant");
+            final int _cursorIndexOfRecurrenceType = CursorUtil.getColumnIndexOrThrow(_cursor, "recurrence_type");
+            final int _cursorIndexOfRecurrenceInterval = CursorUtil.getColumnIndexOrThrow(_cursor, "recurrence_interval");
+            final int _cursorIndexOfDueDay = CursorUtil.getColumnIndexOrThrow(_cursor, "due_day");
+            final int _cursorIndexOfStartDate = CursorUtil.getColumnIndexOrThrow(_cursor, "start_date");
+            final int _cursorIndexOfEndDate = CursorUtil.getColumnIndexOrThrow(_cursor, "end_date");
+            final int _cursorIndexOfIsActive = CursorUtil.getColumnIndexOrThrow(_cursor, "is_active");
+            final int _cursorIndexOfIsFavorite = CursorUtil.getColumnIndexOrThrow(_cursor, "is_favorite");
+            final int _cursorIndexOfNotes = CursorUtil.getColumnIndexOrThrow(_cursor, "notes");
+            final int _cursorIndexOfIsDeleted = CursorUtil.getColumnIndexOrThrow(_cursor, "is_deleted");
+            final int _cursorIndexOfCreatedAt = CursorUtil.getColumnIndexOrThrow(_cursor, "created_at");
+            final int _cursorIndexOfUpdatedAt = CursorUtil.getColumnIndexOrThrow(_cursor, "updated_at");
+            final int _cursorIndexOfIsInstallment = CursorUtil.getColumnIndexOrThrow(_cursor, "is_installment");
+            final int _cursorIndexOfTotalInstallments = CursorUtil.getColumnIndexOrThrow(_cursor, "total_installments");
+            final int _cursorIndexOfRemoteId = CursorUtil.getColumnIndexOrThrow(_cursor, "remote_id");
+            final int _cursorIndexOfLastSyncedAt = CursorUtil.getColumnIndexOrThrow(_cursor, "last_synced_at");
+            final int _cursorIndexOfSyncStatus = CursorUtil.getColumnIndexOrThrow(_cursor, "sync_status");
+            final int _cursorIndexOfIsDirty = CursorUtil.getColumnIndexOrThrow(_cursor, "is_dirty");
+            final LongSparseArray<BillCategoryEntity> _collectionCategory = new LongSparseArray<BillCategoryEntity>();
+            final LongSparseArray<ArrayList<BillCycleEntity>> _collectionCycles = new LongSparseArray<ArrayList<BillCycleEntity>>();
+            while (_cursor.moveToNext()) {
+              final long _tmpKey;
+              _tmpKey = _cursor.getLong(_cursorIndexOfCategoryId);
+              _collectionCategory.put(_tmpKey, null);
+              final long _tmpKey_1;
+              _tmpKey_1 = _cursor.getLong(_cursorIndexOfId);
+              if (!_collectionCycles.containsKey(_tmpKey_1)) {
+                _collectionCycles.put(_tmpKey_1, new ArrayList<BillCycleEntity>());
+              }
+            }
+            _cursor.moveToPosition(-1);
+            __fetchRelationshipbillCategoryAscomPatflowAppDataLocalEntityBillCategoryEntity(_collectionCategory);
+            __fetchRelationshipbillCycleAscomPatflowAppDataLocalEntityBillCycleEntity(_collectionCycles);
+            final List<BillWithDetailsEntity> _result = new ArrayList<BillWithDetailsEntity>(_cursor.getCount());
+            while (_cursor.moveToNext()) {
+              final BillWithDetailsEntity _item;
+              final BillEntity _tmpBill;
+              final long _tmpId;
+              _tmpId = _cursor.getLong(_cursorIndexOfId);
+              final long _tmpCategoryId;
+              _tmpCategoryId = _cursor.getLong(_cursorIndexOfCategoryId);
+              final String _tmpName;
+              _tmpName = _cursor.getString(_cursorIndexOfName);
+              final double _tmpDefaultAmount;
+              _tmpDefaultAmount = _cursor.getDouble(_cursorIndexOfDefaultAmount);
+              final String _tmpCurrencyCode;
+              _tmpCurrencyCode = _cursor.getString(_cursorIndexOfCurrencyCode);
+              final String _tmpMerchant;
+              if (_cursor.isNull(_cursorIndexOfMerchant)) {
+                _tmpMerchant = null;
+              } else {
+                _tmpMerchant = _cursor.getString(_cursorIndexOfMerchant);
+              }
+              final String _tmpRecurrenceType;
+              _tmpRecurrenceType = _cursor.getString(_cursorIndexOfRecurrenceType);
+              final int _tmpRecurrenceInterval;
+              _tmpRecurrenceInterval = _cursor.getInt(_cursorIndexOfRecurrenceInterval);
+              final Integer _tmpDueDay;
+              if (_cursor.isNull(_cursorIndexOfDueDay)) {
+                _tmpDueDay = null;
+              } else {
+                _tmpDueDay = _cursor.getInt(_cursorIndexOfDueDay);
+              }
+              final LocalDate _tmpStartDate;
+              final String _tmp;
+              if (_cursor.isNull(_cursorIndexOfStartDate)) {
+                _tmp = null;
+              } else {
+                _tmp = _cursor.getString(_cursorIndexOfStartDate);
+              }
+              final LocalDate _tmp_1 = __converters.toLocalDate(_tmp);
+              if (_tmp_1 == null) {
+                throw new IllegalStateException("Expected NON-NULL 'kotlinx.datetime.LocalDate', but it was NULL.");
+              } else {
+                _tmpStartDate = _tmp_1;
+              }
+              final LocalDate _tmpEndDate;
+              final String _tmp_2;
+              if (_cursor.isNull(_cursorIndexOfEndDate)) {
+                _tmp_2 = null;
+              } else {
+                _tmp_2 = _cursor.getString(_cursorIndexOfEndDate);
+              }
+              _tmpEndDate = __converters.toLocalDate(_tmp_2);
+              final boolean _tmpIsActive;
+              final int _tmp_3;
+              _tmp_3 = _cursor.getInt(_cursorIndexOfIsActive);
+              _tmpIsActive = _tmp_3 != 0;
+              final boolean _tmpIsFavorite;
+              final int _tmp_4;
+              _tmp_4 = _cursor.getInt(_cursorIndexOfIsFavorite);
+              _tmpIsFavorite = _tmp_4 != 0;
+              final String _tmpNotes;
+              if (_cursor.isNull(_cursorIndexOfNotes)) {
+                _tmpNotes = null;
+              } else {
+                _tmpNotes = _cursor.getString(_cursorIndexOfNotes);
+              }
+              final boolean _tmpIsDeleted;
+              final int _tmp_5;
+              _tmp_5 = _cursor.getInt(_cursorIndexOfIsDeleted);
+              _tmpIsDeleted = _tmp_5 != 0;
+              final LocalDateTime _tmpCreatedAt;
+              final String _tmp_6;
+              if (_cursor.isNull(_cursorIndexOfCreatedAt)) {
+                _tmp_6 = null;
+              } else {
+                _tmp_6 = _cursor.getString(_cursorIndexOfCreatedAt);
+              }
+              final LocalDateTime _tmp_7 = __converters.toLocalDateTime(_tmp_6);
+              if (_tmp_7 == null) {
+                throw new IllegalStateException("Expected NON-NULL 'kotlinx.datetime.LocalDateTime', but it was NULL.");
+              } else {
+                _tmpCreatedAt = _tmp_7;
+              }
+              final LocalDateTime _tmpUpdatedAt;
+              final String _tmp_8;
+              if (_cursor.isNull(_cursorIndexOfUpdatedAt)) {
+                _tmp_8 = null;
+              } else {
+                _tmp_8 = _cursor.getString(_cursorIndexOfUpdatedAt);
+              }
+              final LocalDateTime _tmp_9 = __converters.toLocalDateTime(_tmp_8);
+              if (_tmp_9 == null) {
+                throw new IllegalStateException("Expected NON-NULL 'kotlinx.datetime.LocalDateTime', but it was NULL.");
+              } else {
+                _tmpUpdatedAt = _tmp_9;
+              }
+              final boolean _tmpIsInstallment;
+              final int _tmp_10;
+              _tmp_10 = _cursor.getInt(_cursorIndexOfIsInstallment);
+              _tmpIsInstallment = _tmp_10 != 0;
+              final Integer _tmpTotalInstallments;
+              if (_cursor.isNull(_cursorIndexOfTotalInstallments)) {
+                _tmpTotalInstallments = null;
+              } else {
+                _tmpTotalInstallments = _cursor.getInt(_cursorIndexOfTotalInstallments);
+              }
+              final String _tmpRemoteId;
+              if (_cursor.isNull(_cursorIndexOfRemoteId)) {
+                _tmpRemoteId = null;
+              } else {
+                _tmpRemoteId = _cursor.getString(_cursorIndexOfRemoteId);
+              }
+              final LocalDateTime _tmpLastSyncedAt;
+              final String _tmp_11;
+              if (_cursor.isNull(_cursorIndexOfLastSyncedAt)) {
+                _tmp_11 = null;
+              } else {
+                _tmp_11 = _cursor.getString(_cursorIndexOfLastSyncedAt);
+              }
+              _tmpLastSyncedAt = __converters.toLocalDateTime(_tmp_11);
+              final String _tmpSyncStatus;
+              _tmpSyncStatus = _cursor.getString(_cursorIndexOfSyncStatus);
+              final boolean _tmpIsDirty;
+              final int _tmp_12;
+              _tmp_12 = _cursor.getInt(_cursorIndexOfIsDirty);
+              _tmpIsDirty = _tmp_12 != 0;
+              _tmpBill = new BillEntity(_tmpId,_tmpCategoryId,_tmpName,_tmpDefaultAmount,_tmpCurrencyCode,_tmpMerchant,_tmpRecurrenceType,_tmpRecurrenceInterval,_tmpDueDay,_tmpStartDate,_tmpEndDate,_tmpIsActive,_tmpIsFavorite,_tmpNotes,_tmpIsDeleted,_tmpCreatedAt,_tmpUpdatedAt,_tmpIsInstallment,_tmpTotalInstallments,_tmpRemoteId,_tmpLastSyncedAt,_tmpSyncStatus,_tmpIsDirty);
+              final BillCategoryEntity _tmpCategory;
+              final long _tmpKey_2;
+              _tmpKey_2 = _cursor.getLong(_cursorIndexOfCategoryId);
+              _tmpCategory = _collectionCategory.get(_tmpKey_2);
+              final ArrayList<BillCycleEntity> _tmpCyclesCollection;
+              final long _tmpKey_3;
+              _tmpKey_3 = _cursor.getLong(_cursorIndexOfId);
+              _tmpCyclesCollection = _collectionCycles.get(_tmpKey_3);
+              _item = new BillWithDetailsEntity(_tmpBill,_tmpCategory,_tmpCyclesCollection);
+              _result.add(_item);
+            }
+            __db.setTransactionSuccessful();
+            return _result;
+          } finally {
+            _cursor.close();
+          }
+        } finally {
+          __db.endTransaction();
+        }
+      }
+
+      @Override
+      protected void finalize() {
+        _statement.release();
+      }
+    });
+  }
+
   @NonNull
   public static List<Class<?>> getRequiredConverters() {
     return Collections.emptyList();
+  }
+
+  private void __fetchRelationshipbillCategoryAscomPatflowAppDataLocalEntityBillCategoryEntity(
+      @NonNull final LongSparseArray<BillCategoryEntity> _map) {
+    if (_map.isEmpty()) {
+      return;
+    }
+    if (_map.size() > RoomDatabase.MAX_BIND_PARAMETER_CNT) {
+      RelationUtil.recursiveFetchLongSparseArray(_map, false, (map) -> {
+        __fetchRelationshipbillCategoryAscomPatflowAppDataLocalEntityBillCategoryEntity(map);
+        return Unit.INSTANCE;
+      });
+      return;
+    }
+    final StringBuilder _stringBuilder = StringUtil.newStringBuilder();
+    _stringBuilder.append("SELECT `id`,`name`,`icon_key`,`color_hex`,`is_custom`,`is_deleted`,`remote_id`,`sync_status` FROM `bill_category` WHERE `id` IN (");
+    final int _inputSize = _map.size();
+    StringUtil.appendPlaceholders(_stringBuilder, _inputSize);
+    _stringBuilder.append(")");
+    final String _sql = _stringBuilder.toString();
+    final int _argCount = 0 + _inputSize;
+    final RoomSQLiteQuery _stmt = RoomSQLiteQuery.acquire(_sql, _argCount);
+    int _argIndex = 1;
+    for (int i = 0; i < _map.size(); i++) {
+      final long _item = _map.keyAt(i);
+      _stmt.bindLong(_argIndex, _item);
+      _argIndex++;
+    }
+    final Cursor _cursor = DBUtil.query(__db, _stmt, false, null);
+    try {
+      final int _itemKeyIndex = CursorUtil.getColumnIndex(_cursor, "id");
+      if (_itemKeyIndex == -1) {
+        return;
+      }
+      final int _cursorIndexOfId = 0;
+      final int _cursorIndexOfName = 1;
+      final int _cursorIndexOfIconKey = 2;
+      final int _cursorIndexOfColorHex = 3;
+      final int _cursorIndexOfIsCustom = 4;
+      final int _cursorIndexOfIsDeleted = 5;
+      final int _cursorIndexOfRemoteId = 6;
+      final int _cursorIndexOfSyncStatus = 7;
+      while (_cursor.moveToNext()) {
+        final long _tmpKey;
+        _tmpKey = _cursor.getLong(_itemKeyIndex);
+        if (_map.containsKey(_tmpKey)) {
+          final BillCategoryEntity _item_1;
+          final long _tmpId;
+          _tmpId = _cursor.getLong(_cursorIndexOfId);
+          final String _tmpName;
+          _tmpName = _cursor.getString(_cursorIndexOfName);
+          final String _tmpIconKey;
+          _tmpIconKey = _cursor.getString(_cursorIndexOfIconKey);
+          final String _tmpColorHex;
+          _tmpColorHex = _cursor.getString(_cursorIndexOfColorHex);
+          final boolean _tmpIsCustom;
+          final int _tmp;
+          _tmp = _cursor.getInt(_cursorIndexOfIsCustom);
+          _tmpIsCustom = _tmp != 0;
+          final boolean _tmpIsDeleted;
+          final int _tmp_1;
+          _tmp_1 = _cursor.getInt(_cursorIndexOfIsDeleted);
+          _tmpIsDeleted = _tmp_1 != 0;
+          final String _tmpRemoteId;
+          if (_cursor.isNull(_cursorIndexOfRemoteId)) {
+            _tmpRemoteId = null;
+          } else {
+            _tmpRemoteId = _cursor.getString(_cursorIndexOfRemoteId);
+          }
+          final String _tmpSyncStatus;
+          _tmpSyncStatus = _cursor.getString(_cursorIndexOfSyncStatus);
+          _item_1 = new BillCategoryEntity(_tmpId,_tmpName,_tmpIconKey,_tmpColorHex,_tmpIsCustom,_tmpIsDeleted,_tmpRemoteId,_tmpSyncStatus);
+          _map.put(_tmpKey, _item_1);
+        }
+      }
+    } finally {
+      _cursor.close();
+    }
+  }
+
+  private void __fetchRelationshipbillCycleAscomPatflowAppDataLocalEntityBillCycleEntity(
+      @NonNull final LongSparseArray<ArrayList<BillCycleEntity>> _map) {
+    if (_map.isEmpty()) {
+      return;
+    }
+    if (_map.size() > RoomDatabase.MAX_BIND_PARAMETER_CNT) {
+      RelationUtil.recursiveFetchLongSparseArray(_map, true, (map) -> {
+        __fetchRelationshipbillCycleAscomPatflowAppDataLocalEntityBillCycleEntity(map);
+        return Unit.INSTANCE;
+      });
+      return;
+    }
+    final StringBuilder _stringBuilder = StringUtil.newStringBuilder();
+    _stringBuilder.append("SELECT `id`,`bill_id`,`period_start`,`due_date`,`amount_due`,`amount_paid`,`status`,`created_at`,`updated_at`,`installment_number` FROM `bill_cycle` WHERE `bill_id` IN (");
+    final int _inputSize = _map.size();
+    StringUtil.appendPlaceholders(_stringBuilder, _inputSize);
+    _stringBuilder.append(")");
+    final String _sql = _stringBuilder.toString();
+    final int _argCount = 0 + _inputSize;
+    final RoomSQLiteQuery _stmt = RoomSQLiteQuery.acquire(_sql, _argCount);
+    int _argIndex = 1;
+    for (int i = 0; i < _map.size(); i++) {
+      final long _item = _map.keyAt(i);
+      _stmt.bindLong(_argIndex, _item);
+      _argIndex++;
+    }
+    final Cursor _cursor = DBUtil.query(__db, _stmt, false, null);
+    try {
+      final int _itemKeyIndex = CursorUtil.getColumnIndex(_cursor, "bill_id");
+      if (_itemKeyIndex == -1) {
+        return;
+      }
+      final int _cursorIndexOfId = 0;
+      final int _cursorIndexOfBillId = 1;
+      final int _cursorIndexOfPeriodStart = 2;
+      final int _cursorIndexOfDueDate = 3;
+      final int _cursorIndexOfAmountDue = 4;
+      final int _cursorIndexOfAmountPaid = 5;
+      final int _cursorIndexOfStatus = 6;
+      final int _cursorIndexOfCreatedAt = 7;
+      final int _cursorIndexOfUpdatedAt = 8;
+      final int _cursorIndexOfInstallmentNumber = 9;
+      while (_cursor.moveToNext()) {
+        final long _tmpKey;
+        _tmpKey = _cursor.getLong(_itemKeyIndex);
+        final ArrayList<BillCycleEntity> _tmpRelation = _map.get(_tmpKey);
+        if (_tmpRelation != null) {
+          final BillCycleEntity _item_1;
+          final long _tmpId;
+          _tmpId = _cursor.getLong(_cursorIndexOfId);
+          final long _tmpBillId;
+          _tmpBillId = _cursor.getLong(_cursorIndexOfBillId);
+          final LocalDate _tmpPeriodStart;
+          final String _tmp;
+          if (_cursor.isNull(_cursorIndexOfPeriodStart)) {
+            _tmp = null;
+          } else {
+            _tmp = _cursor.getString(_cursorIndexOfPeriodStart);
+          }
+          final LocalDate _tmp_1 = __converters.toLocalDate(_tmp);
+          if (_tmp_1 == null) {
+            throw new IllegalStateException("Expected NON-NULL 'kotlinx.datetime.LocalDate', but it was NULL.");
+          } else {
+            _tmpPeriodStart = _tmp_1;
+          }
+          final LocalDate _tmpDueDate;
+          final String _tmp_2;
+          if (_cursor.isNull(_cursorIndexOfDueDate)) {
+            _tmp_2 = null;
+          } else {
+            _tmp_2 = _cursor.getString(_cursorIndexOfDueDate);
+          }
+          final LocalDate _tmp_3 = __converters.toLocalDate(_tmp_2);
+          if (_tmp_3 == null) {
+            throw new IllegalStateException("Expected NON-NULL 'kotlinx.datetime.LocalDate', but it was NULL.");
+          } else {
+            _tmpDueDate = _tmp_3;
+          }
+          final double _tmpAmountDue;
+          _tmpAmountDue = _cursor.getDouble(_cursorIndexOfAmountDue);
+          final double _tmpAmountPaid;
+          _tmpAmountPaid = _cursor.getDouble(_cursorIndexOfAmountPaid);
+          final String _tmpStatus;
+          _tmpStatus = _cursor.getString(_cursorIndexOfStatus);
+          final LocalDateTime _tmpCreatedAt;
+          final String _tmp_4;
+          if (_cursor.isNull(_cursorIndexOfCreatedAt)) {
+            _tmp_4 = null;
+          } else {
+            _tmp_4 = _cursor.getString(_cursorIndexOfCreatedAt);
+          }
+          final LocalDateTime _tmp_5 = __converters.toLocalDateTime(_tmp_4);
+          if (_tmp_5 == null) {
+            throw new IllegalStateException("Expected NON-NULL 'kotlinx.datetime.LocalDateTime', but it was NULL.");
+          } else {
+            _tmpCreatedAt = _tmp_5;
+          }
+          final LocalDateTime _tmpUpdatedAt;
+          final String _tmp_6;
+          if (_cursor.isNull(_cursorIndexOfUpdatedAt)) {
+            _tmp_6 = null;
+          } else {
+            _tmp_6 = _cursor.getString(_cursorIndexOfUpdatedAt);
+          }
+          final LocalDateTime _tmp_7 = __converters.toLocalDateTime(_tmp_6);
+          if (_tmp_7 == null) {
+            throw new IllegalStateException("Expected NON-NULL 'kotlinx.datetime.LocalDateTime', but it was NULL.");
+          } else {
+            _tmpUpdatedAt = _tmp_7;
+          }
+          final Integer _tmpInstallmentNumber;
+          if (_cursor.isNull(_cursorIndexOfInstallmentNumber)) {
+            _tmpInstallmentNumber = null;
+          } else {
+            _tmpInstallmentNumber = _cursor.getInt(_cursorIndexOfInstallmentNumber);
+          }
+          _item_1 = new BillCycleEntity(_tmpId,_tmpBillId,_tmpPeriodStart,_tmpDueDate,_tmpAmountDue,_tmpAmountPaid,_tmpStatus,_tmpCreatedAt,_tmpUpdatedAt,_tmpInstallmentNumber);
+          _tmpRelation.add(_item_1);
+        }
+      }
+    } finally {
+      _cursor.close();
+    }
   }
 }

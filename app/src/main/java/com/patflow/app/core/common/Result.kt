@@ -8,6 +8,11 @@ sealed class Result<out T> {
     data class Success<out T>(val data: T) : Result<T>()
     data class Error(val exception: Throwable, val message: String? = null) : Result<Nothing>()
     data object Loading : Result<Nothing>()
+
+    /**
+     * Helper to get data or null if not success.
+     */
+    fun getOrNull(): T? = (this as? Success)?.data
 }
 
 inline fun <T> Result<T>.onSuccess(action: (T) -> Unit): Result<T> {

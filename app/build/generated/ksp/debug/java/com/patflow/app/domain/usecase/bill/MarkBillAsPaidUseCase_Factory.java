@@ -1,6 +1,6 @@
 package com.patflow.app.domain.usecase.bill;
 
-import com.patflow.app.domain.repository.BillRepository;
+import com.patflow.app.domain.usecase.payment.LogPaymentUseCase;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
 import dagger.internal.QualifierMetadata;
@@ -24,22 +24,23 @@ import javax.inject.Provider;
     "deprecation"
 })
 public final class MarkBillAsPaidUseCase_Factory implements Factory<MarkBillAsPaidUseCase> {
-  private final Provider<BillRepository> repositoryProvider;
+  private final Provider<LogPaymentUseCase> logPaymentUseCaseProvider;
 
-  public MarkBillAsPaidUseCase_Factory(Provider<BillRepository> repositoryProvider) {
-    this.repositoryProvider = repositoryProvider;
+  public MarkBillAsPaidUseCase_Factory(Provider<LogPaymentUseCase> logPaymentUseCaseProvider) {
+    this.logPaymentUseCaseProvider = logPaymentUseCaseProvider;
   }
 
   @Override
   public MarkBillAsPaidUseCase get() {
-    return newInstance(repositoryProvider.get());
+    return newInstance(logPaymentUseCaseProvider.get());
   }
 
-  public static MarkBillAsPaidUseCase_Factory create(Provider<BillRepository> repositoryProvider) {
-    return new MarkBillAsPaidUseCase_Factory(repositoryProvider);
+  public static MarkBillAsPaidUseCase_Factory create(
+      Provider<LogPaymentUseCase> logPaymentUseCaseProvider) {
+    return new MarkBillAsPaidUseCase_Factory(logPaymentUseCaseProvider);
   }
 
-  public static MarkBillAsPaidUseCase newInstance(BillRepository repository) {
-    return new MarkBillAsPaidUseCase(repository);
+  public static MarkBillAsPaidUseCase newInstance(LogPaymentUseCase logPaymentUseCase) {
+    return new MarkBillAsPaidUseCase(logPaymentUseCase);
   }
 }

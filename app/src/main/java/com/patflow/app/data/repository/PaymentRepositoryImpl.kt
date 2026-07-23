@@ -1,6 +1,6 @@
 package com.patflow.app.data.repository
 
-import com.patflow.app.data.local.dao.BillDao
+import com.patflow.app.data.local.dao.BillCycleDao
 import com.patflow.app.data.local.dao.PaymentDao
 import com.patflow.app.data.mapper.toDomain
 import com.patflow.app.data.mapper.toEntity
@@ -11,35 +11,46 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+/**
+ * Implementation of [PaymentRepository] using Room DAOs (Architecture §9).
+ * Orchestrates transactions and JOIN-based historical queries.
+ */
 class PaymentRepositoryImpl @Inject constructor(
     private val paymentDao: PaymentDao,
-    private val billDao: BillDao
+    private val billCycleDao: BillCycleDao
 ) : PaymentRepository {
 
     override fun getPayments(): Flow<List<PaymentHistory>> {
-        // This is a bit complex in Room without a dedicated Relation/Join DAO method
-        // For MVP, we'll implement a simplified version or assume a join exists.
-        // In a real project, we'd add a method to PaymentDao that returns PaymentWithBill.
-        return paymentDao.getByDateRange("1970-01-01", "9999-12-31").map { entities ->
-            entities.map { entity ->
-                // Simplified: we need the bill info here. 
-                // For now, placeholders to satisfy the interface.
+        return paymentDao.getAllWithBillDetails().map { list ->
+            list.map { detail ->
                 PaymentHistory(
-                    payment = entity.toDomain(),
-                    billName = "Bill", 
-                    category = com.patflow.app.domain.model.Category(0, "Category", "bolt", "#000000", false)
+                    payment = detail.payment.toDomain(),
+                    billName = detail.billName,
+                    category = com.patflow.app.domain.model.Category(
+                        id = detail.categoryId,
+                        name = detail.categoryName,
+                        iconKey = detail.categoryIcon,
+                        colorHex = detail.categoryColor,
+                        isCustom = detail.categoryIsCustom
+                    )
                 )
             }
         }
     }
 
     override fun getPaymentById(id: Long): Flow<PaymentHistory?> {
-        return paymentDao.getByDateRange("1970-01-01", "9999-12-31").map { list ->
-            list.find { it.id == id }?.let { entity ->
+        return paymentDao.getAllWithBillDetails().map { list ->
+            list.find { it.payment.id == id }?.let { detail ->
                 PaymentHistory(
-                    payment = entity.toDomain(),
-                    billName = "Bill",
-                    category = com.patflow.app.domain.model.Category(0, "Category", "bolt", "#000000", false)
+                    payment = detail.payment.toDomain(),
+                    billName = detail.billName,
+                    category = com.patflow.app.domain.model.Category(
+                        id = detail.categoryId,
+                        name = detail.categoryName,
+                        iconKey = detail.categoryIcon,
+                        colorHex = detail.categoryColor,
+                        isCustom = detail.categoryIsCustom
+                    )
                 )
             }
         }
@@ -55,8 +66,7 @@ class PaymentRepositoryImpl @Inject constructor(
         return paymentDao.insert(payment.toEntity())
     }
 
-    override suspend fun deletePayment(id: Long) {
-        val payment = paymentDao.getById(id)
-        payment?.let { paymentDao.delete(it) }
+    override suspend fun undoPayment(paymentId: Long) {
+        paymentDao.deletePaymentAndAdjustCycle(paymentId, billCycleDao)
     }
 }

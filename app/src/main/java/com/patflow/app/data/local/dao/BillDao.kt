@@ -39,4 +39,21 @@ interface BillDao {
 
     @Query("SELECT * FROM bill WHERE category_id = :categoryId AND is_deleted = 0")
     fun getByCategory(categoryId: Long): Flow<List<BillEntity>>
+
+    /**
+     * Fetches all active bills joined with their categories and cycle history (Architecture §8.8).
+     * Used for the main bill list to identify current cycle status and due dates.
+     */
+    @androidx.room.Transaction
+    @Query("SELECT * FROM bill WHERE is_deleted = 0 ORDER BY name ASC")
+    fun getBillsWithDetails(): Flow<List<com.patflow.app.data.local.entity.BillWithDetailsEntity>>
+
+    @Query("SELECT * FROM bill")
+    suspend fun getAllEntities(): List<BillEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(bills: List<BillEntity>)
+
+    @Query("DELETE FROM bill")
+    suspend fun deleteAll()
 }

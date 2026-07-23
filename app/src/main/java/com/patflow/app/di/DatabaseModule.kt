@@ -35,26 +35,14 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideDatabase(
-        @ApplicationContext context: Context,
-        categoryDaoProvider: Provider<CategoryDao>
+        @ApplicationContext context: Context
     ): PatFlowDatabase =
         Room.databaseBuilder(
             context,
             PatFlowDatabase::class.java,
             PatFlowDatabase.DATABASE_NAME,
         )
-            .addCallback(object : RoomDatabase.Callback() {
-                override fun onCreate(db: SupportSQLiteDatabase) {
-                    super.onCreate(db)
-                    // Seed categories on first creation
-                    CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
-                        val dao = categoryDaoProvider.get()
-                        DatabaseSeeder.getPredefinedCategories().forEach {
-                            dao.insert(it)
-                        }
-                    }
-                }
-            })
+            .fallbackToDestructiveMigration() // Dev-only: Architecture §8.1 note
             .build()
 
     @Provides

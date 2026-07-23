@@ -9,9 +9,8 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 
 /**
- * `bill_cycle` — one billing period's actual amount/status (Architecture
- * §8.1, §8.3). The table most screens actually query (dashboard, calendar,
- * timeline, reports).
+ * Room entity representing a single billing period instance (Architecture §8.3).
+ * Tracks actual due amount, paid amount, and derived status for a specific period.
  */
 @Entity(
     tableName = "bill_cycle",

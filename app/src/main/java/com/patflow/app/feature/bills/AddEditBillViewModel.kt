@@ -11,13 +11,9 @@ import com.patflow.app.domain.repository.CategoryRepository
 import com.patflow.app.domain.usecase.bill.AddBillUseCase
 import com.patflow.app.domain.usecase.bill.GetBillDetailUseCase
 import com.patflow.app.domain.usecase.bill.UpdateBillUseCase
+import com.patflow.app.domain.usecase.settings.GetUserSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
@@ -25,12 +21,17 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 
+/**
+ * ViewModel for the Add/Edit Bill screen.
+ * Manages form state, validation, and persistence logic.
+ */
 @HiltViewModel
 class AddEditBillViewModel @Inject constructor(
     private val addBillUseCase: AddBillUseCase,
     private val updateBillUseCase: UpdateBillUseCase,
     private val getBillDetailUseCase: GetBillDetailUseCase,
     private val categoryRepository: CategoryRepository,
+    private val getUserSettingsUseCase: GetUserSettingsUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -47,8 +48,16 @@ class AddEditBillViewModel @Inject constructor(
 
     init {
         loadCategories()
+        loadPreferredSettings()
         billId?.let { id ->
             loadBill(id)
+        }
+    }
+
+    private fun loadPreferredSettings() {
+        viewModelScope.launch {
+            val settings = getUserSettingsUseCase().first()
+            _uiState.update { it.copy(currencyCode = settings.profile.preferredCurrency) }
         }
     }
 
@@ -70,6 +79,7 @@ class AddEditBillViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(
                     name = bill.name,
                     amount = bill.defaultAmount.toString(),
+                    currencyCode = bill.currencyCode,
                     category = bill.category,
                     startDate = bill.recurrence.startDate,
                     recurrenceType = bill.recurrence.type,
@@ -127,6 +137,7 @@ class AddEditBillViewModel @Inject constructor(
                 name = state.name,
                 category = state.category,
                 defaultAmount = state.amount.toDouble(),
+                currencyCode = state.currencyCode,
                 recurrence = Recurrence(
                     type = state.recurrenceType,
                     startDate = state.startDate
@@ -153,6 +164,7 @@ data class AddEditBillUiState(
     val nameError: String? = null,
     val amount: String = "",
     val amountError: String? = null,
+    val currencyCode: String = "PHP",
     val category: Category? = null,
     val categoryError: String? = null,
     val startDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,

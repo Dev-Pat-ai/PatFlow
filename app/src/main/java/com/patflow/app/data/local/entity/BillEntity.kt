@@ -9,9 +9,8 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 
 /**
- * `bill` — the recurring TEMPLATE (Architecture §8.1, §8.3). Separate from
- * `bill_cycle` (the per-period instance) — the single most important
- * modeling decision in the schema.
+ * Room entity representing a recurring bill template (Architecture §8.1, §8.3).
+ * Separate from [BillCycleEntity] which represents a specific period's instance.
  */
 @Entity(
     tableName = "bill",
@@ -97,4 +96,18 @@ data class BillEntity(
 
     @ColumnInfo(name = "is_dirty", defaultValue = "0")
     val isDirty: Boolean = false,
+)
+
+data class BillWithDetailsEntity(
+    @androidx.room.Embedded val bill: BillEntity,
+    @androidx.room.Relation(
+        parentColumn = "category_id",
+        entityColumn = "id"
+    )
+    val category: BillCategoryEntity,
+    @androidx.room.Relation(
+        parentColumn = "id",
+        entityColumn = "bill_id"
+    )
+    val cycles: List<BillCycleEntity>
 )

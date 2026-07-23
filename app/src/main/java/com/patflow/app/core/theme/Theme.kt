@@ -10,27 +10,49 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.patflow.app.domain.model.ThemeMode
+import com.patflow.app.domain.usecase.settings.GetUserSettingsUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
+
+@HiltViewModel
+class ThemeViewModel @Inject constructor(
+    getUserSettingsUseCase: GetUserSettingsUseCase
+) : ViewModel() {
+    val themeSettings = getUserSettingsUseCase()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = null
+        )
+}
+
 /**
  * Design System §2 — Material You (Dynamic Color).
- *
- * Default ON for API 31+ (derives the full role set from the user's
- * wallpaper). Falls back to the static Ink-Cobalt-seed palette (Color.kt)
- * on API < 31, or when the user disables Dynamic Color in Settings
- * (FR-11.1) — [useDynamicColor] is threaded from that setting once the
- * Settings feature exists; it defaults to true here.
- *
- * NOTE: status colors and category colors are intentionally NOT part of the
- * MaterialTheme.colorScheme swap — they are fixed semantic tokens (see
- * PatFlowStatusColors / PatFlowCategoryColors in Color.kt) accessed directly
- * by components, never derived from wallpaper.
+ * Updated to consume live settings for theme and dynamic color.
  */
 @Composable
 fun PatFlowTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    useDynamicColor: Boolean = true,
+    viewModel: ThemeViewModel = hiltViewModel(),
     content: @Composable () -> Unit,
 ) {
+    val settings by viewModel.themeSettings.collectAsState()
     val context = LocalContext.current
+    
+    val darkTheme = when (settings?.profile?.preferredTheme) {
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+        else -> isSystemInDarkTheme()
+    }
+    
+    val useDynamicColor = settings?.useDynamicColor ?: true
     val dynamicColorSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
     val colorScheme = when {

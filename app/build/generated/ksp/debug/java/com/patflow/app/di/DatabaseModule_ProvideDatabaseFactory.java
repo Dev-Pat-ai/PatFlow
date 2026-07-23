@@ -1,7 +1,6 @@
 package com.patflow.app.di;
 
 import android.content.Context;
-import com.patflow.app.data.local.dao.CategoryDao;
 import com.patflow.app.data.local.database.PatFlowDatabase;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
@@ -29,26 +28,20 @@ import javax.inject.Provider;
 public final class DatabaseModule_ProvideDatabaseFactory implements Factory<PatFlowDatabase> {
   private final Provider<Context> contextProvider;
 
-  private final Provider<CategoryDao> categoryDaoProvider;
-
-  public DatabaseModule_ProvideDatabaseFactory(Provider<Context> contextProvider,
-      Provider<CategoryDao> categoryDaoProvider) {
+  public DatabaseModule_ProvideDatabaseFactory(Provider<Context> contextProvider) {
     this.contextProvider = contextProvider;
-    this.categoryDaoProvider = categoryDaoProvider;
   }
 
   @Override
   public PatFlowDatabase get() {
-    return provideDatabase(contextProvider.get(), categoryDaoProvider);
+    return provideDatabase(contextProvider.get());
   }
 
-  public static DatabaseModule_ProvideDatabaseFactory create(Provider<Context> contextProvider,
-      Provider<CategoryDao> categoryDaoProvider) {
-    return new DatabaseModule_ProvideDatabaseFactory(contextProvider, categoryDaoProvider);
+  public static DatabaseModule_ProvideDatabaseFactory create(Provider<Context> contextProvider) {
+    return new DatabaseModule_ProvideDatabaseFactory(contextProvider);
   }
 
-  public static PatFlowDatabase provideDatabase(Context context,
-      Provider<CategoryDao> categoryDaoProvider) {
-    return Preconditions.checkNotNullFromProvides(DatabaseModule.INSTANCE.provideDatabase(context, categoryDaoProvider));
+  public static PatFlowDatabase provideDatabase(Context context) {
+    return Preconditions.checkNotNullFromProvides(DatabaseModule.INSTANCE.provideDatabase(context));
   }
 }

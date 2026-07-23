@@ -2,19 +2,15 @@ package com.patflow.app.data.repository
 
 import com.patflow.app.data.local.dao.BillCycleDao
 import com.patflow.app.data.local.dao.BillDao
-import com.patflow.app.data.local.dao.PaymentDao
 import com.patflow.app.data.local.entity.BillCycleEntity
-import com.patflow.app.data.local.entity.PaymentEntity
 import com.patflow.app.data.mapper.toDomain
 import com.patflow.app.data.mapper.toEntity
 import com.patflow.app.domain.model.Bill
 import com.patflow.app.domain.model.BillCycle
 import com.patflow.app.domain.model.BillStatus
 import com.patflow.app.domain.model.BillWithCycle
-import com.patflow.app.domain.model.PaymentMethod
 import com.patflow.app.domain.repository.BillRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Clock
@@ -22,20 +18,22 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 
+/**
+ * Implementation of [BillRepository] using Room DAOs (Architecture §9).
+ * Handles the single source of truth for bill templates and cycles.
+ */
 class BillRepositoryImpl @Inject constructor(
     private val billDao: BillDao,
     private val billCycleDao: BillCycleDao,
-    private val paymentDao: PaymentDao
 ) : BillRepository {
 
     override fun getBillsWithCycles(): Flow<List<BillWithCycle>> {
-        return billDao.getAllWithCategory().map { map ->
-            map.map { (billEntity, categoryEntity) ->
-                val bill = billEntity.toDomain(categoryEntity.toDomain())
-                // In a real implementation, we might want to get the *current* cycle
-                // For MVP, we'll just get the latest one for each bill
-                // This is a bit simplified for now
-                BillWithCycle(bill, null) 
+        return billDao.getBillsWithDetails().map { list ->
+            list.map { entity ->
+                BillWithCycle(
+                    bill = entity.bill.toDomain(entity.category.toDomain()),
+                    currentCycle = entity.cycles.maxByOrNull { it.dueDate }?.toDomain()
+                )
             }
         }
     }
@@ -103,23 +101,17 @@ class BillRepositoryImpl @Inject constructor(
         return billCycleDao.getById(id)?.toDomain()
     }
 
-    override suspend fun markCycleAsPaid(cycleId: Long, amount: Double, method: PaymentMethod) {
+    override suspend fun updateCyclePaidAmount(cycleId: Long, deltaAmount: Double) {
         val cycle = billCycleDao.getById(cycleId) ?: return
         val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
         
-        // 1. Log Payment
-        val payment = PaymentEntity(
-            billCycleId = cycleId,
-            amount = amount,
-            paymentDate = now.date,
-            method = method.name,
-            createdAt = now
-        )
-        paymentDao.insert(payment)
-        
-        // 2. Update Cycle
-        val newPaid = cycle.amountPaid + amount
-        val newStatus = if (newPaid >= cycle.amountDue) BillStatus.PAID else BillStatus.PARTIALLY_PAID
+        val newPaid = (cycle.amountPaid + deltaAmount).coerceAtLeast(0.0)
+        val newStatus = when {
+            newPaid >= cycle.amountDue -> BillStatus.PAID
+            newPaid > 0 -> BillStatus.PARTIALLY_PAID
+            // In production, we'd also check if it's OVERDUE based on current date
+            else -> BillStatus.UNPAID
+        }
         
         billCycleDao.update(cycle.copy(
             amountPaid = newPaid,

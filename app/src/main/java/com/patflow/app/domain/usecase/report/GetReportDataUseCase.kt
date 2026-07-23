@@ -9,6 +9,10 @@ import kotlinx.datetime.*
 import java.util.Locale
 import javax.inject.Inject
 
+/**
+ * Use case for generating comprehensive financial analytics for a specific range (Architecture §1.6).
+ * Computes summaries, category distributions, and trends.
+ */
 class GetReportDataUseCase @Inject constructor(
     private val billRepository: BillRepository,
     private val paymentRepository: PaymentRepository
@@ -23,7 +27,9 @@ class GetReportDataUseCase @Inject constructor(
         ) { allBills, cycles, allPayments ->
             
             // 1. Filtering data to the requested range
-            val filteredPayments = allPayments.filter { it.payment.paymentDate in start..end }
+            val filteredPayments = allPayments.asSequence()
+                .filter { it.payment.paymentDate in start..end }
+                .toList()
             
             // 2. Financial Summary
             val totalExpenses = cycles.sumOf { it.amountDue }
@@ -101,17 +107,17 @@ class GetReportDataUseCase @Inject constructor(
         return when (filter) {
             ReportFilter.ThisMonth -> {
                 val start = LocalDate(now.year, now.month, 1)
-                val end = start.plus(DatePeriod(months = 1)).minus(DatePeriod(days = 1))
+                val end = (start + DatePeriod(months = 1)) - DatePeriod(days = 1)
                 start to end
             }
             ReportFilter.Last3Months -> {
                 val end = now
-                val start = LocalDate(now.year, now.month, 1).minus(DatePeriod(months = 2))
+                val start = LocalDate(now.year, now.month, 1) - DatePeriod(months = 2)
                 start to end
             }
             ReportFilter.Last6Months -> {
                 val end = now
-                val start = LocalDate(now.year, now.month, 1).minus(DatePeriod(months = 5))
+                val start = LocalDate(now.year, now.month, 1) - DatePeriod(months = 5)
                 start to end
             }
             ReportFilter.ThisYear -> {

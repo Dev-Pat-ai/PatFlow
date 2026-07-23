@@ -16,9 +16,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.patflow.app.core.components.*
 import com.patflow.app.core.theme.PatFlowSpacing
 import com.patflow.app.core.utils.CurrencyFormatter
-import com.patflow.app.domain.model.BillStatus
 import com.patflow.app.domain.model.ReportData
 import com.patflow.app.domain.model.ReportFilter
+import com.patflow.app.domain.model.UserPreferences
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
@@ -34,6 +34,7 @@ fun ReportsScreen(
     val uiState by viewModel.uiState.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val filter by viewModel.filter.collectAsState()
+    val preferences by viewModel.userPreferences.collectAsState()
 
     Scaffold(
         topBar = { AppTopBar(title = "Reports & Analytics") }
@@ -51,7 +52,10 @@ fun ReportsScreen(
 
                 when (val state = uiState) {
                     ReportsUiState.Loading -> LoadingState()
-                    is ReportsUiState.Success -> ReportContent(data = state.data)
+                    is ReportsUiState.Success -> ReportContent(
+                        data = state.data,
+                        preferences = preferences
+                    )
                     is ReportsUiState.Error -> FullScreenError(
                         title = "Error",
                         description = state.message
@@ -92,15 +96,24 @@ private fun ReportFilterSection(
         Tab(selected = currentFilter == ReportFilter.ThisYear, onClick = { onFilterChange(ReportFilter.ThisYear) }) {
             Text(text = "This Year", modifier = Modifier.padding(vertical = 12.dp))
         }
-        Tab(selected = currentFilter is ReportFilter.Custom, onClick = { /* TODO: Show custom picker */ }) {
+        Tab(
+            selected = currentFilter is ReportFilter.Custom,
+            onClick = { 
+                // Custom range picker logic moves to Phase 7: Personalization & Data Management
+            }
+        ) {
             Text(text = "Custom", modifier = Modifier.padding(vertical = 12.dp))
         }
     }
 }
 
 @Composable
-private fun ReportContent(data: ReportData) {
+private fun ReportContent(
+    data: ReportData,
+    preferences: UserPreferences?
+) {
     val trendModelProducer = remember { CartesianChartModelProducer() }
+    val currencyCode = preferences?.profile?.preferredCurrency ?: "PHP"
 
     LaunchedEffect(data.trendAnalysis.monthlySpending) {
         if (data.trendAnalysis.monthlySpending.isNotEmpty()) {
@@ -117,7 +130,7 @@ private fun ReportContent(data: ReportData) {
     ) {
         // 1. Summary Section
         item {
-            FinancialSummarySection(data)
+            FinancialSummarySection(data, currencyCode)
         }
 
         // 2. Spending Trend
@@ -136,7 +149,7 @@ private fun ReportContent(data: ReportData) {
 
         // 3. Category Breakdown
         item {
-            CategoryBreakdownSection(data)
+            CategoryBreakdownSection(data, currencyCode)
         }
 
         // 4. Performance & Insights
@@ -147,19 +160,19 @@ private fun ReportContent(data: ReportData) {
 }
 
 @Composable
-private fun FinancialSummarySection(data: ReportData) {
+private fun FinancialSummarySection(data: ReportData, currencyCode: String) {
     Column(verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
         SectionHeader(title = "Financial Summary")
         Row(horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
             SummaryCard(
                 title = "Expenses",
-                value = CurrencyFormatter.formatAmount(data.summary.totalExpenses),
+                value = CurrencyFormatter.formatAmount(data.summary.totalExpenses, currencyCode),
                 icon = Icons.Rounded.CalendarToday,
                 modifier = Modifier.weight(1f)
             )
             SummaryCard(
                 title = "Paid",
-                value = CurrencyFormatter.formatAmount(data.summary.totalPaid),
+                value = CurrencyFormatter.formatAmount(data.summary.totalPaid, currencyCode),
                 icon = Icons.Rounded.Payments,
                 modifier = Modifier.weight(1f),
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -168,7 +181,7 @@ private fun FinancialSummarySection(data: ReportData) {
         }
         StatisticCard(
             title = "Outstanding Balance",
-            value = CurrencyFormatter.formatAmount(data.summary.outstandingBalance),
+            value = CurrencyFormatter.formatAmount(data.summary.outstandingBalance, currencyCode),
             subtitle = "${data.summary.totalBills} bills · ${data.summary.totalPayments} payments",
             icon = Icons.AutoMirrored.Rounded.ReceiptLong
         )
@@ -176,7 +189,7 @@ private fun FinancialSummarySection(data: ReportData) {
 }
 
 @Composable
-private fun CategoryBreakdownSection(data: ReportData) {
+private fun CategoryBreakdownSection(data: ReportData, currencyCode: String) {
     Column(verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
         SectionHeader(title = "Category Breakdown")
         
@@ -185,7 +198,7 @@ private fun CategoryBreakdownSection(data: ReportData) {
                 StatisticCard(
                     title = "Highest Spending",
                     value = it.name,
-                    subtitle = "₱${CurrencyFormatter.formatAmount(data.categoryAnalysis.spendingByCategory[it] ?: 0.0)} spent",
+                    subtitle = "${CurrencyFormatter.formatAmount(data.categoryAnalysis.spendingByCategory[it] ?: 0.0, currencyCode)} spent",
                     icon = Icons.Rounded.PieChart
                 )
             }

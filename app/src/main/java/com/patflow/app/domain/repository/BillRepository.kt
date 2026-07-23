@@ -6,6 +6,10 @@ import com.patflow.app.domain.model.BillWithCycle
 import com.patflow.app.domain.model.PaymentMethod
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Interface for bill-related data operations (Architecture §8.3).
+ * Manages both bill templates and their specific cycles.
+ */
 interface BillRepository {
     fun getBillsWithCycles(): Flow<List<BillWithCycle>>
     fun getBillById(id: Long): Flow<Bill?>
@@ -17,5 +21,5 @@ interface BillRepository {
     fun getCyclesByDateRange(start: String, end: String): Flow<List<BillCycle>>
     fun getUpcomingCycles(limit: Int): Flow<List<BillCycle>>
     suspend fun getCycleById(id: Long): BillCycle?
-    suspend fun markCycleAsPaid(cycleId: Long, amount: Double, method: PaymentMethod)
+    suspend fun updateCyclePaidAmount(cycleId: Long, deltaAmount: Double)
 }

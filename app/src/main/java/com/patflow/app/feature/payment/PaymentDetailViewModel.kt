@@ -17,6 +17,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel for the Payment Detail screen.
+ * Handles single transaction retrieval and the undo flow.
+ */
 @HiltViewModel
 class PaymentDetailViewModel @Inject constructor(
     getPaymentDetailUseCase: GetPaymentDetailUseCase,

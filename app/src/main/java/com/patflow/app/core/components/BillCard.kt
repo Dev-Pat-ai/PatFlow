@@ -31,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,6 +40,7 @@ import com.patflow.app.core.theme.PatFlowShapes
 import com.patflow.app.core.theme.PatFlowSpacing
 import com.patflow.app.core.theme.PatFlowTheme
 import com.patflow.app.core.theme.patFlowCategoryColors
+import com.patflow.app.core.utils.CategoryMapper
 import com.patflow.app.core.utils.CurrencyFormatter
 import com.patflow.app.domain.model.BillStatus
 
@@ -63,18 +65,20 @@ fun BillCard(
 ) {
     val categoryColors = patFlowCategoryColors()
     
-    val (icon, colors) = when (category) {
-        CategoryType.ELECTRICITY -> Icons.Rounded.Bolt to categoryColors.electricity
-        CategoryType.WATER -> Icons.Rounded.WaterDrop to categoryColors.water
-        CategoryType.INTERNET -> Icons.Rounded.Wifi to categoryColors.internet
-        CategoryType.RENT -> Icons.Rounded.House to categoryColors.rent
-        CategoryType.PHONE -> Icons.Rounded.Smartphone to categoryColors.phone
-        CategoryType.INSURANCE -> Icons.Rounded.Shield to categoryColors.insurance
-        CategoryType.TUITION -> Icons.Rounded.School to categoryColors.tuition
-        CategoryType.SUBSCRIPTION -> Icons.Rounded.Subscriptions to categoryColors.subscription
-        CategoryType.LOAN -> Icons.Rounded.AccountBalance to categoryColors.loan
-        CategoryType.SAVINGS -> Icons.Rounded.Savings to categoryColors.savings
-        CategoryType.HOA_FEES -> Icons.Rounded.Apartment to categoryColors.hoaFees
+    val (icon, colors) = remember(category, categoryColors) {
+        when (category) {
+            CategoryType.ELECTRICITY -> Icons.Rounded.Bolt to categoryColors.electricity
+            CategoryType.WATER -> Icons.Rounded.WaterDrop to categoryColors.water
+            CategoryType.INTERNET -> Icons.Rounded.Wifi to categoryColors.internet
+            CategoryType.RENT -> Icons.Rounded.House to categoryColors.rent
+            CategoryType.PHONE -> Icons.Rounded.Smartphone to categoryColors.phone
+            CategoryType.INSURANCE -> Icons.Rounded.Shield to categoryColors.insurance
+            CategoryType.TUITION -> Icons.Rounded.School to categoryColors.tuition
+            CategoryType.SUBSCRIPTION -> Icons.Rounded.Subscriptions to categoryColors.subscription
+            CategoryType.LOAN -> Icons.Rounded.AccountBalance to categoryColors.loan
+            CategoryType.SAVINGS -> Icons.Rounded.Savings to categoryColors.savings
+            CategoryType.HOA_FEES -> Icons.Rounded.Apartment to categoryColors.hoaFees
+        }
     }
 
     Card(

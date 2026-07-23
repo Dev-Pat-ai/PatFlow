@@ -20,7 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.compose.foundation.layout.Column
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import com.patflow.app.core.components.BottomNavigationBar
@@ -32,6 +31,7 @@ import com.patflow.app.feature.money.MoneyScreen
 import com.patflow.app.feature.payment.PaymentDetailScreen
 import com.patflow.app.feature.payment.PaymentHistoryScreen
 import com.patflow.app.feature.reports.ReportsScreen
+import com.patflow.app.feature.settings.SettingsScreen
 import com.patflow.app.feature.showcase.DesignSystemShowcaseScreen
 
 /**
@@ -147,7 +147,11 @@ fun PatFlowNavGraph(
 
             composable(Destinations.CALENDAR) { PlaceholderScreen("Calendar / Timeline") }
             composable(Destinations.REPORTS) { ReportsScreen() }
-            composable(Destinations.SETTINGS) { PlaceholderScreen("Settings") }
+            composable(Destinations.SETTINGS) { 
+                SettingsScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
 
             composable(Destinations.PAYMENT_HISTORY) {
                 PaymentHistoryScreen(

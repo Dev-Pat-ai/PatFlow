@@ -43,6 +43,7 @@ import com.patflow.app.domain.model.RecurrenceType
 import kotlinx.datetime.LocalDate
 import java.util.Locale
 
+import com.patflow.app.core.utils.CategoryMapper
 import com.patflow.app.core.utils.rememberHapticFeedbackController
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -190,7 +191,7 @@ private fun CategoryDropdown(
                 DropdownMenuItem(
                     text = {
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            CategoryChip(category = mapCategoryToType(category.name))
+                            CategoryChip(category = CategoryMapper.mapToType(category.name))
                         }
                     },
                     onClick = {
@@ -238,13 +239,5 @@ private fun RecurrenceDropdown(
                 )
             }
         }
-    }
-}
-
-private fun mapCategoryToType(name: String): CategoryType {
-    return try {
-        CategoryType.valueOf(name.uppercase().replace(" ", "_"))
-    } catch (_: Exception) {
-        CategoryType.ELECTRICITY
     }
 }

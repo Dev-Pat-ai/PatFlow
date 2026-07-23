@@ -3,17 +3,26 @@ package com.patflow.app;
 import android.app.Activity;
 import android.app.Service;
 import android.view.View;
+import androidx.datastore.core.DataStore;
+import androidx.datastore.preferences.core.Preferences;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
+import com.patflow.app.core.theme.ThemeViewModel;
+import com.patflow.app.core.theme.ThemeViewModel_HiltModules;
+import com.patflow.app.core.utils.HapticViewModel;
+import com.patflow.app.core.utils.HapticViewModel_HiltModules;
 import com.patflow.app.data.local.dao.BillCycleDao;
 import com.patflow.app.data.local.dao.BillDao;
 import com.patflow.app.data.local.dao.CategoryDao;
 import com.patflow.app.data.local.dao.PaymentDao;
+import com.patflow.app.data.local.database.DatabaseInitializer;
 import com.patflow.app.data.local.database.PatFlowDatabase;
 import com.patflow.app.data.repository.BillRepositoryImpl;
 import com.patflow.app.data.repository.CategoryRepositoryImpl;
 import com.patflow.app.data.repository.PaymentRepositoryImpl;
+import com.patflow.app.data.repository.SettingsRepositoryImpl;
+import com.patflow.app.di.DataStoreModule_ProvidePreferencesDataStoreFactory;
 import com.patflow.app.di.DatabaseModule_ProvideBillCycleDaoFactory;
 import com.patflow.app.di.DatabaseModule_ProvideBillDaoFactory;
 import com.patflow.app.di.DatabaseModule_ProvideCategoryDaoFactory;
@@ -22,6 +31,7 @@ import com.patflow.app.di.DatabaseModule_ProvidePaymentDaoFactory;
 import com.patflow.app.domain.repository.BillRepository;
 import com.patflow.app.domain.repository.CategoryRepository;
 import com.patflow.app.domain.repository.PaymentRepository;
+import com.patflow.app.domain.repository.SettingsRepository;
 import com.patflow.app.domain.usecase.bill.AddBillUseCase;
 import com.patflow.app.domain.usecase.bill.DeleteBillUseCase;
 import com.patflow.app.domain.usecase.bill.GetBillDetailUseCase;
@@ -31,8 +41,11 @@ import com.patflow.app.domain.usecase.bill.UpdateBillUseCase;
 import com.patflow.app.domain.usecase.dashboard.GetDashboardDataUseCase;
 import com.patflow.app.domain.usecase.payment.GetPaymentDetailUseCase;
 import com.patflow.app.domain.usecase.payment.GetPaymentsUseCase;
+import com.patflow.app.domain.usecase.payment.LogPaymentUseCase;
 import com.patflow.app.domain.usecase.payment.UndoPaymentUseCase;
 import com.patflow.app.domain.usecase.report.GetReportDataUseCase;
+import com.patflow.app.domain.usecase.settings.GetUserSettingsUseCase;
+import com.patflow.app.domain.usecase.settings.UpdateUserPreferenceUseCase;
 import com.patflow.app.feature.bills.AddEditBillViewModel;
 import com.patflow.app.feature.bills.AddEditBillViewModel_HiltModules;
 import com.patflow.app.feature.bills.BillDetailViewModel;
@@ -47,6 +60,8 @@ import com.patflow.app.feature.payment.PaymentHistoryViewModel;
 import com.patflow.app.feature.payment.PaymentHistoryViewModel_HiltModules;
 import com.patflow.app.feature.reports.ReportsViewModel;
 import com.patflow.app.feature.reports.ReportsViewModel_HiltModules;
+import com.patflow.app.feature.settings.SettingsViewModel;
+import com.patflow.app.feature.settings.SettingsViewModel_HiltModules;
 import dagger.hilt.android.ActivityRetainedLifecycle;
 import dagger.hilt.android.ViewModelLifecycle;
 import dagger.hilt.android.internal.builders.ActivityComponentBuilder;
@@ -63,7 +78,6 @@ import dagger.hilt.android.internal.managers.SavedStateHandleHolder;
 import dagger.hilt.android.internal.modules.ApplicationContextModule;
 import dagger.hilt.android.internal.modules.ApplicationContextModule_ProvideContextFactory;
 import dagger.internal.DaggerGenerated;
-import dagger.internal.DelegateFactory;
 import dagger.internal.DoubleCheck;
 import dagger.internal.IdentifierNameString;
 import dagger.internal.KeepFieldType;
@@ -400,6 +414,7 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
 
     @Override
     public void injectMainActivity(MainActivity mainActivity) {
+      injectMainActivity2(mainActivity);
     }
 
     @Override
@@ -409,7 +424,7 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
 
     @Override
     public Map<Class<?>, Boolean> getViewModelKeys() {
-      return LazyClassKeyMap.<Boolean>of(MapBuilder.<String, Boolean>newMapBuilder(7).put(LazyClassKeyProvider.com_patflow_app_feature_bills_AddEditBillViewModel, AddEditBillViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_patflow_app_feature_bills_BillDetailViewModel, BillDetailViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_patflow_app_feature_bills_BillListViewModel, BillListViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_patflow_app_feature_dashboard_DashboardViewModel, DashboardViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_patflow_app_feature_payment_PaymentDetailViewModel, PaymentDetailViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_patflow_app_feature_payment_PaymentHistoryViewModel, PaymentHistoryViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_patflow_app_feature_reports_ReportsViewModel, ReportsViewModel_HiltModules.KeyModule.provide()).build());
+      return LazyClassKeyMap.<Boolean>of(MapBuilder.<String, Boolean>newMapBuilder(10).put(LazyClassKeyProvider.com_patflow_app_feature_bills_AddEditBillViewModel, AddEditBillViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_patflow_app_feature_bills_BillDetailViewModel, BillDetailViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_patflow_app_feature_bills_BillListViewModel, BillListViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_patflow_app_feature_dashboard_DashboardViewModel, DashboardViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_patflow_app_core_utils_HapticViewModel, HapticViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_patflow_app_feature_payment_PaymentDetailViewModel, PaymentDetailViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_patflow_app_feature_payment_PaymentHistoryViewModel, PaymentHistoryViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_patflow_app_feature_reports_ReportsViewModel, ReportsViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_patflow_app_feature_settings_SettingsViewModel, SettingsViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_patflow_app_core_theme_ThemeViewModel, ThemeViewModel_HiltModules.KeyModule.provide()).build());
     }
 
     @Override
@@ -427,42 +442,62 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
       return new ViewCBuilder(singletonCImpl, activityRetainedCImpl, activityCImpl);
     }
 
+    private MainActivity injectMainActivity2(MainActivity instance) {
+      MainActivity_MembersInjector.injectDatabaseInitializer(instance, singletonCImpl.databaseInitializerProvider.get());
+      return instance;
+    }
+
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
+      static String com_patflow_app_core_utils_HapticViewModel = "com.patflow.app.core.utils.HapticViewModel";
+
+      static String com_patflow_app_core_theme_ThemeViewModel = "com.patflow.app.core.theme.ThemeViewModel";
+
+      static String com_patflow_app_feature_settings_SettingsViewModel = "com.patflow.app.feature.settings.SettingsViewModel";
+
       static String com_patflow_app_feature_payment_PaymentDetailViewModel = "com.patflow.app.feature.payment.PaymentDetailViewModel";
-
-      static String com_patflow_app_feature_bills_BillDetailViewModel = "com.patflow.app.feature.bills.BillDetailViewModel";
-
-      static String com_patflow_app_feature_bills_BillListViewModel = "com.patflow.app.feature.bills.BillListViewModel";
-
-      static String com_patflow_app_feature_reports_ReportsViewModel = "com.patflow.app.feature.reports.ReportsViewModel";
 
       static String com_patflow_app_feature_bills_AddEditBillViewModel = "com.patflow.app.feature.bills.AddEditBillViewModel";
 
+      static String com_patflow_app_feature_payment_PaymentHistoryViewModel = "com.patflow.app.feature.payment.PaymentHistoryViewModel";
+
       static String com_patflow_app_feature_dashboard_DashboardViewModel = "com.patflow.app.feature.dashboard.DashboardViewModel";
 
-      static String com_patflow_app_feature_payment_PaymentHistoryViewModel = "com.patflow.app.feature.payment.PaymentHistoryViewModel";
+      static String com_patflow_app_feature_bills_BillListViewModel = "com.patflow.app.feature.bills.BillListViewModel";
+
+      static String com_patflow_app_feature_bills_BillDetailViewModel = "com.patflow.app.feature.bills.BillDetailViewModel";
+
+      static String com_patflow_app_feature_reports_ReportsViewModel = "com.patflow.app.feature.reports.ReportsViewModel";
+
+      @KeepFieldType
+      HapticViewModel com_patflow_app_core_utils_HapticViewModel2;
+
+      @KeepFieldType
+      ThemeViewModel com_patflow_app_core_theme_ThemeViewModel2;
+
+      @KeepFieldType
+      SettingsViewModel com_patflow_app_feature_settings_SettingsViewModel2;
 
       @KeepFieldType
       PaymentDetailViewModel com_patflow_app_feature_payment_PaymentDetailViewModel2;
 
       @KeepFieldType
-      BillDetailViewModel com_patflow_app_feature_bills_BillDetailViewModel2;
-
-      @KeepFieldType
-      BillListViewModel com_patflow_app_feature_bills_BillListViewModel2;
-
-      @KeepFieldType
-      ReportsViewModel com_patflow_app_feature_reports_ReportsViewModel2;
-
-      @KeepFieldType
       AddEditBillViewModel com_patflow_app_feature_bills_AddEditBillViewModel2;
+
+      @KeepFieldType
+      PaymentHistoryViewModel com_patflow_app_feature_payment_PaymentHistoryViewModel2;
 
       @KeepFieldType
       DashboardViewModel com_patflow_app_feature_dashboard_DashboardViewModel2;
 
       @KeepFieldType
-      PaymentHistoryViewModel com_patflow_app_feature_payment_PaymentHistoryViewModel2;
+      BillListViewModel com_patflow_app_feature_bills_BillListViewModel2;
+
+      @KeepFieldType
+      BillDetailViewModel com_patflow_app_feature_bills_BillDetailViewModel2;
+
+      @KeepFieldType
+      ReportsViewModel com_patflow_app_feature_reports_ReportsViewModel2;
     }
   }
 
@@ -483,11 +518,17 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
 
     private Provider<DashboardViewModel> dashboardViewModelProvider;
 
+    private Provider<HapticViewModel> hapticViewModelProvider;
+
     private Provider<PaymentDetailViewModel> paymentDetailViewModelProvider;
 
     private Provider<PaymentHistoryViewModel> paymentHistoryViewModelProvider;
 
     private Provider<ReportsViewModel> reportsViewModelProvider;
+
+    private Provider<SettingsViewModel> settingsViewModelProvider;
+
+    private Provider<ThemeViewModel> themeViewModelProvider;
 
     private ViewModelCImpl(SingletonCImpl singletonCImpl,
         ActivityRetainedCImpl activityRetainedCImpl, SavedStateHandle savedStateHandleParam,
@@ -511,12 +552,20 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
       return new GetBillDetailUseCase(singletonCImpl.bindBillRepositoryProvider.get());
     }
 
+    private GetUserSettingsUseCase getUserSettingsUseCase() {
+      return new GetUserSettingsUseCase(singletonCImpl.bindSettingsRepositoryProvider.get());
+    }
+
     private DeleteBillUseCase deleteBillUseCase() {
       return new DeleteBillUseCase(singletonCImpl.bindBillRepositoryProvider.get());
     }
 
+    private LogPaymentUseCase logPaymentUseCase() {
+      return new LogPaymentUseCase(singletonCImpl.bindPaymentRepositoryProvider.get(), singletonCImpl.bindBillRepositoryProvider.get());
+    }
+
     private MarkBillAsPaidUseCase markBillAsPaidUseCase() {
-      return new MarkBillAsPaidUseCase(singletonCImpl.bindBillRepositoryProvider.get());
+      return new MarkBillAsPaidUseCase(logPaymentUseCase());
     }
 
     private GetBillsUseCase getBillsUseCase() {
@@ -532,7 +581,7 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
     }
 
     private UndoPaymentUseCase undoPaymentUseCase() {
-      return new UndoPaymentUseCase(singletonCImpl.bindPaymentRepositoryProvider.get(), singletonCImpl.bindBillRepositoryProvider.get());
+      return new UndoPaymentUseCase(singletonCImpl.bindPaymentRepositoryProvider.get());
     }
 
     private GetPaymentsUseCase getPaymentsUseCase() {
@@ -543,6 +592,10 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
       return new GetReportDataUseCase(singletonCImpl.bindBillRepositoryProvider.get(), singletonCImpl.bindPaymentRepositoryProvider.get());
     }
 
+    private UpdateUserPreferenceUseCase updateUserPreferenceUseCase() {
+      return new UpdateUserPreferenceUseCase(singletonCImpl.bindSettingsRepositoryProvider.get());
+    }
+
     @SuppressWarnings("unchecked")
     private void initialize(final SavedStateHandle savedStateHandleParam,
         final ViewModelLifecycle viewModelLifecycleParam) {
@@ -550,14 +603,17 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
       this.billDetailViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 1);
       this.billListViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 2);
       this.dashboardViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 3);
-      this.paymentDetailViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 4);
-      this.paymentHistoryViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 5);
-      this.reportsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 6);
+      this.hapticViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 4);
+      this.paymentDetailViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 5);
+      this.paymentHistoryViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 6);
+      this.reportsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 7);
+      this.settingsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 8);
+      this.themeViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 9);
     }
 
     @Override
     public Map<Class<?>, javax.inject.Provider<ViewModel>> getHiltViewModelMap() {
-      return LazyClassKeyMap.<javax.inject.Provider<ViewModel>>of(MapBuilder.<String, javax.inject.Provider<ViewModel>>newMapBuilder(7).put(LazyClassKeyProvider.com_patflow_app_feature_bills_AddEditBillViewModel, ((Provider) addEditBillViewModelProvider)).put(LazyClassKeyProvider.com_patflow_app_feature_bills_BillDetailViewModel, ((Provider) billDetailViewModelProvider)).put(LazyClassKeyProvider.com_patflow_app_feature_bills_BillListViewModel, ((Provider) billListViewModelProvider)).put(LazyClassKeyProvider.com_patflow_app_feature_dashboard_DashboardViewModel, ((Provider) dashboardViewModelProvider)).put(LazyClassKeyProvider.com_patflow_app_feature_payment_PaymentDetailViewModel, ((Provider) paymentDetailViewModelProvider)).put(LazyClassKeyProvider.com_patflow_app_feature_payment_PaymentHistoryViewModel, ((Provider) paymentHistoryViewModelProvider)).put(LazyClassKeyProvider.com_patflow_app_feature_reports_ReportsViewModel, ((Provider) reportsViewModelProvider)).build());
+      return LazyClassKeyMap.<javax.inject.Provider<ViewModel>>of(MapBuilder.<String, javax.inject.Provider<ViewModel>>newMapBuilder(10).put(LazyClassKeyProvider.com_patflow_app_feature_bills_AddEditBillViewModel, ((Provider) addEditBillViewModelProvider)).put(LazyClassKeyProvider.com_patflow_app_feature_bills_BillDetailViewModel, ((Provider) billDetailViewModelProvider)).put(LazyClassKeyProvider.com_patflow_app_feature_bills_BillListViewModel, ((Provider) billListViewModelProvider)).put(LazyClassKeyProvider.com_patflow_app_feature_dashboard_DashboardViewModel, ((Provider) dashboardViewModelProvider)).put(LazyClassKeyProvider.com_patflow_app_core_utils_HapticViewModel, ((Provider) hapticViewModelProvider)).put(LazyClassKeyProvider.com_patflow_app_feature_payment_PaymentDetailViewModel, ((Provider) paymentDetailViewModelProvider)).put(LazyClassKeyProvider.com_patflow_app_feature_payment_PaymentHistoryViewModel, ((Provider) paymentHistoryViewModelProvider)).put(LazyClassKeyProvider.com_patflow_app_feature_reports_ReportsViewModel, ((Provider) reportsViewModelProvider)).put(LazyClassKeyProvider.com_patflow_app_feature_settings_SettingsViewModel, ((Provider) settingsViewModelProvider)).put(LazyClassKeyProvider.com_patflow_app_core_theme_ThemeViewModel, ((Provider) themeViewModelProvider)).build());
     }
 
     @Override
@@ -567,40 +623,55 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_patflow_app_feature_dashboard_DashboardViewModel = "com.patflow.app.feature.dashboard.DashboardViewModel";
-
-      static String com_patflow_app_feature_bills_BillDetailViewModel = "com.patflow.app.feature.bills.BillDetailViewModel";
-
-      static String com_patflow_app_feature_payment_PaymentDetailViewModel = "com.patflow.app.feature.payment.PaymentDetailViewModel";
+      static String com_patflow_app_feature_payment_PaymentHistoryViewModel = "com.patflow.app.feature.payment.PaymentHistoryViewModel";
 
       static String com_patflow_app_feature_bills_BillListViewModel = "com.patflow.app.feature.bills.BillListViewModel";
 
-      static String com_patflow_app_feature_reports_ReportsViewModel = "com.patflow.app.feature.reports.ReportsViewModel";
+      static String com_patflow_app_feature_payment_PaymentDetailViewModel = "com.patflow.app.feature.payment.PaymentDetailViewModel";
 
       static String com_patflow_app_feature_bills_AddEditBillViewModel = "com.patflow.app.feature.bills.AddEditBillViewModel";
 
-      static String com_patflow_app_feature_payment_PaymentHistoryViewModel = "com.patflow.app.feature.payment.PaymentHistoryViewModel";
+      static String com_patflow_app_feature_dashboard_DashboardViewModel = "com.patflow.app.feature.dashboard.DashboardViewModel";
+
+      static String com_patflow_app_core_utils_HapticViewModel = "com.patflow.app.core.utils.HapticViewModel";
+
+      static String com_patflow_app_feature_bills_BillDetailViewModel = "com.patflow.app.feature.bills.BillDetailViewModel";
+
+      static String com_patflow_app_feature_settings_SettingsViewModel = "com.patflow.app.feature.settings.SettingsViewModel";
+
+      static String com_patflow_app_feature_reports_ReportsViewModel = "com.patflow.app.feature.reports.ReportsViewModel";
+
+      static String com_patflow_app_core_theme_ThemeViewModel = "com.patflow.app.core.theme.ThemeViewModel";
 
       @KeepFieldType
-      DashboardViewModel com_patflow_app_feature_dashboard_DashboardViewModel2;
-
-      @KeepFieldType
-      BillDetailViewModel com_patflow_app_feature_bills_BillDetailViewModel2;
-
-      @KeepFieldType
-      PaymentDetailViewModel com_patflow_app_feature_payment_PaymentDetailViewModel2;
+      PaymentHistoryViewModel com_patflow_app_feature_payment_PaymentHistoryViewModel2;
 
       @KeepFieldType
       BillListViewModel com_patflow_app_feature_bills_BillListViewModel2;
 
       @KeepFieldType
-      ReportsViewModel com_patflow_app_feature_reports_ReportsViewModel2;
+      PaymentDetailViewModel com_patflow_app_feature_payment_PaymentDetailViewModel2;
 
       @KeepFieldType
       AddEditBillViewModel com_patflow_app_feature_bills_AddEditBillViewModel2;
 
       @KeepFieldType
-      PaymentHistoryViewModel com_patflow_app_feature_payment_PaymentHistoryViewModel2;
+      DashboardViewModel com_patflow_app_feature_dashboard_DashboardViewModel2;
+
+      @KeepFieldType
+      HapticViewModel com_patflow_app_core_utils_HapticViewModel2;
+
+      @KeepFieldType
+      BillDetailViewModel com_patflow_app_feature_bills_BillDetailViewModel2;
+
+      @KeepFieldType
+      SettingsViewModel com_patflow_app_feature_settings_SettingsViewModel2;
+
+      @KeepFieldType
+      ReportsViewModel com_patflow_app_feature_reports_ReportsViewModel2;
+
+      @KeepFieldType
+      ThemeViewModel com_patflow_app_core_theme_ThemeViewModel2;
     }
 
     private static final class SwitchingProvider<T> implements Provider<T> {
@@ -625,7 +696,7 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
       public T get() {
         switch (id) {
           case 0: // com.patflow.app.feature.bills.AddEditBillViewModel 
-          return (T) new AddEditBillViewModel(viewModelCImpl.addBillUseCase(), viewModelCImpl.updateBillUseCase(), viewModelCImpl.getBillDetailUseCase(), singletonCImpl.bindCategoryRepositoryProvider.get(), viewModelCImpl.savedStateHandle);
+          return (T) new AddEditBillViewModel(viewModelCImpl.addBillUseCase(), viewModelCImpl.updateBillUseCase(), viewModelCImpl.getBillDetailUseCase(), singletonCImpl.bindCategoryRepositoryProvider.get(), viewModelCImpl.getUserSettingsUseCase(), viewModelCImpl.savedStateHandle);
 
           case 1: // com.patflow.app.feature.bills.BillDetailViewModel 
           return (T) new BillDetailViewModel(viewModelCImpl.getBillDetailUseCase(), viewModelCImpl.deleteBillUseCase(), viewModelCImpl.markBillAsPaidUseCase(), viewModelCImpl.savedStateHandle);
@@ -634,16 +705,25 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
           return (T) new BillListViewModel(viewModelCImpl.getBillsUseCase(), viewModelCImpl.deleteBillUseCase(), viewModelCImpl.markBillAsPaidUseCase());
 
           case 3: // com.patflow.app.feature.dashboard.DashboardViewModel 
-          return (T) new DashboardViewModel(viewModelCImpl.getDashboardDataUseCase());
+          return (T) new DashboardViewModel(viewModelCImpl.getDashboardDataUseCase(), viewModelCImpl.getUserSettingsUseCase());
 
-          case 4: // com.patflow.app.feature.payment.PaymentDetailViewModel 
+          case 4: // com.patflow.app.core.utils.HapticViewModel 
+          return (T) new HapticViewModel(viewModelCImpl.getUserSettingsUseCase());
+
+          case 5: // com.patflow.app.feature.payment.PaymentDetailViewModel 
           return (T) new PaymentDetailViewModel(viewModelCImpl.getPaymentDetailUseCase(), viewModelCImpl.undoPaymentUseCase(), viewModelCImpl.savedStateHandle);
 
-          case 5: // com.patflow.app.feature.payment.PaymentHistoryViewModel 
+          case 6: // com.patflow.app.feature.payment.PaymentHistoryViewModel 
           return (T) new PaymentHistoryViewModel(viewModelCImpl.getPaymentsUseCase());
 
-          case 6: // com.patflow.app.feature.reports.ReportsViewModel 
-          return (T) new ReportsViewModel(viewModelCImpl.getReportDataUseCase());
+          case 7: // com.patflow.app.feature.reports.ReportsViewModel 
+          return (T) new ReportsViewModel(viewModelCImpl.getReportDataUseCase(), viewModelCImpl.getUserSettingsUseCase());
+
+          case 8: // com.patflow.app.feature.settings.SettingsViewModel 
+          return (T) new SettingsViewModel(viewModelCImpl.getUserSettingsUseCase(), viewModelCImpl.updateUserPreferenceUseCase());
+
+          case 9: // com.patflow.app.core.theme.ThemeViewModel 
+          return (T) new ThemeViewModel(viewModelCImpl.getUserSettingsUseCase());
 
           default: throw new AssertionError(id);
         }
@@ -727,7 +807,7 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
 
     private Provider<PatFlowDatabase> provideDatabaseProvider;
 
-    private Provider<CategoryDao> provideCategoryDaoProvider;
+    private Provider<DatabaseInitializer> databaseInitializerProvider;
 
     private Provider<BillRepositoryImpl> billRepositoryImplProvider;
 
@@ -737,6 +817,12 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
 
     private Provider<CategoryRepository> bindCategoryRepositoryProvider;
 
+    private Provider<DataStore<Preferences>> providePreferencesDataStoreProvider;
+
+    private Provider<SettingsRepositoryImpl> settingsRepositoryImplProvider;
+
+    private Provider<SettingsRepository> bindSettingsRepositoryProvider;
+
     private Provider<PaymentRepositoryImpl> paymentRepositoryImplProvider;
 
     private Provider<PaymentRepository> bindPaymentRepositoryProvider;
@@ -745,6 +831,10 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
       this.applicationContextModule = applicationContextModuleParam;
       initialize(applicationContextModuleParam);
 
+    }
+
+    private CategoryDao categoryDao() {
+      return DatabaseModule_ProvideCategoryDaoFactory.provideCategoryDao(provideDatabaseProvider.get());
     }
 
     private BillDao billDao() {
@@ -761,14 +851,16 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
 
     @SuppressWarnings("unchecked")
     private void initialize(final ApplicationContextModule applicationContextModuleParam) {
-      this.provideDatabaseProvider = new DelegateFactory<>();
-      this.provideCategoryDaoProvider = new SwitchingProvider<>(singletonCImpl, 2);
-      DelegateFactory.setDelegate(provideDatabaseProvider, DoubleCheck.provider(new SwitchingProvider<PatFlowDatabase>(singletonCImpl, 1)));
-      this.billRepositoryImplProvider = new SwitchingProvider<>(singletonCImpl, 0);
+      this.provideDatabaseProvider = DoubleCheck.provider(new SwitchingProvider<PatFlowDatabase>(singletonCImpl, 1));
+      this.databaseInitializerProvider = DoubleCheck.provider(new SwitchingProvider<DatabaseInitializer>(singletonCImpl, 0));
+      this.billRepositoryImplProvider = new SwitchingProvider<>(singletonCImpl, 2);
       this.bindBillRepositoryProvider = DoubleCheck.provider((Provider) billRepositoryImplProvider);
       this.categoryRepositoryImplProvider = new SwitchingProvider<>(singletonCImpl, 3);
       this.bindCategoryRepositoryProvider = DoubleCheck.provider((Provider) categoryRepositoryImplProvider);
-      this.paymentRepositoryImplProvider = new SwitchingProvider<>(singletonCImpl, 4);
+      this.providePreferencesDataStoreProvider = DoubleCheck.provider(new SwitchingProvider<DataStore<Preferences>>(singletonCImpl, 5));
+      this.settingsRepositoryImplProvider = new SwitchingProvider<>(singletonCImpl, 4);
+      this.bindSettingsRepositoryProvider = DoubleCheck.provider((Provider) settingsRepositoryImplProvider);
+      this.paymentRepositoryImplProvider = new SwitchingProvider<>(singletonCImpl, 6);
       this.bindPaymentRepositoryProvider = DoubleCheck.provider((Provider) paymentRepositoryImplProvider);
     }
 
@@ -805,20 +897,26 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
       @Override
       public T get() {
         switch (id) {
-          case 0: // com.patflow.app.data.repository.BillRepositoryImpl 
-          return (T) new BillRepositoryImpl(singletonCImpl.billDao(), singletonCImpl.billCycleDao(), singletonCImpl.paymentDao());
+          case 0: // com.patflow.app.data.local.database.DatabaseInitializer 
+          return (T) new DatabaseInitializer(singletonCImpl.categoryDao());
 
           case 1: // com.patflow.app.data.local.database.PatFlowDatabase 
-          return (T) DatabaseModule_ProvideDatabaseFactory.provideDatabase(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule), singletonCImpl.provideCategoryDaoProvider);
+          return (T) DatabaseModule_ProvideDatabaseFactory.provideDatabase(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
-          case 2: // com.patflow.app.data.local.dao.CategoryDao 
-          return (T) DatabaseModule_ProvideCategoryDaoFactory.provideCategoryDao(singletonCImpl.provideDatabaseProvider.get());
+          case 2: // com.patflow.app.data.repository.BillRepositoryImpl 
+          return (T) new BillRepositoryImpl(singletonCImpl.billDao(), singletonCImpl.billCycleDao());
 
           case 3: // com.patflow.app.data.repository.CategoryRepositoryImpl 
-          return (T) new CategoryRepositoryImpl(singletonCImpl.provideCategoryDaoProvider.get());
+          return (T) new CategoryRepositoryImpl(singletonCImpl.categoryDao());
 
-          case 4: // com.patflow.app.data.repository.PaymentRepositoryImpl 
-          return (T) new PaymentRepositoryImpl(singletonCImpl.paymentDao(), singletonCImpl.billDao());
+          case 4: // com.patflow.app.data.repository.SettingsRepositoryImpl 
+          return (T) new SettingsRepositoryImpl(singletonCImpl.providePreferencesDataStoreProvider.get());
+
+          case 5: // androidx.datastore.core.DataStore<androidx.datastore.preferences.core.Preferences> 
+          return (T) DataStoreModule_ProvidePreferencesDataStoreFactory.providePreferencesDataStore(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 6: // com.patflow.app.data.repository.PaymentRepositoryImpl 
+          return (T) new PaymentRepositoryImpl(singletonCImpl.paymentDao(), singletonCImpl.billCycleDao());
 
           default: throw new AssertionError(id);
         }

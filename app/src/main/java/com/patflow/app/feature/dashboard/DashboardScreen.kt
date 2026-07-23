@@ -19,7 +19,6 @@ import androidx.compose.material.icons.automirrored.rounded.ReceiptLong
 import androidx.compose.material.icons.rounded.CalendarToday
 import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.Payments
-import androidx.compose.material.icons.rounded.ReceiptLong
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -48,10 +47,12 @@ import com.patflow.app.core.components.SpeedDialFab
 import com.patflow.app.core.components.SummaryCard
 import com.patflow.app.core.theme.PatFlowShapes
 import com.patflow.app.core.theme.PatFlowSpacing
+import com.patflow.app.core.utils.CategoryMapper
 import com.patflow.app.core.utils.CurrencyFormatter
 import com.patflow.app.domain.model.BillStatus
 import com.patflow.app.domain.model.DashboardData
 import com.patflow.app.domain.model.PaymentHistory
+import com.patflow.app.domain.model.UserPreferences
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberColumnCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
@@ -72,19 +73,22 @@ fun DashboardScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val preferences by viewModel.userPreferences.collectAsState()
 
-    val speedDialActions = listOf(
-        SpeedDialAction(
-            label = "Add Bill",
-            icon = Icons.AutoMirrored.Rounded.ReceiptLong,
-            onClick = onAddBillClick
-        ),
-        SpeedDialAction(
-            label = "Log Payment",
-            icon = Icons.Rounded.Payments,
-            onClick = onLogPaymentClick
+    val speedDialActions = remember(onAddBillClick, onLogPaymentClick) {
+        listOf(
+            SpeedDialAction(
+                label = "Add Bill",
+                icon = Icons.AutoMirrored.Rounded.ReceiptLong,
+                onClick = onAddBillClick
+            ),
+            SpeedDialAction(
+                label = "Log Payment",
+                icon = Icons.Rounded.Payments,
+                onClick = onLogPaymentClick
+            )
         )
-    )
+    }
 
     Scaffold(
         topBar = { AppTopBar(title = "Dashboard") },
@@ -100,6 +104,7 @@ fun DashboardScreen(
                 DashboardUiState.Empty -> DashboardEmptyState(onAddBillClick)
                 is DashboardUiState.Success -> DashboardContent(
                     data = state.data,
+                    preferences = preferences,
                     onBillClick = onBillClick,
                     onPaymentClick = onPaymentClick
                 )
@@ -148,11 +153,13 @@ private fun DashboardEmptyState(onAddBillClick: () -> Unit) {
 @Composable
 private fun DashboardContent(
     data: DashboardData,
+    preferences: UserPreferences?,
     onBillClick: (Long) -> Unit,
     onPaymentClick: (Long) -> Unit
 ) {
     val trendModelProducer = remember { CartesianChartModelProducer() }
     val categoryModelProducer = remember { CartesianChartModelProducer() }
+    val currencyCode = preferences?.profile?.preferredCurrency ?: "PHP"
 
     LaunchedEffect(data.spendingTrend) {
         if (data.spendingTrend.isNotEmpty()) {
@@ -177,7 +184,7 @@ private fun DashboardContent(
     ) {
         // Summary Row
         item {
-            SummaryRow(data)
+            SummaryRow(data, currencyCode)
         }
 
         // Spending Trend
@@ -235,7 +242,7 @@ private fun DashboardContent(
                     name = item.bill.name,
                     amount = item.currentCycle?.amountDue ?: item.bill.defaultAmount,
                     dueDate = item.currentCycle?.dueDate?.toString() ?: "N/A",
-                    category = mapCategoryToType(item.bill.category.name),
+                    category = CategoryMapper.mapToType(item.bill.category.name),
                     status = item.currentCycle?.status ?: BillStatus.UNPAID,
                     onClick = { onBillClick(item.bill.id) }
                 )
@@ -256,7 +263,7 @@ private fun DashboardContent(
 }
 
 @Composable
-private fun SummaryRow(data: DashboardData) {
+private fun SummaryRow(data: DashboardData, currencyCode: String) {
     Column(verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -264,13 +271,13 @@ private fun SummaryRow(data: DashboardData) {
         ) {
             SummaryCard(
                 title = "Total Due",
-                value = CurrencyFormatter.formatAmount(data.totalBillsThisMonth),
+                value = CurrencyFormatter.formatAmount(data.totalBillsThisMonth, currencyCode),
                 icon = Icons.Rounded.CalendarToday,
                 modifier = Modifier.weight(1f)
             )
             SummaryCard(
                 title = "Paid",
-                value = CurrencyFormatter.formatAmount(data.totalPaidThisMonth),
+                value = CurrencyFormatter.formatAmount(data.totalPaidThisMonth, currencyCode),
                 icon = Icons.Rounded.Payments,
                 modifier = Modifier.weight(1f),
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -341,13 +348,5 @@ private fun RecentPaymentItem(
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary
         )
-    }
-}
-
-private fun mapCategoryToType(name: String): CategoryType {
-    return try {
-        CategoryType.valueOf(name.uppercase().replace(" ", "_"))
-    } catch (_: Exception) {
-        CategoryType.ELECTRICITY
     }
 }

@@ -8,6 +8,9 @@ import javax.inject.Inject
 /**
  * Logic to fetch all payments for history display.
  */
+/**
+ * Use case for fetching the complete transaction history (Architecture §1.2 / FR-2.4).
+ */
 class GetPaymentsUseCase @Inject constructor(
     private val repository: PaymentRepository
 ) {

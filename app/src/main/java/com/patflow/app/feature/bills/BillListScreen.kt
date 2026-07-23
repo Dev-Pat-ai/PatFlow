@@ -45,11 +45,15 @@ import com.patflow.app.core.components.FullScreenError
 import com.patflow.app.core.components.SkeletonBox
 import com.patflow.app.core.components.SwipeableBillRow
 import com.patflow.app.core.theme.PatFlowSpacing
+import com.patflow.app.core.utils.CategoryMapper
 import com.patflow.app.core.utils.rememberHapticFeedbackController
 import com.patflow.app.domain.model.BillStatus
 import com.patflow.app.domain.model.BillWithCycle
 import java.util.Locale
 
+/**
+ * Screen for viewing a list of bills (Architecture §6).
+ */
 @Composable
 fun BillListScreen(
     onBillClick: (Long) -> Unit,
@@ -272,10 +276,11 @@ private fun BillListContent(
                     name = item.bill.name,
                     amount = item.currentCycle?.amountDue ?: item.bill.defaultAmount,
                     dueDate = item.currentCycle?.dueDate?.toString() ?: "N/A",
-                    category = mapCategoryToType(item.bill.category.name),
+                    category = CategoryMapper.mapToType(item.bill.category.name),
                     status = item.currentCycle?.status ?: BillStatus.UNPAID,
                     isSelected = isSelected,
                     showSelection = selectedIds.isNotEmpty(),
+                    currencyCode = item.bill.currencyCode,
                     onClick = { onBillClick(item.bill.id) },
                     onLongClick = { onLongClick(item.bill.id) }
                 )
@@ -295,13 +300,5 @@ private fun BillListLoading() {
         repeat(5) {
             SkeletonBox(height = 80.dp)
         }
-    }
-}
-
-private fun mapCategoryToType(name: String): CategoryType {
-    return try {
-        CategoryType.valueOf(name.uppercase().replace(" ", "_"))
-    } catch (_: Exception) {
-        CategoryType.ELECTRICITY
     }
 }

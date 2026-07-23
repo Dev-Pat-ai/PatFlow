@@ -20,11 +20,15 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel for the Bill List screen.
+ * Manages searching, filtering, and multi-select logic for bills.
+ */
 @HiltViewModel
 class BillListViewModel @Inject constructor(
     getBillsUseCase: GetBillsUseCase,
     private val deleteBillUseCase: DeleteBillUseCase,
-    private val markBillAsPaidUseCase: MarkBillAsPaidUseCase
+    private val markBillAsPaidUseCase: MarkBillAsPaidUseCase,
 ) : ViewModel() {
 
     private val _searchQuery = MutableStateFlow("")
@@ -33,7 +37,7 @@ class BillListViewModel @Inject constructor(
     private val _selectedStatus = MutableStateFlow<BillStatus?>(null)
     val selectedStatus: StateFlow<BillStatus?> = _selectedStatus
 
-    private val _sortByDateDesc = MutableStateFlow(false)
+    private val _sortByDateDesc = MutableStateFlow(value = false)
     val sortByDateDesc: StateFlow<Boolean> = _sortByDateDesc
 
     private val _selectedIds = MutableStateFlow<Set<Long>>(emptySet())
@@ -52,7 +56,7 @@ class BillListViewModel @Inject constructor(
         val filtered = bills.filter { item ->
             val matchesQuery = item.bill.name.contains(query, ignoreCase = true) ||
                     (item.bill.merchant?.contains(query, ignoreCase = true) ?: false)
-            val matchesStatus = status == null || item.currentCycle?.status == status
+            val matchesStatus = (status == null) || (item.currentCycle?.status == status)
             matchesQuery && matchesStatus
         }.sortedWith { a, b ->
             val dateA = a.currentCycle?.dueDate

@@ -33,9 +33,13 @@ import com.patflow.app.core.components.CategoryType
 import com.patflow.app.core.components.EmptyState
 import com.patflow.app.core.components.SkeletonBox
 import com.patflow.app.core.theme.PatFlowSpacing
+import com.patflow.app.core.utils.CategoryMapper
 import com.patflow.app.core.utils.CurrencyFormatter
 import com.patflow.app.domain.model.PaymentHistory
 
+/**
+ * Screen for viewing payment history (Architecture §6).
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentHistoryScreen(
@@ -129,7 +133,7 @@ private fun PaymentItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space4)
     ) {
-        CategoryChip(category = mapCategoryToType(history.category.name))
+        CategoryChip(category = CategoryMapper.mapToType(history.category.name))
         
         Column(modifier = Modifier.weight(1f)) {
             Text(
@@ -162,13 +166,5 @@ private fun PaymentHistoryLoading() {
         repeat(5) {
             SkeletonBox(height = 60.dp)
         }
-    }
-}
-
-private fun mapCategoryToType(name: String): CategoryType {
-    return try {
-        CategoryType.valueOf(name.uppercase().replace(" ", "_"))
-    } catch (_: Exception) {
-        CategoryType.ELECTRICITY
     }
 }

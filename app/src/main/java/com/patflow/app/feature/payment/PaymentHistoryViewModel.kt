@@ -12,6 +12,10 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
+/**
+ * ViewModel for the Payment History screen.
+ * Manages searching and filtering of transactions.
+ */
 @HiltViewModel
 class PaymentHistoryViewModel @Inject constructor(
     getPaymentsUseCase: GetPaymentsUseCase

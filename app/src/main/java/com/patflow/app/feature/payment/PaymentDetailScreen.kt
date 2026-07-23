@@ -33,9 +33,13 @@ import com.patflow.app.core.components.CategoryType
 import com.patflow.app.core.components.ConfirmationDialog
 import com.patflow.app.core.components.SectionHeader
 import com.patflow.app.core.theme.PatFlowSpacing
+import com.patflow.app.core.utils.CategoryMapper
 import com.patflow.app.core.utils.CurrencyFormatter
 import com.patflow.app.core.utils.rememberHapticFeedbackController
 
+/**
+ * Screen for viewing payment details (Architecture §6).
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentDetailScreen(
@@ -103,7 +107,7 @@ fun PaymentDetailScreen(
 
                     SectionHeader(title = "Information")
                     DetailRow("Category") {
-                        CategoryChip(category = mapCategoryToType(history.category.name))
+                        CategoryChip(category = CategoryMapper.mapToType(history.category.name))
                     }
                     DetailRow("Date", value = payment.paymentDate.toString())
                     DetailRow("Method", value = payment.method.name)
@@ -158,13 +162,5 @@ private fun DetailRow(
         Text(text = label, style = MaterialTheme.typography.labelLarge)
         if (content != null) content()
         else if (value != null) Text(text = value, style = MaterialTheme.typography.bodyLarge)
-    }
-}
-
-private fun mapCategoryToType(name: String): CategoryType {
-    return try {
-        CategoryType.valueOf(name.uppercase().replace(" ", "_"))
-    } catch (_: Exception) {
-        CategoryType.ELECTRICITY
     }
 }

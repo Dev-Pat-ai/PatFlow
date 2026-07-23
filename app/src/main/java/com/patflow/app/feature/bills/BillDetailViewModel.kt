@@ -19,6 +19,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel for the Bill Detail screen.
+ * Handles single bill retrieval, status updates, and deletion.
+ */
 @HiltViewModel
 class BillDetailViewModel @Inject constructor(
     getBillDetailUseCase: GetBillDetailUseCase,

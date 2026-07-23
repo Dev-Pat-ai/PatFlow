@@ -1,6 +1,5 @@
 package com.patflow.app.domain.usecase.payment;
 
-import com.patflow.app.domain.repository.BillRepository;
 import com.patflow.app.domain.repository.PaymentRepository;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
@@ -27,27 +26,21 @@ import javax.inject.Provider;
 public final class UndoPaymentUseCase_Factory implements Factory<UndoPaymentUseCase> {
   private final Provider<PaymentRepository> paymentRepositoryProvider;
 
-  private final Provider<BillRepository> billRepositoryProvider;
-
-  public UndoPaymentUseCase_Factory(Provider<PaymentRepository> paymentRepositoryProvider,
-      Provider<BillRepository> billRepositoryProvider) {
+  public UndoPaymentUseCase_Factory(Provider<PaymentRepository> paymentRepositoryProvider) {
     this.paymentRepositoryProvider = paymentRepositoryProvider;
-    this.billRepositoryProvider = billRepositoryProvider;
   }
 
   @Override
   public UndoPaymentUseCase get() {
-    return newInstance(paymentRepositoryProvider.get(), billRepositoryProvider.get());
+    return newInstance(paymentRepositoryProvider.get());
   }
 
   public static UndoPaymentUseCase_Factory create(
-      Provider<PaymentRepository> paymentRepositoryProvider,
-      Provider<BillRepository> billRepositoryProvider) {
-    return new UndoPaymentUseCase_Factory(paymentRepositoryProvider, billRepositoryProvider);
+      Provider<PaymentRepository> paymentRepositoryProvider) {
+    return new UndoPaymentUseCase_Factory(paymentRepositoryProvider);
   }
 
-  public static UndoPaymentUseCase newInstance(PaymentRepository paymentRepository,
-      BillRepository billRepository) {
-    return new UndoPaymentUseCase(paymentRepository, billRepository);
+  public static UndoPaymentUseCase newInstance(PaymentRepository paymentRepository) {
+    return new UndoPaymentUseCase(paymentRepository);
   }
 }

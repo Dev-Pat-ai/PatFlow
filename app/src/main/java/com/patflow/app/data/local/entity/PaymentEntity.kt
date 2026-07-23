@@ -8,7 +8,10 @@ import androidx.room.PrimaryKey
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 
-/** `payment` — a logged payment against a bill cycle (Architecture §8.3). Multiple allowed per cycle (FR-2.2). */
+/**
+ * Room entity representing a logged payment against a bill cycle (Architecture §8.3 / FR-2.1).
+ * Multiple payments can be associated with a single cycle (FR-2.2).
+ */
 @Entity(
     tableName = "payment",
     foreignKeys = [

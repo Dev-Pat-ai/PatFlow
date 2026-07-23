@@ -5,6 +5,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -82,6 +83,7 @@ dependencies {
 
     // --- kotlinx-datetime (Architecture §10 — domain layer stays free of java.time) ---
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
 
     // --- WorkManager (bill cycle generation, reminders) ---
     implementation("androidx.work:work-runtime-ktx:2.10.0")

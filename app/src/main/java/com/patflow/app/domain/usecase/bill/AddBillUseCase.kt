@@ -4,6 +4,10 @@ import com.patflow.app.domain.model.Bill
 import com.patflow.app.domain.repository.BillRepository
 import javax.inject.Inject
 
+/**
+ * Use case for adding a new bill to the system (Architecture §1.1).
+ * Handles initial bill cycle generation via the repository.
+ */
 class AddBillUseCase @Inject constructor(
     private val repository: BillRepository
 ) {

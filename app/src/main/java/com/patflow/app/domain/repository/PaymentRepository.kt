@@ -5,7 +5,8 @@ import com.patflow.app.domain.model.PaymentHistory
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Interface for payment-related data operations (Architecture §8.3).
+ * Interface for payment-related data operations (Architecture §8.3 / RC stabilization).
+ * Manages transaction records and atomic undo operations.
  */
 interface PaymentRepository {
     fun getPayments(): Flow<List<PaymentHistory>>
@@ -13,5 +14,5 @@ interface PaymentRepository {
     fun getPaymentsByCycle(cycleId: Long): Flow<List<Payment>>
     
     suspend fun insertPayment(payment: Payment): Long
-    suspend fun deletePayment(id: Long)
+    suspend fun undoPayment(paymentId: Long)
 }
