@@ -2,9 +2,11 @@ package com.patflow.app.data.repository;
 
 import com.patflow.app.data.local.dao.BillCycleDao;
 import com.patflow.app.data.local.dao.BillDao;
+import com.patflow.app.data.local.dao.BudgetDao;
 import com.patflow.app.data.local.dao.CategoryDao;
 import com.patflow.app.data.local.dao.IncomeDao;
 import com.patflow.app.data.local.dao.PaymentDao;
+import com.patflow.app.data.local.dao.SavingsGoalDao;
 import com.patflow.app.data.local.database.PatFlowDatabase;
 import com.patflow.app.domain.repository.SettingsRepository;
 import dagger.internal.DaggerGenerated;
@@ -42,12 +44,17 @@ public final class DataManagementRepositoryImpl_Factory implements Factory<DataM
 
   private final Provider<IncomeDao> incomeDaoProvider;
 
+  private final Provider<BudgetDao> budgetDaoProvider;
+
+  private final Provider<SavingsGoalDao> savingsGoalDaoProvider;
+
   private final Provider<SettingsRepository> settingsRepositoryProvider;
 
   public DataManagementRepositoryImpl_Factory(Provider<PatFlowDatabase> databaseProvider,
       Provider<BillDao> billDaoProvider, Provider<BillCycleDao> billCycleDaoProvider,
       Provider<PaymentDao> paymentDaoProvider, Provider<CategoryDao> categoryDaoProvider,
-      Provider<IncomeDao> incomeDaoProvider,
+      Provider<IncomeDao> incomeDaoProvider, Provider<BudgetDao> budgetDaoProvider,
+      Provider<SavingsGoalDao> savingsGoalDaoProvider,
       Provider<SettingsRepository> settingsRepositoryProvider) {
     this.databaseProvider = databaseProvider;
     this.billDaoProvider = billDaoProvider;
@@ -55,25 +62,29 @@ public final class DataManagementRepositoryImpl_Factory implements Factory<DataM
     this.paymentDaoProvider = paymentDaoProvider;
     this.categoryDaoProvider = categoryDaoProvider;
     this.incomeDaoProvider = incomeDaoProvider;
+    this.budgetDaoProvider = budgetDaoProvider;
+    this.savingsGoalDaoProvider = savingsGoalDaoProvider;
     this.settingsRepositoryProvider = settingsRepositoryProvider;
   }
 
   @Override
   public DataManagementRepositoryImpl get() {
-    return newInstance(databaseProvider.get(), billDaoProvider.get(), billCycleDaoProvider.get(), paymentDaoProvider.get(), categoryDaoProvider.get(), incomeDaoProvider.get(), settingsRepositoryProvider.get());
+    return newInstance(databaseProvider.get(), billDaoProvider.get(), billCycleDaoProvider.get(), paymentDaoProvider.get(), categoryDaoProvider.get(), incomeDaoProvider.get(), budgetDaoProvider.get(), savingsGoalDaoProvider.get(), settingsRepositoryProvider.get());
   }
 
   public static DataManagementRepositoryImpl_Factory create(
       Provider<PatFlowDatabase> databaseProvider, Provider<BillDao> billDaoProvider,
       Provider<BillCycleDao> billCycleDaoProvider, Provider<PaymentDao> paymentDaoProvider,
       Provider<CategoryDao> categoryDaoProvider, Provider<IncomeDao> incomeDaoProvider,
+      Provider<BudgetDao> budgetDaoProvider, Provider<SavingsGoalDao> savingsGoalDaoProvider,
       Provider<SettingsRepository> settingsRepositoryProvider) {
-    return new DataManagementRepositoryImpl_Factory(databaseProvider, billDaoProvider, billCycleDaoProvider, paymentDaoProvider, categoryDaoProvider, incomeDaoProvider, settingsRepositoryProvider);
+    return new DataManagementRepositoryImpl_Factory(databaseProvider, billDaoProvider, billCycleDaoProvider, paymentDaoProvider, categoryDaoProvider, incomeDaoProvider, budgetDaoProvider, savingsGoalDaoProvider, settingsRepositoryProvider);
   }
 
   public static DataManagementRepositoryImpl newInstance(PatFlowDatabase database, BillDao billDao,
       BillCycleDao billCycleDao, PaymentDao paymentDao, CategoryDao categoryDao,
-      IncomeDao incomeDao, SettingsRepository settingsRepository) {
-    return new DataManagementRepositoryImpl(database, billDao, billCycleDao, paymentDao, categoryDao, incomeDao, settingsRepository);
+      IncomeDao incomeDao, BudgetDao budgetDao, SavingsGoalDao savingsGoalDao,
+      SettingsRepository settingsRepository) {
+    return new DataManagementRepositoryImpl(database, billDao, billCycleDao, paymentDao, categoryDao, incomeDao, budgetDao, savingsGoalDao, settingsRepository);
   }
 }

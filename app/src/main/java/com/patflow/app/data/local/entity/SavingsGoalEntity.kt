@@ -35,8 +35,15 @@ data class SavingsGoalEntity(
     @ColumnInfo(name = "color_hex")
     val colorHex: String,
 
+    val notes: String? = null,
+
+    val priority: Int = 0, // 0: Normal, 1: High
+
     @ColumnInfo(name = "is_completed", defaultValue = "0")
-    val isCompleted: Boolean = false, // auto-set when current >= target
+    val isCompleted: Boolean = false,
+
+    @ColumnInfo(name = "is_archived", defaultValue = "0")
+    val isArchived: Boolean = false,
 
     @ColumnInfo(name = "is_deleted", defaultValue = "0")
     val isDeleted: Boolean = false,

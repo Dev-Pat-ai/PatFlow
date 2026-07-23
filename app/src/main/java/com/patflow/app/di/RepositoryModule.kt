@@ -68,4 +68,10 @@ abstract class RepositoryModule {
     abstract fun bindBudgetRepository(
         impl: BudgetRepositoryImpl
     ): BudgetRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSavingsGoalRepository(
+        impl: SavingsGoalRepositoryImpl
+    ): SavingsGoalRepository
 }

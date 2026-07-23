@@ -27,6 +27,10 @@ data class AppDataBackup(
     val incomeCategories: List<IncomeCategoryBackup>,
     val incomeSources: List<IncomeSourceBackup>,
     val incomeEntries: List<IncomeEntryBackup>,
+    val budgets: List<BudgetBackup>,
+    val budgetLimits: List<BudgetLimitBackup>,
+    val savingsGoals: List<SavingsGoalBackup>,
+    val savingsContributions: List<SavingsContributionBackup>,
     val profile: UserProfileBackup,
     val preferences: UserPreferencesBackup
 )
@@ -64,6 +68,52 @@ data class IncomeEntryBackup(
     val entryDate: String,
     val note: String?,
     val createdAt: String
+)
+
+@Serializable
+data class BudgetBackup(
+    val id: Long,
+    val name: String,
+    val type: String,
+    val totalAmount: Double,
+    val currencyCode: String,
+    val startDate: String,
+    val endDate: String,
+    val isActive: Boolean,
+    val isArchived: Boolean
+)
+
+@Serializable
+data class BudgetLimitBackup(
+    val id: Long,
+    val budgetId: Long,
+    val categoryId: Long,
+    val limitAmount: Double
+)
+
+@Serializable
+data class SavingsGoalBackup(
+    val id: Long,
+    val name: String,
+    val targetAmount: Double,
+    val currencyCode: String,
+    val currentAmount: Double,
+    val targetDate: String?,
+    val iconKey: String,
+    val colorHex: String,
+    val notes: String?,
+    val priority: Int,
+    val isCompleted: Boolean,
+    val isArchived: Boolean
+)
+
+@Serializable
+data class SavingsContributionBackup(
+    val id: Long,
+    val savingsGoalId: Long,
+    val amount: Double,
+    val contributionDate: String,
+    val note: String?
 )
 
 @Serializable

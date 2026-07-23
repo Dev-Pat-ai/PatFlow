@@ -81,8 +81,7 @@ public final class PatFlowDatabase_Impl extends PatFlowDatabase {
         db.execSQL("CREATE TABLE IF NOT EXISTS `payment` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `bill_cycle_id` INTEGER NOT NULL, `amount` REAL NOT NULL, `payment_date` TEXT NOT NULL, `method` TEXT NOT NULL, `note` TEXT, `created_at` TEXT NOT NULL, FOREIGN KEY(`bill_cycle_id`) REFERENCES `bill_cycle`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_payment_payment_date` ON `payment` (`payment_date`)");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_payment_bill_cycle_id` ON `payment` (`bill_cycle_id`)");
-        db.execSQL("CREATE TABLE IF NOT EXISTS `budget` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `month` INTEGER NOT NULL, `year` INTEGER NOT NULL, `total_amount` REAL NOT NULL, `is_recurring_default` INTEGER NOT NULL DEFAULT 0)");
-        db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_budget_month_year` ON `budget` (`month`, `year`)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS `budget` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `total_amount` REAL NOT NULL, `currency_code` TEXT NOT NULL DEFAULT 'PHP', `start_date` TEXT NOT NULL, `end_date` TEXT NOT NULL, `is_active` INTEGER NOT NULL DEFAULT 1, `is_archived` INTEGER NOT NULL DEFAULT 0, `is_deleted` INTEGER NOT NULL DEFAULT 0, `created_at` TEXT NOT NULL, `updated_at` TEXT NOT NULL)");
         db.execSQL("CREATE TABLE IF NOT EXISTS `budget_category_limit` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `budget_id` INTEGER NOT NULL, `category_id` INTEGER NOT NULL, `limit_amount` REAL NOT NULL, FOREIGN KEY(`budget_id`) REFERENCES `budget`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`category_id`) REFERENCES `bill_category`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_budget_category_limit_budget_id` ON `budget_category_limit` (`budget_id`)");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_budget_category_limit_category_id` ON `budget_category_limit` (`category_id`)");
@@ -97,14 +96,14 @@ public final class PatFlowDatabase_Impl extends PatFlowDatabase {
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_income_entry_entry_date` ON `income_entry` (`entry_date`)");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_income_entry_category_id` ON `income_entry` (`category_id`)");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_income_entry_income_source_id` ON `income_entry` (`income_source_id`)");
-        db.execSQL("CREATE TABLE IF NOT EXISTS `savings_goal` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `target_amount` REAL NOT NULL, `currency_code` TEXT NOT NULL DEFAULT 'PHP', `current_amount` REAL NOT NULL DEFAULT 0, `target_date` TEXT, `icon_key` TEXT NOT NULL, `color_hex` TEXT NOT NULL, `is_completed` INTEGER NOT NULL DEFAULT 0, `is_deleted` INTEGER NOT NULL DEFAULT 0, `created_at` TEXT NOT NULL)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS `savings_goal` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `target_amount` REAL NOT NULL, `currency_code` TEXT NOT NULL DEFAULT 'PHP', `current_amount` REAL NOT NULL DEFAULT 0, `target_date` TEXT, `icon_key` TEXT NOT NULL, `color_hex` TEXT NOT NULL, `notes` TEXT, `priority` INTEGER NOT NULL, `is_completed` INTEGER NOT NULL DEFAULT 0, `is_archived` INTEGER NOT NULL DEFAULT 0, `is_deleted` INTEGER NOT NULL DEFAULT 0, `created_at` TEXT NOT NULL)");
         db.execSQL("CREATE TABLE IF NOT EXISTS `savings_contribution` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `savings_goal_id` INTEGER NOT NULL, `amount` REAL NOT NULL, `contribution_date` TEXT NOT NULL, `note` TEXT, `created_at` TEXT NOT NULL, FOREIGN KEY(`savings_goal_id`) REFERENCES `savings_goal`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_savings_contribution_savings_goal_id` ON `savings_contribution` (`savings_goal_id`)");
         db.execSQL("CREATE TABLE IF NOT EXISTS `recent_search` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `query_text` TEXT NOT NULL, `searched_at` TEXT NOT NULL)");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_recent_search_searched_at` ON `recent_search` (`searched_at`)");
         db.execSQL("CREATE VIRTUAL TABLE IF NOT EXISTS `bill_search_fts` USING FTS4(`billId` INTEGER NOT NULL, `name` TEXT NOT NULL, `notes` TEXT NOT NULL, `merchant` TEXT NOT NULL, `categoryName` TEXT NOT NULL, notindexed=`billId`)");
         db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '06cfeebc309a4d37d534b8c07224b10f')");
+        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '16f11bdd95fcceb636a871eca0d19126')");
       }
 
       @Override
@@ -265,15 +264,21 @@ public final class PatFlowDatabase_Impl extends PatFlowDatabase {
                   + " Expected:\n" + _infoPayment + "\n"
                   + " Found:\n" + _existingPayment);
         }
-        final HashMap<String, TableInfo.Column> _columnsBudget = new HashMap<String, TableInfo.Column>(5);
+        final HashMap<String, TableInfo.Column> _columnsBudget = new HashMap<String, TableInfo.Column>(12);
         _columnsBudget.put("id", new TableInfo.Column("id", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsBudget.put("month", new TableInfo.Column("month", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsBudget.put("year", new TableInfo.Column("year", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsBudget.put("name", new TableInfo.Column("name", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsBudget.put("type", new TableInfo.Column("type", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsBudget.put("total_amount", new TableInfo.Column("total_amount", "REAL", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsBudget.put("is_recurring_default", new TableInfo.Column("is_recurring_default", "INTEGER", true, 0, "0", TableInfo.CREATED_FROM_ENTITY));
+        _columnsBudget.put("currency_code", new TableInfo.Column("currency_code", "TEXT", true, 0, "'PHP'", TableInfo.CREATED_FROM_ENTITY));
+        _columnsBudget.put("start_date", new TableInfo.Column("start_date", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsBudget.put("end_date", new TableInfo.Column("end_date", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsBudget.put("is_active", new TableInfo.Column("is_active", "INTEGER", true, 0, "1", TableInfo.CREATED_FROM_ENTITY));
+        _columnsBudget.put("is_archived", new TableInfo.Column("is_archived", "INTEGER", true, 0, "0", TableInfo.CREATED_FROM_ENTITY));
+        _columnsBudget.put("is_deleted", new TableInfo.Column("is_deleted", "INTEGER", true, 0, "0", TableInfo.CREATED_FROM_ENTITY));
+        _columnsBudget.put("created_at", new TableInfo.Column("created_at", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsBudget.put("updated_at", new TableInfo.Column("updated_at", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         final HashSet<TableInfo.ForeignKey> _foreignKeysBudget = new HashSet<TableInfo.ForeignKey>(0);
-        final HashSet<TableInfo.Index> _indicesBudget = new HashSet<TableInfo.Index>(1);
-        _indicesBudget.add(new TableInfo.Index("index_budget_month_year", true, Arrays.asList("month", "year"), Arrays.asList("ASC", "ASC")));
+        final HashSet<TableInfo.Index> _indicesBudget = new HashSet<TableInfo.Index>(0);
         final TableInfo _infoBudget = new TableInfo("budget", _columnsBudget, _foreignKeysBudget, _indicesBudget);
         final TableInfo _existingBudget = TableInfo.read(db, "budget");
         if (!_infoBudget.equals(_existingBudget)) {
@@ -381,7 +386,7 @@ public final class PatFlowDatabase_Impl extends PatFlowDatabase {
                   + " Expected:\n" + _infoIncomeEntry + "\n"
                   + " Found:\n" + _existingIncomeEntry);
         }
-        final HashMap<String, TableInfo.Column> _columnsSavingsGoal = new HashMap<String, TableInfo.Column>(11);
+        final HashMap<String, TableInfo.Column> _columnsSavingsGoal = new HashMap<String, TableInfo.Column>(14);
         _columnsSavingsGoal.put("id", new TableInfo.Column("id", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsSavingsGoal.put("name", new TableInfo.Column("name", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsSavingsGoal.put("target_amount", new TableInfo.Column("target_amount", "REAL", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
@@ -390,7 +395,10 @@ public final class PatFlowDatabase_Impl extends PatFlowDatabase {
         _columnsSavingsGoal.put("target_date", new TableInfo.Column("target_date", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsSavingsGoal.put("icon_key", new TableInfo.Column("icon_key", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsSavingsGoal.put("color_hex", new TableInfo.Column("color_hex", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsSavingsGoal.put("notes", new TableInfo.Column("notes", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsSavingsGoal.put("priority", new TableInfo.Column("priority", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsSavingsGoal.put("is_completed", new TableInfo.Column("is_completed", "INTEGER", true, 0, "0", TableInfo.CREATED_FROM_ENTITY));
+        _columnsSavingsGoal.put("is_archived", new TableInfo.Column("is_archived", "INTEGER", true, 0, "0", TableInfo.CREATED_FROM_ENTITY));
         _columnsSavingsGoal.put("is_deleted", new TableInfo.Column("is_deleted", "INTEGER", true, 0, "0", TableInfo.CREATED_FROM_ENTITY));
         _columnsSavingsGoal.put("created_at", new TableInfo.Column("created_at", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         final HashSet<TableInfo.ForeignKey> _foreignKeysSavingsGoal = new HashSet<TableInfo.ForeignKey>(0);
@@ -449,7 +457,7 @@ public final class PatFlowDatabase_Impl extends PatFlowDatabase {
         }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "06cfeebc309a4d37d534b8c07224b10f", "9cc88f86a15cfbb274fb87f4f9f4413c");
+    }, "16f11bdd95fcceb636a871eca0d19126", "ef8dc36dc89c762f310fe6bf32c87ce3");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(config.context).name(config.name).callback(_openCallback).build();
     final SupportSQLiteOpenHelper _helper = config.sqliteOpenHelperFactory.create(_sqliteConfig);
     return _helper;

@@ -67,7 +67,8 @@ class BudgetRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteCategoryLimit(id: Long) {
-        // Find by ID and delete. DAO currently doesn't have getLimitById.
-        // I'll add it or use a query.
+        budgetDao.getLimitById(id)?.let {
+            budgetDao.deleteCategoryLimit(it)
+        }
     }
 }

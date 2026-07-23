@@ -59,9 +59,24 @@ class NotificationScheduler @Inject constructor(
         )
     }
 
+    /**
+     * Schedules a daily job to check budget thresholds.
+     */
+    fun scheduleBudgetCheck() {
+        val workRequest = PeriodicWorkRequestBuilder<BudgetCheckWorker>(1, TimeUnit.DAYS)
+            .build()
+
+        workManager.enqueueUniquePeriodicWork(
+            WORK_BUDGET,
+            ExistingPeriodicWorkPolicy.KEEP,
+            workRequest
+        )
+    }
+
     companion object {
         const val WORK_REMINDERS = "patflow_reminder_sync"
         const val WORK_OVERDUE = "patflow_overdue_check"
         const val WORK_INCOME = "patflow_income_generation"
+        const val WORK_BUDGET = "patflow_budget_check"
     }
 }

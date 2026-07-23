@@ -7,6 +7,7 @@ import androidx.compose.material.icons.automirrored.rounded.ReceiptLong
 import androidx.compose.material.icons.rounded.CalendarToday
 import androidx.compose.material.icons.rounded.Payments
 import androidx.compose.material.icons.rounded.PieChart
+import androidx.compose.material.icons.rounded.Savings
 import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
@@ -116,6 +117,7 @@ private fun ReportContent(
 ) {
     val trendModelProducer = remember { CartesianChartModelProducer() }
     val incomeTrendModelProducer = remember { CartesianChartModelProducer() }
+    val savingsModelProducer = remember { CartesianChartModelProducer() }
     val categorySpendingModelProducer = remember { CartesianChartModelProducer() }
     val currencyCode = preferences?.profile?.preferredCurrency ?: "PHP"
 
@@ -229,6 +231,31 @@ private fun FinancialSummarySection(data: ReportData, currencyCode: String) {
                 modifier = Modifier.weight(1f),
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+            SummaryCard(
+                title = "Total Saved",
+                value = CurrencyFormatter.formatAmount(data.summary.totalSaved, currencyCode),
+                icon = Icons.Rounded.Savings,
+                modifier = Modifier.weight(1f),
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+            )
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
+            SummaryCard(
+                title = "Budget",
+                value = CurrencyFormatter.formatAmount(data.summary.totalBudget, currencyCode),
+                icon = Icons.Rounded.PieChart,
+                modifier = Modifier.weight(1f)
+            )
+            val utilization = if (data.summary.totalBudget > 0) (data.summary.totalPaid / data.summary.totalBudget) * 100 else 0.0
+            SummaryCard(
+                title = "Utilization",
+                value = "${utilization.toInt()}%",
+                icon = Icons.Rounded.PieChart,
+                modifier = Modifier.weight(1f),
+                containerColor = if (utilization > 100) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.surfaceVariant,
+                contentColor = if (utilization > 100) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
         StatisticCard(

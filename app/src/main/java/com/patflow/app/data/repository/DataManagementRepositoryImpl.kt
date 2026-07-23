@@ -26,6 +26,8 @@ class DataManagementRepositoryImpl @Inject constructor(
     private val paymentDao: PaymentDao,
     private val categoryDao: CategoryDao,
     private val incomeDao: IncomeDao,
+    private val budgetDao: BudgetDao,
+    private val savingsGoalDao: SavingsGoalDao,
     private val settingsRepository: SettingsRepository
 ) : DataManagementRepository {
 
@@ -41,6 +43,10 @@ class DataManagementRepositoryImpl @Inject constructor(
             incomeCategories = incomeDao.getAllCategoryEntities().map { it.toBackup() },
             incomeSources = incomeDao.getAllSourceEntities().map { it.toBackup() },
             incomeEntries = incomeDao.getAllEntryEntities().map { it.toBackup() },
+            budgets = budgetDao.getAllEntities().map { it.toBackup() },
+            budgetLimits = budgetDao.getAllLimitEntities().map { it.toBackup() },
+            savingsGoals = savingsGoalDao.getAllEntities().map { it.toBackup() },
+            savingsContributions = savingsGoalDao.getAllContributionEntities().map { it.toBackup() },
             profile = UserProfileBackup(
                 displayName = prefs.profile.displayName,
                 monthlyBudget = prefs.profile.monthlyBudget,
@@ -74,6 +80,10 @@ class DataManagementRepositoryImpl @Inject constructor(
             incomeDao.deleteAllEntries()
             incomeDao.deleteAllSources()
             incomeDao.deleteAllCategories()
+            budgetDao.deleteAllLimits()
+            budgetDao.deleteAll()
+            savingsGoalDao.deleteAllContributions()
+            savingsGoalDao.deleteAll()
             
             // 2. Insert backup data
             categoryDao.insertAll(backup.data.categories.map { it.toEntity() })
@@ -83,6 +93,10 @@ class DataManagementRepositoryImpl @Inject constructor(
             incomeDao.insertAllCategories(backup.data.incomeCategories.map { it.toEntity() })
             incomeDao.insertAllSources(backup.data.incomeSources.map { it.toEntity() })
             incomeDao.insertAllEntries(backup.data.incomeEntries.map { it.toEntity() })
+            budgetDao.insertAll(backup.data.budgets.map { it.toEntity() })
+            budgetDao.insertAllLimits(backup.data.budgetLimits.map { it.toEntity() })
+            savingsGoalDao.insertAll(backup.data.savingsGoals.map { it.toEntity() })
+            savingsGoalDao.insertAllContributions(backup.data.savingsContributions.map { it.toEntity() })
             
             // 3. Restore preferences
             val themeMode = try {
@@ -127,11 +141,25 @@ class DataManagementRepositoryImpl @Inject constructor(
         incomeEntries.forEach {
             incomeCsv.append("${it.id},${it.amount},${it.currencyCode},${it.entryDate},${it.note ?: ""}\n")
         }
+
+        val budgets = budgetDao.getAllEntities()
+        val budgetCsv = StringBuilder("ID,Name,Type,Amount,Currency,Start,End,Active\n")
+        budgets.forEach {
+            budgetCsv.append("${it.id},${it.name},${it.type},${it.totalAmount},${it.currencyCode},${it.startDate},${it.endDate},${it.isActive}\n")
+        }
+
+        val goals = savingsGoalDao.getAllEntities()
+        val goalsCsv = StringBuilder("ID,Name,Target,Current,Currency,Date,Completed\n")
+        goals.forEach {
+            goalsCsv.append("${it.id},${it.name},${it.targetAmount},${it.currentAmount},${it.currencyCode},${it.targetDate ?: ""},${it.isCompleted}\n")
+        }
         
         return mapOf(
             "bills_export.csv" to billsCsv.toString(),
             "payments_export.csv" to paymentsCsv.toString(),
-            "income_export.csv" to incomeCsv.toString()
+            "income_export.csv" to incomeCsv.toString(),
+            "Budget.csv" to budgetCsv.toString(),
+            "savings_export.csv" to goalsCsv.toString()
         )
     }
 }

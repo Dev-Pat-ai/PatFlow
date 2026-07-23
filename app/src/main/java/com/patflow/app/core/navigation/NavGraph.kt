@@ -26,7 +26,13 @@ import com.patflow.app.core.components.BottomNavigationBar
 import com.patflow.app.core.components.NavigationItem
 import com.patflow.app.feature.bills.AddEditBillScreen
 import com.patflow.app.feature.bills.BillDetailScreen
+import com.patflow.app.feature.budget.AddEditBudgetScreen
+import com.patflow.app.feature.budget.BudgetDetailScreen
+import com.patflow.app.feature.calendar.CalendarScreen
 import com.patflow.app.feature.dashboard.DashboardScreen
+import com.patflow.app.feature.savings.AddEditSavingsGoalScreen
+import com.patflow.app.feature.savings.SavingsGoalDetailScreen
+import com.patflow.app.feature.savings.SavingsGoalListScreen
 import com.patflow.app.feature.income.AddEditIncomeScreen
 import com.patflow.app.feature.income.AddEditIncomeSourceScreen
 import com.patflow.app.feature.income.IncomeListScreen
@@ -39,10 +45,7 @@ import com.patflow.app.feature.settings.SettingsScreen
 import com.patflow.app.feature.showcase.DesignSystemShowcaseScreen
 
 /**
- * MainNavGraph shell (Architecture §6). Only the Dashboard destination has a
- * real placeholder composable — everything else is a stub screen so the app
- * boots to a navigable shell before feature screens exist. Each destination
- * gets a real screen as its feature is implemented.
+ * MainNavGraph shell (Architecture §6).
  */
 @Composable
 fun PatFlowNavGraph(
@@ -99,12 +102,16 @@ fun PatFlowNavGraph(
                     onPaymentClick = { paymentId ->
                         navController.navigate(Destinations.paymentDetail(paymentId))
                     },
+                    onBudgetClick = { budgetId ->
+                        navController.navigate(Destinations.budgetDetail(budgetId))
+                    },
+                    onGoalClick = { goalId ->
+                        navController.navigate(Destinations.savingsGoalDetail(goalId))
+                    },
                     onAddBillClick = {
                         navController.navigate(Destinations.ADD_EDIT_BILL)
                     },
                     onLogPaymentClick = {
-                        // For now, navigate to Money/Bills to use swipe or detail flow
-                        // or future payment sheet.
                         navController.navigate(Destinations.MONEY)
                     }
                 )
@@ -129,6 +136,18 @@ fun PatFlowNavGraph(
                     },
                     onIncomeClick = { entryId ->
                         navController.navigate("${Destinations.ADD_EDIT_INCOME}?entryId=$entryId")
+                    },
+                    onAddBudgetClick = {
+                        navController.navigate(Destinations.ADD_EDIT_BUDGET)
+                    },
+                    onBudgetClick = { budgetId ->
+                        navController.navigate(Destinations.budgetDetail(budgetId))
+                    },
+                    onAddSavingsGoalClick = {
+                        navController.navigate(Destinations.ADD_EDIT_SAVINGS_GOAL)
+                    },
+                    onSavingsGoalClick = { goalId ->
+                        navController.navigate(Destinations.savingsGoalDetail(goalId))
                     }
                 )
             }
@@ -196,7 +215,57 @@ fun PatFlowNavGraph(
                 )
             }
 
-            composable(Destinations.CALENDAR) { PlaceholderScreen("Calendar / Timeline") }
+            composable(
+                route = Destinations.ADD_EDIT_BUDGET,
+                arguments = listOf(navArgument("budgetId") { 
+                    type = androidx.navigation.NavType.StringType
+                    nullable = true
+                    defaultValue = null 
+                })
+            ) {
+                AddEditBudgetScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(
+                route = Destinations.BUDGET_DETAIL,
+                arguments = listOf(navArgument("budgetId") { type = androidx.navigation.NavType.LongType })
+            ) {
+                BudgetDetailScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onEditClick = { id ->
+                        navController.navigate("${Destinations.ADD_EDIT_BUDGET}?budgetId=$id")
+                    }
+                )
+            }
+
+            composable(
+                route = Destinations.ADD_EDIT_SAVINGS_GOAL,
+                arguments = listOf(navArgument("goalId") { 
+                    type = androidx.navigation.NavType.StringType
+                    nullable = true
+                    defaultValue = null 
+                })
+            ) {
+                AddEditSavingsGoalScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(
+                route = Destinations.SAVINGS_GOAL_DETAIL,
+                arguments = listOf(navArgument("goalId") { type = androidx.navigation.NavType.LongType })
+            ) {
+                SavingsGoalDetailScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onEditClick = { id ->
+                        navController.navigate("${Destinations.ADD_EDIT_SAVINGS_GOAL}?goalId=$id")
+                    }
+                )
+            }
+
+            composable(Destinations.CALENDAR) { CalendarScreen() }
             composable(Destinations.REPORTS) { ReportsScreen() }
             composable(Destinations.SETTINGS) { 
                 SettingsScreen(
@@ -228,6 +297,6 @@ fun PatFlowNavGraph(
 @Composable
 private fun PlaceholderScreen(label: String) {
     Box(modifier = Modifier.fillMaxSize()) {
-        Text(text = "$label — coming in a later phase")
+        Text(text = "$label — coming in a later phase", modifier = Modifier.align(Alignment.Center))
     }
 }

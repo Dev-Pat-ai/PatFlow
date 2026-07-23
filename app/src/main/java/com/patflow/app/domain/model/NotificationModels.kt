@@ -11,6 +11,7 @@ enum class NotificationType {
     OVERDUE_BILL,
     RECURRING_GENERATED,
     PAYMENT_SUCCESS,
+    BUDGET_ALERT,
     BACKUP_SUCCESS,
     RESTORE_SUCCESS
 }

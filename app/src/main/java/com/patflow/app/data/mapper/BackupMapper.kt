@@ -26,6 +26,18 @@ fun IncomeEntryEntity.toBackup(): IncomeEntryBackup = IncomeEntryBackup(
     id, incomeSourceId, categoryId, amount, currencyCode, entryDate.toString(), note, createdAt.toString()
 )
 
+fun BudgetEntity.toBackup(): BudgetBackup = BudgetBackup(
+    id, name, type, totalAmount, currencyCode, startDate.toString(), endDate.toString(), isActive, isArchived
+)
+fun BudgetCategoryLimitEntity.toBackup(): BudgetLimitBackup = BudgetLimitBackup(id, budgetId, categoryId, limitAmount)
+
+fun SavingsGoalEntity.toBackup(): SavingsGoalBackup = SavingsGoalBackup(
+    id, name, targetAmount, currencyCode, currentAmount, targetDate?.toString(), iconKey, colorHex, notes, priority, isCompleted, isArchived
+)
+fun SavingsContributionEntity.toBackup(): SavingsContributionBackup = SavingsContributionBackup(
+    id, savingsGoalId, amount, contributionDate.toString(), note
+)
+
 fun CategoryBackup.toEntity(): BillCategoryEntity = BillCategoryEntity(id, name, iconKey, colorHex, isCustom)
 
 fun IncomeCategoryBackup.toEntity(): IncomeCategoryEntity = IncomeCategoryEntity(id, name, iconKey, colorHex, isCustom)
@@ -59,4 +71,24 @@ fun BillCycleBackup.toEntity(): BillCycleEntity = BillCycleEntity(
 fun PaymentBackup.toEntity(): PaymentEntity = PaymentEntity(
     id = id, billCycleId = billCycleId, amount = amount, paymentDate = kotlinx.datetime.LocalDate.parse(paymentDate),
     method = method, note = note, createdAt = kotlinx.datetime.Clock.System.now().toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault())
+)
+
+fun BudgetBackup.toEntity(): BudgetEntity = BudgetEntity(
+    id = id, name = name, type = type, totalAmount = totalAmount, currencyCode = currencyCode,
+    startDate = kotlinx.datetime.LocalDate.parse(startDate), endDate = kotlinx.datetime.LocalDate.parse(endDate),
+    isActive = isActive, isArchived = isArchived, isDeleted = false,
+    createdAt = kotlinx.datetime.Clock.System.now().toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault()),
+    updatedAt = kotlinx.datetime.Clock.System.now().toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault())
+)
+fun BudgetLimitBackup.toEntity(): BudgetCategoryLimitEntity = BudgetCategoryLimitEntity(id, budgetId, categoryId, limitAmount)
+
+fun SavingsGoalBackup.toEntity(): SavingsGoalEntity = SavingsGoalEntity(
+    id = id, name = name, targetAmount = targetAmount, currencyCode = currencyCode, currentAmount = currentAmount,
+    targetDate = targetDate?.let { kotlinx.datetime.LocalDate.parse(it) }, iconKey = iconKey, colorHex = colorHex,
+    notes = notes, priority = priority, isCompleted = isCompleted, isArchived = isArchived, isDeleted = false,
+    createdAt = kotlinx.datetime.Clock.System.now().toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault())
+)
+fun SavingsContributionBackup.toEntity(): SavingsContributionEntity = SavingsContributionEntity(
+    id = id, savingsGoalId = savingsGoalId, amount = amount, contributionDate = kotlinx.datetime.LocalDate.parse(contributionDate),
+    note = note, createdAt = kotlinx.datetime.Clock.System.now().toLocalDateTime(kotlinx.datetime.TimeZone.currentSystemDefault())
 )

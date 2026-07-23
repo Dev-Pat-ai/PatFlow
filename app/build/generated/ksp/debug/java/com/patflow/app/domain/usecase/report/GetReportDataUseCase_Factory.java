@@ -1,8 +1,10 @@
 package com.patflow.app.domain.usecase.report;
 
 import com.patflow.app.domain.repository.BillRepository;
+import com.patflow.app.domain.repository.BudgetRepository;
 import com.patflow.app.domain.repository.IncomeRepository;
 import com.patflow.app.domain.repository.PaymentRepository;
+import com.patflow.app.domain.repository.SavingsGoalRepository;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
 import dagger.internal.QualifierMetadata;
@@ -32,27 +34,38 @@ public final class GetReportDataUseCase_Factory implements Factory<GetReportData
 
   private final Provider<IncomeRepository> incomeRepositoryProvider;
 
+  private final Provider<BudgetRepository> budgetRepositoryProvider;
+
+  private final Provider<SavingsGoalRepository> savingsRepositoryProvider;
+
   public GetReportDataUseCase_Factory(Provider<BillRepository> billRepositoryProvider,
       Provider<PaymentRepository> paymentRepositoryProvider,
-      Provider<IncomeRepository> incomeRepositoryProvider) {
+      Provider<IncomeRepository> incomeRepositoryProvider,
+      Provider<BudgetRepository> budgetRepositoryProvider,
+      Provider<SavingsGoalRepository> savingsRepositoryProvider) {
     this.billRepositoryProvider = billRepositoryProvider;
     this.paymentRepositoryProvider = paymentRepositoryProvider;
     this.incomeRepositoryProvider = incomeRepositoryProvider;
+    this.budgetRepositoryProvider = budgetRepositoryProvider;
+    this.savingsRepositoryProvider = savingsRepositoryProvider;
   }
 
   @Override
   public GetReportDataUseCase get() {
-    return newInstance(billRepositoryProvider.get(), paymentRepositoryProvider.get(), incomeRepositoryProvider.get());
+    return newInstance(billRepositoryProvider.get(), paymentRepositoryProvider.get(), incomeRepositoryProvider.get(), budgetRepositoryProvider.get(), savingsRepositoryProvider.get());
   }
 
   public static GetReportDataUseCase_Factory create(Provider<BillRepository> billRepositoryProvider,
       Provider<PaymentRepository> paymentRepositoryProvider,
-      Provider<IncomeRepository> incomeRepositoryProvider) {
-    return new GetReportDataUseCase_Factory(billRepositoryProvider, paymentRepositoryProvider, incomeRepositoryProvider);
+      Provider<IncomeRepository> incomeRepositoryProvider,
+      Provider<BudgetRepository> budgetRepositoryProvider,
+      Provider<SavingsGoalRepository> savingsRepositoryProvider) {
+    return new GetReportDataUseCase_Factory(billRepositoryProvider, paymentRepositoryProvider, incomeRepositoryProvider, budgetRepositoryProvider, savingsRepositoryProvider);
   }
 
   public static GetReportDataUseCase newInstance(BillRepository billRepository,
-      PaymentRepository paymentRepository, IncomeRepository incomeRepository) {
-    return new GetReportDataUseCase(billRepository, paymentRepository, incomeRepository);
+      PaymentRepository paymentRepository, IncomeRepository incomeRepository,
+      BudgetRepository budgetRepository, SavingsGoalRepository savingsRepository) {
+    return new GetReportDataUseCase(billRepository, paymentRepository, incomeRepository, budgetRepository, savingsRepository);
   }
 }

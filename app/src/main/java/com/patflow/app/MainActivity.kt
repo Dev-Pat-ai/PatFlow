@@ -32,6 +32,7 @@ class MainActivity : ComponentActivity() {
         notificationScheduler.scheduleReminderSync()
         notificationScheduler.scheduleOverdueCheck()
         notificationScheduler.scheduleIncomeGeneration()
+        notificationScheduler.scheduleBudgetCheck()
         enableEdgeToEdge()
         setContent {
             PatFlowTheme {

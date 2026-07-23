@@ -42,4 +42,28 @@ interface SavingsGoalDao {
 
     @Query("SELECT * FROM savings_contribution WHERE savings_goal_id = :goalId ORDER BY contribution_date DESC")
     fun getContributionsForGoal(goalId: Long): Flow<List<SavingsContributionEntity>>
+
+    @Query("SELECT SUM(amount) FROM savings_contribution WHERE savings_goal_id = :goalId")
+    suspend fun sumContributions(goalId: Long): Double?
+
+    @Query("SELECT * FROM savings_contribution WHERE id = :id")
+    suspend fun getContributionById(id: Long): SavingsContributionEntity?
+
+    @Query("SELECT * FROM savings_goal")
+    suspend fun getAllEntities(): List<SavingsGoalEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(goals: List<SavingsGoalEntity>)
+
+    @Query("DELETE FROM savings_goal")
+    suspend fun deleteAll()
+
+    @Query("SELECT * FROM savings_contribution")
+    suspend fun getAllContributionEntities(): List<SavingsContributionEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllContributions(contributions: List<SavingsContributionEntity>)
+
+    @Query("DELETE FROM savings_contribution")
+    suspend fun deleteAllContributions()
 }

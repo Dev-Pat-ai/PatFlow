@@ -19,5 +19,7 @@ data class DashboardData(
     val spendingTrend: Map<String, Double> = emptyMap(), // Month name -> Amount
     val spendingByCategory: Map<Category, Double> = emptyMap(),
     val incomeByCategory: Map<IncomeCategory, Double> = emptyMap(),
+    val budgetAnalytics: BudgetAnalytics? = null,
+    val savingsGoals: List<SavingsGoalAnalytics> = emptyList(),
     val insights: List<String> = emptyList()
 )

@@ -51,6 +51,9 @@ interface BudgetDao {
     @Query("SELECT * FROM budget_category_limit WHERE budget_id = :budgetId")
     fun getCategoryLimits(budgetId: Long): Flow<List<BudgetCategoryLimitEntity>>
 
+    @Query("SELECT * FROM budget_category_limit WHERE id = :id")
+    suspend fun getLimitById(id: Long): BudgetCategoryLimitEntity?
+
     @Query("SELECT * FROM budget")
     suspend fun getAllEntities(): List<BudgetEntity>
 

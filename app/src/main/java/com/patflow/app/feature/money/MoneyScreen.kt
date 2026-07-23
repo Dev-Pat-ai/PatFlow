@@ -27,11 +27,14 @@ import com.patflow.app.core.components.SpeedDialAction
 import com.patflow.app.core.components.SpeedDialFab
 import com.patflow.app.core.theme.PatFlowSpacing
 import com.patflow.app.feature.bills.BillListScreen
+import com.patflow.app.feature.budget.BudgetListScreen
 import com.patflow.app.feature.income.IncomeListScreen
+import com.patflow.app.feature.savings.SavingsGoalListScreen
 import kotlinx.coroutines.launch
 
 /**
  * Screen for managing financial entities: Bills, Income, and Savings (Architecture §6).
+ * Updated in Phase 10 & 11 to include Budgets and Savings Goals.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,14 +45,18 @@ fun MoneyScreen(
     onAddIncomeClick: () -> Unit,
     onManageIncomeSourcesClick: () -> Unit,
     onIncomeClick: (Long) -> Unit,
+    onAddBudgetClick: () -> Unit,
+    onBudgetClick: (Long) -> Unit,
+    onAddSavingsGoalClick: () -> Unit,
+    onSavingsGoalClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
-    val tabs = remember { listOf("Bills", "Income", "Savings") }
+    val tabs = remember { listOf("Bills", "Income", "Savings", "Budgets") }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    val speedDialActions = remember(onAddBillClick) {
+    val speedDialActions = remember(onAddBillClick, onAddIncomeClick, onAddBudgetClick, onAddSavingsGoalClick) {
         listOf(
             SpeedDialAction(
                 label = "Add Bill",
@@ -71,13 +78,14 @@ fun MoneyScreen(
                 onClick = onAddIncomeClick
             ),
             SpeedDialAction(
-                label = "Add Savings",
+                label = "New Budget",
                 icon = Icons.Rounded.Savings,
-                onClick = {
-                    scope.launch {
-                        snackbarHostState.showSnackbar("Savings goals coming soon")
-                    }
-                }
+                onClick = onAddBudgetClick
+            ),
+            SpeedDialAction(
+                label = "New Goal",
+                icon = Icons.Rounded.Savings,
+                onClick = onAddSavingsGoalClick
             )
         )
     }
@@ -97,7 +105,7 @@ fun MoneyScreen(
             }
         },
         floatingActionButton = {
-            if (selectedTabIndex == 0 || selectedTabIndex == 1) {
+            if (selectedTabIndex < 4) { // Show on all implemented tabs
                 SpeedDialFab(actions = speedDialActions)
             }
         },
@@ -118,17 +126,15 @@ fun MoneyScreen(
                     onManageSourcesClick = onManageIncomeSourcesClick,
                     onEntryClick = onIncomeClick
                 )
-                2 -> ComingSoonState(title = "Savings goals are coming soon")
+                2 -> SavingsGoalListScreen(
+                    onAddGoalClick = onAddSavingsGoalClick,
+                    onGoalClick = onSavingsGoalClick
+                )
+                3 -> BudgetListScreen(
+                    onAddBudgetClick = onAddBudgetClick,
+                    onBudgetClick = onBudgetClick
+                )
             }
         }
     }
-}
-
-@Composable
-private fun ComingSoonState(title: String) {
-    EmptyState(
-        title = title,
-        description = "This feature will be available in a later phase.",
-        icon = Icons.Rounded.Payments
-    )
 }

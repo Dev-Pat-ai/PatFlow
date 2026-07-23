@@ -17,6 +17,8 @@ data class FinancialSummary(
     val totalExpenses: Double,
     val totalPaid: Double,
     val totalIncome: Double,
+    val totalBudget: Double,
+    val totalSaved: Double,
     val outstandingBalance: Double,
     val netCashFlow: Double,
     val totalBills: Int,
@@ -27,6 +29,7 @@ data class FinancialSummary(
 data class CategoryAnalysis(
     val spendingByCategory: Map<Category, Double>,
     val incomeByCategory: Map<IncomeCategory, Double>,
+    val budgetByCategory: Map<Category, Double>,
     val highestSpendingCategory: Category?,
     val lowestSpendingCategory: Category?,
     val highestIncomeCategory: IncomeCategory?

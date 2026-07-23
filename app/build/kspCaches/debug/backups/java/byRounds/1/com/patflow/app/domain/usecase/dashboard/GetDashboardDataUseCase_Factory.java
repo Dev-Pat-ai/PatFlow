@@ -1,8 +1,12 @@
 package com.patflow.app.domain.usecase.dashboard;
 
 import com.patflow.app.domain.repository.BillRepository;
+import com.patflow.app.domain.repository.BudgetRepository;
 import com.patflow.app.domain.repository.IncomeRepository;
 import com.patflow.app.domain.repository.PaymentRepository;
+import com.patflow.app.domain.repository.SavingsGoalRepository;
+import com.patflow.app.domain.usecase.budget.GetBudgetAnalyticsUseCase;
+import com.patflow.app.domain.usecase.savings.GetSavingsGoalAnalyticsUseCase;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
 import dagger.internal.QualifierMetadata;
@@ -32,28 +36,51 @@ public final class GetDashboardDataUseCase_Factory implements Factory<GetDashboa
 
   private final Provider<IncomeRepository> incomeRepositoryProvider;
 
+  private final Provider<BudgetRepository> budgetRepositoryProvider;
+
+  private final Provider<SavingsGoalRepository> savingsRepositoryProvider;
+
+  private final Provider<GetBudgetAnalyticsUseCase> getBudgetAnalyticsUseCaseProvider;
+
+  private final Provider<GetSavingsGoalAnalyticsUseCase> getGoalAnalyticsUseCaseProvider;
+
   public GetDashboardDataUseCase_Factory(Provider<BillRepository> billRepositoryProvider,
       Provider<PaymentRepository> paymentRepositoryProvider,
-      Provider<IncomeRepository> incomeRepositoryProvider) {
+      Provider<IncomeRepository> incomeRepositoryProvider,
+      Provider<BudgetRepository> budgetRepositoryProvider,
+      Provider<SavingsGoalRepository> savingsRepositoryProvider,
+      Provider<GetBudgetAnalyticsUseCase> getBudgetAnalyticsUseCaseProvider,
+      Provider<GetSavingsGoalAnalyticsUseCase> getGoalAnalyticsUseCaseProvider) {
     this.billRepositoryProvider = billRepositoryProvider;
     this.paymentRepositoryProvider = paymentRepositoryProvider;
     this.incomeRepositoryProvider = incomeRepositoryProvider;
+    this.budgetRepositoryProvider = budgetRepositoryProvider;
+    this.savingsRepositoryProvider = savingsRepositoryProvider;
+    this.getBudgetAnalyticsUseCaseProvider = getBudgetAnalyticsUseCaseProvider;
+    this.getGoalAnalyticsUseCaseProvider = getGoalAnalyticsUseCaseProvider;
   }
 
   @Override
   public GetDashboardDataUseCase get() {
-    return newInstance(billRepositoryProvider.get(), paymentRepositoryProvider.get(), incomeRepositoryProvider.get());
+    return newInstance(billRepositoryProvider.get(), paymentRepositoryProvider.get(), incomeRepositoryProvider.get(), budgetRepositoryProvider.get(), savingsRepositoryProvider.get(), getBudgetAnalyticsUseCaseProvider.get(), getGoalAnalyticsUseCaseProvider.get());
   }
 
   public static GetDashboardDataUseCase_Factory create(
       Provider<BillRepository> billRepositoryProvider,
       Provider<PaymentRepository> paymentRepositoryProvider,
-      Provider<IncomeRepository> incomeRepositoryProvider) {
-    return new GetDashboardDataUseCase_Factory(billRepositoryProvider, paymentRepositoryProvider, incomeRepositoryProvider);
+      Provider<IncomeRepository> incomeRepositoryProvider,
+      Provider<BudgetRepository> budgetRepositoryProvider,
+      Provider<SavingsGoalRepository> savingsRepositoryProvider,
+      Provider<GetBudgetAnalyticsUseCase> getBudgetAnalyticsUseCaseProvider,
+      Provider<GetSavingsGoalAnalyticsUseCase> getGoalAnalyticsUseCaseProvider) {
+    return new GetDashboardDataUseCase_Factory(billRepositoryProvider, paymentRepositoryProvider, incomeRepositoryProvider, budgetRepositoryProvider, savingsRepositoryProvider, getBudgetAnalyticsUseCaseProvider, getGoalAnalyticsUseCaseProvider);
   }
 
   public static GetDashboardDataUseCase newInstance(BillRepository billRepository,
-      PaymentRepository paymentRepository, IncomeRepository incomeRepository) {
-    return new GetDashboardDataUseCase(billRepository, paymentRepository, incomeRepository);
+      PaymentRepository paymentRepository, IncomeRepository incomeRepository,
+      BudgetRepository budgetRepository, SavingsGoalRepository savingsRepository,
+      GetBudgetAnalyticsUseCase getBudgetAnalyticsUseCase,
+      GetSavingsGoalAnalyticsUseCase getGoalAnalyticsUseCase) {
+    return new GetDashboardDataUseCase(billRepository, paymentRepository, incomeRepository, budgetRepository, savingsRepository, getBudgetAnalyticsUseCase, getGoalAnalyticsUseCase);
   }
 }

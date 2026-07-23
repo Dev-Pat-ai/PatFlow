@@ -37,8 +37,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.patflow.app.core.components.AppButton
 import com.patflow.app.core.components.AppTopBar
 import com.patflow.app.core.components.BillCard
+import com.patflow.app.core.components.BudgetProgressCard
 import com.patflow.app.core.components.CategoryType
 import com.patflow.app.core.components.EmptyState
+import com.patflow.app.core.components.SavingsGoalProgressCard
 import com.patflow.app.core.components.FullScreenError
 import com.patflow.app.core.components.SectionHeader
 import com.patflow.app.core.components.SkeletonBox
@@ -66,6 +68,8 @@ import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 fun DashboardScreen(
     onBillClick: (Long) -> Unit,
     onPaymentClick: (Long) -> Unit,
+    onBudgetClick: (Long) -> Unit,
+    onGoalClick: (Long) -> Unit,
     onAddBillClick: () -> Unit,
     onLogPaymentClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -106,7 +110,9 @@ fun DashboardScreen(
                     data = state.data,
                     preferences = preferences,
                     onBillClick = onBillClick,
-                    onPaymentClick = onPaymentClick
+                    onPaymentClick = onPaymentClick,
+                    onBudgetClick = onBudgetClick,
+                    onGoalClick = onGoalClick
                 )
                 is DashboardUiState.Error -> FullScreenError(
                     title = "Error",
@@ -155,7 +161,9 @@ private fun DashboardContent(
     data: DashboardData,
     preferences: UserPreferences?,
     onBillClick: (Long) -> Unit,
-    onPaymentClick: (Long) -> Unit
+    onPaymentClick: (Long) -> Unit,
+    onBudgetClick: (Long) -> Unit,
+    onGoalClick: (Long) -> Unit
 ) {
     val trendModelProducer = remember { CartesianChartModelProducer() }
     val categoryModelProducer = remember { CartesianChartModelProducer() }
@@ -185,6 +193,42 @@ private fun DashboardContent(
         // Summary Row
         item {
             SummaryRow(data, currencyCode)
+        }
+
+        // Budget Progress
+        data.budgetAnalytics?.let { analytics ->
+            item {
+                Column(verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
+                    SectionHeader(title = "Budget Progress")
+                    BudgetProgressCard(
+                        name = analytics.budget.name,
+                        totalAmount = analytics.budget.totalAmount,
+                        amountUsed = analytics.amountUsed,
+                        percentageUsed = analytics.percentageUsed,
+                        currencyCode = currencyCode,
+                        onClick = { onBudgetClick(analytics.budget.id) }
+                    )
+                }
+            }
+        }
+
+        // Savings Goals
+        if (data.savingsGoals.isNotEmpty()) {
+            item {
+                Column(verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
+                    SectionHeader(title = "Savings Goals")
+                    data.savingsGoals.forEach { goal ->
+                        SavingsGoalProgressCard(
+                            name = goal.goal.name,
+                            targetAmount = goal.goal.targetAmount,
+                            currentAmount = goal.goal.currentAmount,
+                            percentageUsed = goal.progressPercentage,
+                            currencyCode = currencyCode,
+                            onClick = { onGoalClick(goal.goal.id) }
+                        )
+                    }
+                }
+            }
         }
 
         // Spending Trend

@@ -1,6 +1,7 @@
 package com.patflow.app;
 
 import androidx.hilt.work.HiltWrapper_WorkerFactoryModule;
+import com.patflow.app.core.notifications.BudgetCheckWorker_HiltModule;
 import com.patflow.app.core.notifications.NotificationReceiver_GeneratedInjector;
 import com.patflow.app.core.notifications.OverdueCheckWorker_HiltModule;
 import com.patflow.app.core.notifications.RecurringIncomeWorker_HiltModule;
@@ -14,6 +15,10 @@ import com.patflow.app.di.RepositoryModule;
 import com.patflow.app.feature.bills.AddEditBillViewModel_HiltModules;
 import com.patflow.app.feature.bills.BillDetailViewModel_HiltModules;
 import com.patflow.app.feature.bills.BillListViewModel_HiltModules;
+import com.patflow.app.feature.budget.AddEditBudgetViewModel_HiltModules;
+import com.patflow.app.feature.budget.BudgetDetailViewModel_HiltModules;
+import com.patflow.app.feature.budget.BudgetViewModel_HiltModules;
+import com.patflow.app.feature.calendar.CalendarViewModel_HiltModules;
 import com.patflow.app.feature.dashboard.DashboardViewModel_HiltModules;
 import com.patflow.app.feature.income.AddEditIncomeSourceViewModel_HiltModules;
 import com.patflow.app.feature.income.AddEditIncomeViewModel_HiltModules;
@@ -22,6 +27,9 @@ import com.patflow.app.feature.income.IncomeViewModel_HiltModules;
 import com.patflow.app.feature.payment.PaymentDetailViewModel_HiltModules;
 import com.patflow.app.feature.payment.PaymentHistoryViewModel_HiltModules;
 import com.patflow.app.feature.reports.ReportsViewModel_HiltModules;
+import com.patflow.app.feature.savings.AddEditSavingsGoalViewModel_HiltModules;
+import com.patflow.app.feature.savings.SavingsGoalDetailViewModel_HiltModules;
+import com.patflow.app.feature.savings.SavingsGoalViewModel_HiltModules;
 import com.patflow.app.feature.settings.DataManagementViewModel_HiltModules;
 import com.patflow.app.feature.settings.SettingsViewModel_HiltModules;
 import dagger.Binds;
@@ -149,6 +157,7 @@ public final class PatFlowApplication_HiltComponents {
   @Component(
       modules = {
           ApplicationContextModule.class,
+          BudgetCheckWorker_HiltModule.class,
           DataStoreModule.class,
           DatabaseModule.class,
           DispatcherModule.class,
@@ -184,10 +193,15 @@ public final class PatFlowApplication_HiltComponents {
   @Subcomponent(
       modules = {
           AddEditBillViewModel_HiltModules.KeyModule.class,
+          AddEditBudgetViewModel_HiltModules.KeyModule.class,
           AddEditIncomeSourceViewModel_HiltModules.KeyModule.class,
           AddEditIncomeViewModel_HiltModules.KeyModule.class,
+          AddEditSavingsGoalViewModel_HiltModules.KeyModule.class,
           BillDetailViewModel_HiltModules.KeyModule.class,
           BillListViewModel_HiltModules.KeyModule.class,
+          BudgetDetailViewModel_HiltModules.KeyModule.class,
+          BudgetViewModel_HiltModules.KeyModule.class,
+          CalendarViewModel_HiltModules.KeyModule.class,
           DashboardViewModel_HiltModules.KeyModule.class,
           DataManagementViewModel_HiltModules.KeyModule.class,
           HapticViewModel_HiltModules.KeyModule.class,
@@ -200,6 +214,8 @@ public final class PatFlowApplication_HiltComponents {
           PaymentDetailViewModel_HiltModules.KeyModule.class,
           PaymentHistoryViewModel_HiltModules.KeyModule.class,
           ReportsViewModel_HiltModules.KeyModule.class,
+          SavingsGoalDetailViewModel_HiltModules.KeyModule.class,
+          SavingsGoalViewModel_HiltModules.KeyModule.class,
           SettingsViewModel_HiltModules.KeyModule.class,
           ThemeViewModel_HiltModules.KeyModule.class
       }
@@ -238,10 +254,15 @@ public final class PatFlowApplication_HiltComponents {
   @Subcomponent(
       modules = {
           AddEditBillViewModel_HiltModules.BindsModule.class,
+          AddEditBudgetViewModel_HiltModules.BindsModule.class,
           AddEditIncomeSourceViewModel_HiltModules.BindsModule.class,
           AddEditIncomeViewModel_HiltModules.BindsModule.class,
+          AddEditSavingsGoalViewModel_HiltModules.BindsModule.class,
           BillDetailViewModel_HiltModules.BindsModule.class,
           BillListViewModel_HiltModules.BindsModule.class,
+          BudgetDetailViewModel_HiltModules.BindsModule.class,
+          BudgetViewModel_HiltModules.BindsModule.class,
+          CalendarViewModel_HiltModules.BindsModule.class,
           DashboardViewModel_HiltModules.BindsModule.class,
           DataManagementViewModel_HiltModules.BindsModule.class,
           HapticViewModel_HiltModules.BindsModule.class,
@@ -251,6 +272,8 @@ public final class PatFlowApplication_HiltComponents {
           PaymentDetailViewModel_HiltModules.BindsModule.class,
           PaymentHistoryViewModel_HiltModules.BindsModule.class,
           ReportsViewModel_HiltModules.BindsModule.class,
+          SavingsGoalDetailViewModel_HiltModules.BindsModule.class,
+          SavingsGoalViewModel_HiltModules.BindsModule.class,
           SettingsViewModel_HiltModules.BindsModule.class,
           ThemeViewModel_HiltModules.BindsModule.class
       }

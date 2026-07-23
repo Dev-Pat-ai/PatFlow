@@ -1,9 +1,7 @@
 package com.patflow.app.domain.usecase.report
 
 import com.patflow.app.domain.model.*
-import com.patflow.app.domain.repository.BillRepository
-import com.patflow.app.domain.repository.IncomeRepository
-import com.patflow.app.domain.repository.PaymentRepository
+import com.patflow.app.domain.repository.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.datetime.*
@@ -12,12 +10,14 @@ import javax.inject.Inject
 
 /**
  * Use case for generating comprehensive financial analytics for a specific range (Architecture §1.6).
- * Computes summaries, category distributions, and trends for both Income and Expenses.
+ * Computes summaries, category distributions, and trends for Income, Expenses, Budgets, and Savings.
  */
 class GetReportDataUseCase @Inject constructor(
     private val billRepository: BillRepository,
     private val paymentRepository: PaymentRepository,
-    private val incomeRepository: IncomeRepository
+    private val incomeRepository: IncomeRepository,
+    private val budgetRepository: BudgetRepository,
+    private val savingsRepository: SavingsGoalRepository
 ) {
     operator fun invoke(filter: ReportFilter): Flow<ReportData> {
         val (start, end) = getRange(filter)
@@ -26,8 +26,22 @@ class GetReportDataUseCase @Inject constructor(
             billRepository.getBillsWithCycles(),
             billRepository.getCyclesByDateRange(start.toString(), end.toString()),
             paymentRepository.getPayments(),
-            incomeRepository.getEntries()
-        ) { allBills, cycles, allPayments, allIncome ->
+            incomeRepository.getEntries(),
+            budgetRepository.getBudgets(),
+            savingsRepository.getGoals()
+        ) { args: Array<Any?> ->
+            @Suppress("UNCHECKED_CAST")
+            val allBills = args[0] as List<BillWithCycle>
+            @Suppress("UNCHECKED_CAST")
+            val cycles = args[1] as List<BillCycle>
+            @Suppress("UNCHECKED_CAST")
+            val allPayments = args[2] as List<PaymentHistory>
+            @Suppress("UNCHECKED_CAST")
+            val allIncome = args[3] as List<IncomeWithDetails>
+            @Suppress("UNCHECKED_CAST")
+            val budgets = args[4] as List<Budget>
+            @Suppress("UNCHECKED_CAST")
+            val goals = args[5] as List<SavingsGoal>
             
             // 1. Filtering data to the requested range
             val filteredPayments = allPayments.asSequence()
@@ -36,11 +50,14 @@ class GetReportDataUseCase @Inject constructor(
             val filteredIncome = allIncome.asSequence()
                 .filter { it.entry.entryDate in start..end }
                 .toList()
+            val filteredBudgets = budgets.filter { it.startDate >= start && it.endDate <= end }
             
             // 2. Financial Summary
             val totalExpenses = cycles.sumOf { it.amountDue }
             val totalPaid = cycles.sumOf { it.amountPaid }
             val totalIncome = filteredIncome.sumOf { it.entry.amount }
+            val totalBudget = filteredBudgets.sumOf { it.totalAmount }
+            val totalSaved = goals.filter { it.createdAt.date in start..end }.sumOf { it.currentAmount } // Simplified
             val balance = (totalExpenses - totalPaid).coerceAtLeast(0.0)
             val netCashFlow = totalIncome - totalPaid
             
@@ -48,6 +65,8 @@ class GetReportDataUseCase @Inject constructor(
                 totalExpenses = totalExpenses,
                 totalPaid = totalPaid,
                 totalIncome = totalIncome,
+                totalBudget = totalBudget,
+                totalSaved = totalSaved,
                 outstandingBalance = balance,
                 netCashFlow = netCashFlow,
                 totalBills = cycles.size,
@@ -72,6 +91,7 @@ class GetReportDataUseCase @Inject constructor(
             val categoryAnalysis = CategoryAnalysis(
                 spendingByCategory = categorySpending,
                 incomeByCategory = categoryIncome,
+                budgetByCategory = emptyMap(),
                 highestSpendingCategory = highestSpending,
                 lowestSpendingCategory = lowestSpending,
                 highestIncomeCategory = highestIncome
@@ -111,11 +131,10 @@ class GetReportDataUseCase @Inject constructor(
             insights.add("You spent ₱${String.format(Locale.getDefault(), "%.2f", totalPaid)} in this period.")
             insights.add("You received ₱${String.format(Locale.getDefault(), "%.2f", totalIncome)} in this period.")
             
-            if (highestSpending != null) {
-                val pct = if (totalPaid > 0) (categorySpending[highestSpending]!! / totalPaid) * 100 else 0.0
-                insights.add("${highestSpending.name} accounts for ${String.format(Locale.getDefault(), "%.0f", pct)}% of your spending.")
+            if (totalBudget > 0) {
+                val utilization = (totalPaid / totalBudget) * 100
+                insights.add("You've used ${String.format(Locale.getDefault(), "%.1f", utilization)}% of your planned budget.")
             }
-            insights.add("You paid ${String.format(Locale.getDefault(), "%.0f", onTimePct)}% of your bills on time.")
 
             ReportData(
                 summary = summary,

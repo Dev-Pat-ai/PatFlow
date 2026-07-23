@@ -1,32 +1,29 @@
 package com.patflow.app.domain.usecase.dashboard
 
-import com.patflow.app.domain.model.BillStatus
-import com.patflow.app.domain.model.BillWithCycle
-import com.patflow.app.domain.model.DashboardData
-import com.patflow.app.domain.repository.BillRepository
-import com.patflow.app.domain.repository.IncomeRepository
-import com.patflow.app.domain.repository.PaymentRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.datetime.Clock
-import kotlinx.datetime.DatePeriod
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.minus
-import kotlinx.datetime.plus
-import kotlinx.datetime.toLocalDateTime
+import com.patflow.app.domain.model.*
+import com.patflow.app.domain.repository.*
+import com.patflow.app.domain.usecase.budget.GetBudgetAnalyticsUseCase
+import com.patflow.app.domain.usecase.savings.GetSavingsGoalAnalyticsUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
+import kotlinx.datetime.*
 import java.util.Locale
 import javax.inject.Inject
 
 /**
  * Use case for aggregating all data required for the Dashboard screen (Architecture §1.3).
- * Consolidates metrics, upcoming bills, recent payments, and trend data.
+ * Updated in Phase 11 to include Savings Goals and contextual insights.
  */
 class GetDashboardDataUseCase @Inject constructor(
     private val billRepository: BillRepository,
     private val paymentRepository: PaymentRepository,
-    private val incomeRepository: IncomeRepository
+    private val incomeRepository: IncomeRepository,
+    private val budgetRepository: BudgetRepository,
+    private val savingsRepository: SavingsGoalRepository,
+    private val getBudgetAnalyticsUseCase: GetBudgetAnalyticsUseCase,
+    private val getGoalAnalyticsUseCase: GetSavingsGoalAnalyticsUseCase
 ) {
+    @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<DashboardData> {
         val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
         val startOfMonth = LocalDate(now.year, now.month, 1)
@@ -38,88 +35,83 @@ class GetDashboardDataUseCase @Inject constructor(
             billRepository.getBillsWithCycles(),
             billRepository.getCyclesByDateRange(startOfMonth.toString(), endOfMonth.toString()),
             paymentRepository.getPayments(),
-            incomeRepository.getEntries()
-        ) { allBills, monthCycles, allPayments, allIncome ->
-            
-            val totalDue = monthCycles.sumOf { it.amountDue }
-            val totalPaid = monthCycles.sumOf { it.amountPaid }
-            val remaining = (totalDue - totalPaid).coerceAtLeast(0.0)
-            
-            val monthIncome = allIncome.filter { it.entry.entryDate in startOfMonth..endOfMonth }
-            val totalIncomeMonth = monthIncome.sumOf { it.entry.amount }
-            val totalIncomeYear = allIncome.filter { it.entry.entryDate >= startOfYear }.sumOf { it.entry.amount }
-            
-            val totalAllIncome = allIncome.sumOf { it.entry.amount }
-            val totalAllPaid = allPayments.sumOf { it.payment.amount }
-            val netBalance = totalAllIncome - totalAllPaid
-            
-            val netCashFlow = totalIncomeMonth - totalPaid
-            
-            val dueToday = monthCycles.count { (it.dueDate == now) && (it.status != BillStatus.PAID) }
-            val overdue = monthCycles.count { it.status == BillStatus.OVERDUE }
-            
-            val upcoming = monthCycles.asSequence()
-                .filter { it.status != BillStatus.PAID }
-                .sortedBy { it.dueDate }
-                .take(5)
-                .mapNotNull { cycle ->
-                    val bill = allBills.find { it.bill.id == cycle.billId }?.bill
-                    bill?.let { BillWithCycle(it, cycle) }
-                }
-                .toList()
+            incomeRepository.getEntries(),
+            budgetRepository.getBudgets(),
+            savingsRepository.getGoals()
+        ) { args: Array<Any?> ->
+            @Suppress("UNCHECKED_CAST")
+            val allBillDetails = args[0] as List<BillWithCycle>
+            @Suppress("UNCHECKED_CAST")
+            val monthCycles = args[1] as List<BillCycle>
+            @Suppress("UNCHECKED_CAST")
+            val allPayments = args[2] as List<PaymentHistory>
+            @Suppress("UNCHECKED_CAST")
+            val allIncome = args[3] as List<IncomeWithDetails>
+            @Suppress("UNCHECKED_CAST")
+            val budgets = args[4] as List<Budget>
+            @Suppress("UNCHECKED_CAST")
+            val goals = args[5] as List<SavingsGoal>
 
-            val recentPayments = allPayments.take(5)
+            val allBills = allBillDetails.map { it.bill }
+            val activeBudget = budgets.firstOrNull { it.isActive && !it.isArchived }
+            val activeGoals = goals.filter { !it.isDeleted && !it.isArchived && !it.isCompleted }
 
-            // Spending Trend (last 6 months)
-            val trend = allPayments
-                .filter { it.payment.paymentDate >= sixMonthsAgo }
-                .groupBy { 
-                    val date = it.payment.paymentDate
-                    "${date.month.name.take(3)} ${date.year}"
-                }
-                .mapValues { it.value.sumOf { p -> p.payment.amount } }
-                .toSortedMap()
-
-            // Spending by Category (this month)
-            val byCategory = monthCycles.groupBy { cycle -> 
-                allBills.find { it.bill.id == cycle.billId }?.bill?.category
-            }.mapNotNull { (category, cycles) ->
-                category?.let { it to cycles.sumOf { c -> c.amountPaid } }
-            }.toMap()
-
-            // Income by Category (this month)
-            val incomeByCategory = monthIncome.groupBy { it.entry.category }
-                .mapValues { it.value.sumOf { e -> e.entry.amount } }
-
-            // Insights
-            val insights = mutableListOf<String>()
-            if (dueToday > 0) insights.add("You have $dueToday bills due today.")
-            if (overdue > 0) insights.add("You have $overdue overdue bills.")
-            insights.add("You spent ₱${String.format(Locale.getDefault(), "%.2f", totalPaid)} this month.")
-            insights.add("Your net cash flow is ₱${String.format(Locale.getDefault(), "%.2f", netCashFlow)}.")
+            activeBudget to (activeGoals to (allBills to (monthCycles to (allPayments to allIncome))))
+        }.flatMapLatest { (budget, goalData) ->
+            val (activeGoals, billData) = goalData
+            val (allBills, moreData) = billData
+            val (monthCycles, evenMoreData) = moreData
+            val (allPayments, allIncome) = evenMoreData
             
-            byCategory.maxByOrNull { it.value }?.key?.let {
-                insights.add("Your largest expense is ${it.name}.")
+            val budgetFlow = if (budget != null) getBudgetAnalyticsUseCase(budget.id) else flowOf(null)
+            val goalsFlow = if (activeGoals.isNotEmpty()) {
+                combine(activeGoals.map { getGoalAnalyticsUseCase(it.id) }) { it.filterNotNull() }
+            } else flowOf(emptyList())
+
+            combine(budgetFlow, goalsFlow) { analytics, goalAnalyticsList ->
+                val totalPaid = monthCycles.sumOf { it.amountPaid }
+                val monthIncome = allIncome.filter { it.entry.entryDate in startOfMonth..endOfMonth }
+                val totalIncomeMonth = monthIncome.sumOf { it.entry.amount }
+                
+                val netCashFlow = totalIncomeMonth - totalPaid
+                val totalAllIncome = allIncome.sumOf { it.entry.amount }
+                val totalAllPaid = allPayments.sumOf { it.payment.amount }
+                
+                val insights = mutableListOf<String>()
+                if (analytics?.isOverspent == true) insights.add("Budget exceeded! You are overspent.")
+                
+                if (netCashFlow > 0) insights.add("Good job! You've saved ${String.format(Locale.getDefault(), "₱%.2f", netCashFlow)} this month.")
+                if (goalAnalyticsList.any { it.progressPercentage >= 0.9f }) insights.add("You're almost there! A savings goal is over 90% complete.")
+
+                DashboardData(
+                    totalBillsThisMonth = monthCycles.sumOf { it.amountDue },
+                    totalPaidThisMonth = totalPaid,
+                    totalRemaining = (monthCycles.sumOf { it.amountDue } - totalPaid).coerceAtLeast(0.0),
+                    totalIncomeThisMonth = totalIncomeMonth,
+                    totalIncomeThisYear = allIncome.filter { it.entry.entryDate >= startOfYear }.sumOf { it.entry.amount },
+                    netCashFlow = netCashFlow,
+                    netBalance = totalAllIncome - totalAllPaid,
+                    billsDueToday = monthCycles.count { (it.dueDate == now) && (it.status != BillStatus.PAID) },
+                    upcomingBillsCount = monthCycles.count { it.status != BillStatus.PAID },
+                    overdueBillsCount = monthCycles.count { it.status == BillStatus.OVERDUE },
+                    upcomingBills = monthCycles.asSequence()
+                        .filter { it.status != BillStatus.PAID }
+                        .sortedBy { it.dueDate }.take(5)
+                        .mapNotNull { c -> allBills.find { it.id == c.billId }?.let { BillWithCycle(it, c) } }
+                        .toList(),
+                    recentPayments = allPayments.take(5),
+                    spendingTrend = allPayments.filter { it.payment.paymentDate >= sixMonthsAgo }
+                        .groupBy { d -> "${d.payment.paymentDate.month.name.take(3)} ${d.payment.paymentDate.year}" }
+                        .mapValues { it.value.sumOf { p -> p.payment.amount } }.toSortedMap(),
+                    spendingByCategory = monthCycles.groupBy { c -> allBills.find { it.id == c.billId }?.category }
+                        .mapNotNull { (cat, cs) -> cat?.let { it to cs.sumOf { c -> c.amountPaid } } }.toMap(),
+                    incomeByCategory = monthIncome.groupBy { it.entry.category }
+                        .mapValues { it.value.sumOf { e -> e.entry.amount } },
+                    budgetAnalytics = analytics,
+                    savingsGoals = goalAnalyticsList,
+                    insights = insights
+                )
             }
-
-            DashboardData(
-                totalBillsThisMonth = totalDue,
-                totalPaidThisMonth = totalPaid,
-                totalRemaining = remaining,
-                totalIncomeThisMonth = totalIncomeMonth,
-                totalIncomeThisYear = totalIncomeYear,
-                netCashFlow = netCashFlow,
-                netBalance = netBalance,
-                billsDueToday = dueToday,
-                upcomingBillsCount = monthCycles.count { it.status != BillStatus.PAID },
-                overdueBillsCount = overdue,
-                upcomingBills = upcoming,
-                recentPayments = recentPayments,
-                spendingTrend = trend,
-                spendingByCategory = byCategory,
-                incomeByCategory = incomeByCategory,
-                insights = insights
-            )
         }
     }
 }
