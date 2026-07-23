@@ -52,6 +52,13 @@ class IncomeRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun archiveSource(id: Long, archived: Boolean) {
+        val source = incomeDao.getSourceById(id)
+        source?.let {
+            incomeDao.updateSource(it.copy(isArchived = archived))
+        }
+    }
+
     override fun getEntries(): Flow<List<IncomeWithDetails>> =
         combine(incomeDao.getAllEntries(), getCategories(), getSources()) { entities, categories, sources ->
             entities.map { entity ->

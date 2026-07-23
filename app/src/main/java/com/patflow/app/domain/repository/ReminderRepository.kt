@@ -15,6 +15,8 @@ interface ReminderRepository {
     suspend fun markAsSent(reminderId: Long)
     
     suspend fun deleteRemindersForCycle(cycleId: Long)
+    
+    suspend fun deleteRemindersForIncomeSource(sourceId: Long)
 
     /**
      * Schedules a WorkManager job to process due reminders.

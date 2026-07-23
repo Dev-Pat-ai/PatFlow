@@ -30,6 +30,12 @@ interface ReminderDao {
     @Query("SELECT * FROM reminder WHERE id = :id")
     suspend fun getById(id: Long): ReminderEntity?
 
+    @Query("SELECT * FROM reminder WHERE income_source_id = :sourceId")
+    fun getByIncomeSource(sourceId: Long): Flow<List<ReminderEntity>>
+
     @Query("DELETE FROM reminder WHERE bill_cycle_id = :cycleId")
     suspend fun deleteByCycle(cycleId: Long)
+
+    @Query("DELETE FROM reminder WHERE income_source_id = :sourceId")
+    suspend fun deleteByIncomeSource(sourceId: Long)
 }

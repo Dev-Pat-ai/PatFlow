@@ -48,29 +48,40 @@ public final class ReminderDao_Impl implements ReminderDao {
 
   private final SharedSQLiteStatement __preparedStmtOfDeleteByCycle;
 
+  private final SharedSQLiteStatement __preparedStmtOfDeleteByIncomeSource;
+
   public ReminderDao_Impl(@NonNull final RoomDatabase __db) {
     this.__db = __db;
     this.__insertionAdapterOfReminderEntity = new EntityInsertionAdapter<ReminderEntity>(__db) {
       @Override
       @NonNull
       protected String createQuery() {
-        return "INSERT OR ABORT INTO `reminder` (`id`,`bill_cycle_id`,`remind_at`,`is_sent`,`offset_days`) VALUES (nullif(?, 0),?,?,?,?)";
+        return "INSERT OR ABORT INTO `reminder` (`id`,`bill_cycle_id`,`income_source_id`,`remind_at`,`is_sent`,`offset_days`) VALUES (nullif(?, 0),?,?,?,?,?)";
       }
 
       @Override
       protected void bind(@NonNull final SupportSQLiteStatement statement,
           @NonNull final ReminderEntity entity) {
         statement.bindLong(1, entity.getId());
-        statement.bindLong(2, entity.getBillCycleId());
-        final String _tmp = __converters.fromLocalDateTime(entity.getRemindAt());
-        if (_tmp == null) {
+        if (entity.getBillCycleId() == null) {
+          statement.bindNull(2);
+        } else {
+          statement.bindLong(2, entity.getBillCycleId());
+        }
+        if (entity.getIncomeSourceId() == null) {
           statement.bindNull(3);
         } else {
-          statement.bindString(3, _tmp);
+          statement.bindLong(3, entity.getIncomeSourceId());
+        }
+        final String _tmp = __converters.fromLocalDateTime(entity.getRemindAt());
+        if (_tmp == null) {
+          statement.bindNull(4);
+        } else {
+          statement.bindString(4, _tmp);
         }
         final int _tmp_1 = entity.isSent() ? 1 : 0;
-        statement.bindLong(4, _tmp_1);
-        statement.bindLong(5, entity.getOffsetDays());
+        statement.bindLong(5, _tmp_1);
+        statement.bindLong(6, entity.getOffsetDays());
       }
     };
     this.__deletionAdapterOfReminderEntity = new EntityDeletionOrUpdateAdapter<ReminderEntity>(__db) {
@@ -90,24 +101,33 @@ public final class ReminderDao_Impl implements ReminderDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "UPDATE OR ABORT `reminder` SET `id` = ?,`bill_cycle_id` = ?,`remind_at` = ?,`is_sent` = ?,`offset_days` = ? WHERE `id` = ?";
+        return "UPDATE OR ABORT `reminder` SET `id` = ?,`bill_cycle_id` = ?,`income_source_id` = ?,`remind_at` = ?,`is_sent` = ?,`offset_days` = ? WHERE `id` = ?";
       }
 
       @Override
       protected void bind(@NonNull final SupportSQLiteStatement statement,
           @NonNull final ReminderEntity entity) {
         statement.bindLong(1, entity.getId());
-        statement.bindLong(2, entity.getBillCycleId());
-        final String _tmp = __converters.fromLocalDateTime(entity.getRemindAt());
-        if (_tmp == null) {
+        if (entity.getBillCycleId() == null) {
+          statement.bindNull(2);
+        } else {
+          statement.bindLong(2, entity.getBillCycleId());
+        }
+        if (entity.getIncomeSourceId() == null) {
           statement.bindNull(3);
         } else {
-          statement.bindString(3, _tmp);
+          statement.bindLong(3, entity.getIncomeSourceId());
+        }
+        final String _tmp = __converters.fromLocalDateTime(entity.getRemindAt());
+        if (_tmp == null) {
+          statement.bindNull(4);
+        } else {
+          statement.bindString(4, _tmp);
         }
         final int _tmp_1 = entity.isSent() ? 1 : 0;
-        statement.bindLong(4, _tmp_1);
-        statement.bindLong(5, entity.getOffsetDays());
-        statement.bindLong(6, entity.getId());
+        statement.bindLong(5, _tmp_1);
+        statement.bindLong(6, entity.getOffsetDays());
+        statement.bindLong(7, entity.getId());
       }
     };
     this.__preparedStmtOfDeleteByCycle = new SharedSQLiteStatement(__db) {
@@ -115,6 +135,14 @@ public final class ReminderDao_Impl implements ReminderDao {
       @NonNull
       public String createQuery() {
         final String _query = "DELETE FROM reminder WHERE bill_cycle_id = ?";
+        return _query;
+      }
+    };
+    this.__preparedStmtOfDeleteByIncomeSource = new SharedSQLiteStatement(__db) {
+      @Override
+      @NonNull
+      public String createQuery() {
+        final String _query = "DELETE FROM reminder WHERE income_source_id = ?";
         return _query;
       }
     };
@@ -203,6 +231,32 @@ public final class ReminderDao_Impl implements ReminderDao {
   }
 
   @Override
+  public Object deleteByIncomeSource(final long sourceId,
+      final Continuation<? super Unit> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        final SupportSQLiteStatement _stmt = __preparedStmtOfDeleteByIncomeSource.acquire();
+        int _argIndex = 1;
+        _stmt.bindLong(_argIndex, sourceId);
+        try {
+          __db.beginTransaction();
+          try {
+            _stmt.executeUpdateDelete();
+            __db.setTransactionSuccessful();
+            return Unit.INSTANCE;
+          } finally {
+            __db.endTransaction();
+          }
+        } finally {
+          __preparedStmtOfDeleteByIncomeSource.release(_stmt);
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
   public Flow<List<ReminderEntity>> getByBillCycle(final long billCycleId) {
     final String _sql = "SELECT * FROM reminder WHERE bill_cycle_id = ?";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
@@ -216,6 +270,7 @@ public final class ReminderDao_Impl implements ReminderDao {
         try {
           final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
           final int _cursorIndexOfBillCycleId = CursorUtil.getColumnIndexOrThrow(_cursor, "bill_cycle_id");
+          final int _cursorIndexOfIncomeSourceId = CursorUtil.getColumnIndexOrThrow(_cursor, "income_source_id");
           final int _cursorIndexOfRemindAt = CursorUtil.getColumnIndexOrThrow(_cursor, "remind_at");
           final int _cursorIndexOfIsSent = CursorUtil.getColumnIndexOrThrow(_cursor, "is_sent");
           final int _cursorIndexOfOffsetDays = CursorUtil.getColumnIndexOrThrow(_cursor, "offset_days");
@@ -224,8 +279,18 @@ public final class ReminderDao_Impl implements ReminderDao {
             final ReminderEntity _item;
             final long _tmpId;
             _tmpId = _cursor.getLong(_cursorIndexOfId);
-            final long _tmpBillCycleId;
-            _tmpBillCycleId = _cursor.getLong(_cursorIndexOfBillCycleId);
+            final Long _tmpBillCycleId;
+            if (_cursor.isNull(_cursorIndexOfBillCycleId)) {
+              _tmpBillCycleId = null;
+            } else {
+              _tmpBillCycleId = _cursor.getLong(_cursorIndexOfBillCycleId);
+            }
+            final Long _tmpIncomeSourceId;
+            if (_cursor.isNull(_cursorIndexOfIncomeSourceId)) {
+              _tmpIncomeSourceId = null;
+            } else {
+              _tmpIncomeSourceId = _cursor.getLong(_cursorIndexOfIncomeSourceId);
+            }
             final LocalDateTime _tmpRemindAt;
             final String _tmp;
             if (_cursor.isNull(_cursorIndexOfRemindAt)) {
@@ -245,7 +310,7 @@ public final class ReminderDao_Impl implements ReminderDao {
             _tmpIsSent = _tmp_2 != 0;
             final int _tmpOffsetDays;
             _tmpOffsetDays = _cursor.getInt(_cursorIndexOfOffsetDays);
-            _item = new ReminderEntity(_tmpId,_tmpBillCycleId,_tmpRemindAt,_tmpIsSent,_tmpOffsetDays);
+            _item = new ReminderEntity(_tmpId,_tmpBillCycleId,_tmpIncomeSourceId,_tmpRemindAt,_tmpIsSent,_tmpOffsetDays);
             _result.add(_item);
           }
           return _result;
@@ -277,6 +342,7 @@ public final class ReminderDao_Impl implements ReminderDao {
         try {
           final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
           final int _cursorIndexOfBillCycleId = CursorUtil.getColumnIndexOrThrow(_cursor, "bill_cycle_id");
+          final int _cursorIndexOfIncomeSourceId = CursorUtil.getColumnIndexOrThrow(_cursor, "income_source_id");
           final int _cursorIndexOfRemindAt = CursorUtil.getColumnIndexOrThrow(_cursor, "remind_at");
           final int _cursorIndexOfIsSent = CursorUtil.getColumnIndexOrThrow(_cursor, "is_sent");
           final int _cursorIndexOfOffsetDays = CursorUtil.getColumnIndexOrThrow(_cursor, "offset_days");
@@ -285,8 +351,18 @@ public final class ReminderDao_Impl implements ReminderDao {
             final ReminderEntity _item;
             final long _tmpId;
             _tmpId = _cursor.getLong(_cursorIndexOfId);
-            final long _tmpBillCycleId;
-            _tmpBillCycleId = _cursor.getLong(_cursorIndexOfBillCycleId);
+            final Long _tmpBillCycleId;
+            if (_cursor.isNull(_cursorIndexOfBillCycleId)) {
+              _tmpBillCycleId = null;
+            } else {
+              _tmpBillCycleId = _cursor.getLong(_cursorIndexOfBillCycleId);
+            }
+            final Long _tmpIncomeSourceId;
+            if (_cursor.isNull(_cursorIndexOfIncomeSourceId)) {
+              _tmpIncomeSourceId = null;
+            } else {
+              _tmpIncomeSourceId = _cursor.getLong(_cursorIndexOfIncomeSourceId);
+            }
             final LocalDateTime _tmpRemindAt;
             final String _tmp;
             if (_cursor.isNull(_cursorIndexOfRemindAt)) {
@@ -306,7 +382,7 @@ public final class ReminderDao_Impl implements ReminderDao {
             _tmpIsSent = _tmp_2 != 0;
             final int _tmpOffsetDays;
             _tmpOffsetDays = _cursor.getInt(_cursorIndexOfOffsetDays);
-            _item = new ReminderEntity(_tmpId,_tmpBillCycleId,_tmpRemindAt,_tmpIsSent,_tmpOffsetDays);
+            _item = new ReminderEntity(_tmpId,_tmpBillCycleId,_tmpIncomeSourceId,_tmpRemindAt,_tmpIsSent,_tmpOffsetDays);
             _result.add(_item);
           }
           return _result;
@@ -333,6 +409,7 @@ public final class ReminderDao_Impl implements ReminderDao {
         try {
           final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
           final int _cursorIndexOfBillCycleId = CursorUtil.getColumnIndexOrThrow(_cursor, "bill_cycle_id");
+          final int _cursorIndexOfIncomeSourceId = CursorUtil.getColumnIndexOrThrow(_cursor, "income_source_id");
           final int _cursorIndexOfRemindAt = CursorUtil.getColumnIndexOrThrow(_cursor, "remind_at");
           final int _cursorIndexOfIsSent = CursorUtil.getColumnIndexOrThrow(_cursor, "is_sent");
           final int _cursorIndexOfOffsetDays = CursorUtil.getColumnIndexOrThrow(_cursor, "offset_days");
@@ -340,8 +417,18 @@ public final class ReminderDao_Impl implements ReminderDao {
           if (_cursor.moveToFirst()) {
             final long _tmpId;
             _tmpId = _cursor.getLong(_cursorIndexOfId);
-            final long _tmpBillCycleId;
-            _tmpBillCycleId = _cursor.getLong(_cursorIndexOfBillCycleId);
+            final Long _tmpBillCycleId;
+            if (_cursor.isNull(_cursorIndexOfBillCycleId)) {
+              _tmpBillCycleId = null;
+            } else {
+              _tmpBillCycleId = _cursor.getLong(_cursorIndexOfBillCycleId);
+            }
+            final Long _tmpIncomeSourceId;
+            if (_cursor.isNull(_cursorIndexOfIncomeSourceId)) {
+              _tmpIncomeSourceId = null;
+            } else {
+              _tmpIncomeSourceId = _cursor.getLong(_cursorIndexOfIncomeSourceId);
+            }
             final LocalDateTime _tmpRemindAt;
             final String _tmp;
             if (_cursor.isNull(_cursorIndexOfRemindAt)) {
@@ -361,7 +448,7 @@ public final class ReminderDao_Impl implements ReminderDao {
             _tmpIsSent = _tmp_2 != 0;
             final int _tmpOffsetDays;
             _tmpOffsetDays = _cursor.getInt(_cursorIndexOfOffsetDays);
-            _result = new ReminderEntity(_tmpId,_tmpBillCycleId,_tmpRemindAt,_tmpIsSent,_tmpOffsetDays);
+            _result = new ReminderEntity(_tmpId,_tmpBillCycleId,_tmpIncomeSourceId,_tmpRemindAt,_tmpIsSent,_tmpOffsetDays);
           } else {
             _result = null;
           }
@@ -372,6 +459,76 @@ public final class ReminderDao_Impl implements ReminderDao {
         }
       }
     }, $completion);
+  }
+
+  @Override
+  public Flow<List<ReminderEntity>> getByIncomeSource(final long sourceId) {
+    final String _sql = "SELECT * FROM reminder WHERE income_source_id = ?";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+    int _argIndex = 1;
+    _statement.bindLong(_argIndex, sourceId);
+    return CoroutinesRoom.createFlow(__db, false, new String[] {"reminder"}, new Callable<List<ReminderEntity>>() {
+      @Override
+      @NonNull
+      public List<ReminderEntity> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfBillCycleId = CursorUtil.getColumnIndexOrThrow(_cursor, "bill_cycle_id");
+          final int _cursorIndexOfIncomeSourceId = CursorUtil.getColumnIndexOrThrow(_cursor, "income_source_id");
+          final int _cursorIndexOfRemindAt = CursorUtil.getColumnIndexOrThrow(_cursor, "remind_at");
+          final int _cursorIndexOfIsSent = CursorUtil.getColumnIndexOrThrow(_cursor, "is_sent");
+          final int _cursorIndexOfOffsetDays = CursorUtil.getColumnIndexOrThrow(_cursor, "offset_days");
+          final List<ReminderEntity> _result = new ArrayList<ReminderEntity>(_cursor.getCount());
+          while (_cursor.moveToNext()) {
+            final ReminderEntity _item;
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final Long _tmpBillCycleId;
+            if (_cursor.isNull(_cursorIndexOfBillCycleId)) {
+              _tmpBillCycleId = null;
+            } else {
+              _tmpBillCycleId = _cursor.getLong(_cursorIndexOfBillCycleId);
+            }
+            final Long _tmpIncomeSourceId;
+            if (_cursor.isNull(_cursorIndexOfIncomeSourceId)) {
+              _tmpIncomeSourceId = null;
+            } else {
+              _tmpIncomeSourceId = _cursor.getLong(_cursorIndexOfIncomeSourceId);
+            }
+            final LocalDateTime _tmpRemindAt;
+            final String _tmp;
+            if (_cursor.isNull(_cursorIndexOfRemindAt)) {
+              _tmp = null;
+            } else {
+              _tmp = _cursor.getString(_cursorIndexOfRemindAt);
+            }
+            final LocalDateTime _tmp_1 = __converters.toLocalDateTime(_tmp);
+            if (_tmp_1 == null) {
+              throw new IllegalStateException("Expected NON-NULL 'kotlinx.datetime.LocalDateTime', but it was NULL.");
+            } else {
+              _tmpRemindAt = _tmp_1;
+            }
+            final boolean _tmpIsSent;
+            final int _tmp_2;
+            _tmp_2 = _cursor.getInt(_cursorIndexOfIsSent);
+            _tmpIsSent = _tmp_2 != 0;
+            final int _tmpOffsetDays;
+            _tmpOffsetDays = _cursor.getInt(_cursorIndexOfOffsetDays);
+            _item = new ReminderEntity(_tmpId,_tmpBillCycleId,_tmpIncomeSourceId,_tmpRemindAt,_tmpIsSent,_tmpOffsetDays);
+            _result.add(_item);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+        }
+      }
+
+      @Override
+      protected void finalize() {
+        _statement.release();
+      }
+    });
   }
 
   @NonNull

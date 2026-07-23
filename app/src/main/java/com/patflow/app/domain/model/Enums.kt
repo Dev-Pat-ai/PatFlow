@@ -4,7 +4,9 @@ package com.patflow.app.domain.model
 enum class RecurrenceType {
     ONE_TIME,
     WEEKLY,
+    BIWEEKLY,
     MONTHLY,
+    QUARTERLY,
     YEARLY,
     CUSTOM_DAYS,
 }
@@ -34,4 +36,20 @@ enum class SyncStatus {
     SYNCED,
     PENDING,
     CONFLICT,
+}
+
+enum class IncomeSortOrder {
+    NEWEST,
+    OLDEST,
+    HIGHEST_AMOUNT,
+    LOWEST_AMOUNT,
+    ALPHABETICAL
+}
+
+enum class BudgetType {
+    MONTHLY,
+    WEEKLY,
+    YEARLY,
+    CATEGORY,
+    CUSTOM
 }

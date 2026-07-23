@@ -41,6 +41,10 @@ class ReminderRepositoryImpl @Inject constructor(
         reminderDao.deleteByCycle(cycleId)
     }
 
+    override suspend fun deleteRemindersForIncomeSource(sourceId: Long) {
+        reminderDao.deleteByIncomeSource(sourceId)
+    }
+
     override fun scheduleReminderSync() {
         // Implementation of WorkManager scheduling moves to a dedicated Scheduler class
         // but can be triggered from here or application start.

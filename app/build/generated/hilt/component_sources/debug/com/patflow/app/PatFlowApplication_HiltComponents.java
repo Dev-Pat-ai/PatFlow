@@ -3,6 +3,7 @@ package com.patflow.app;
 import androidx.hilt.work.HiltWrapper_WorkerFactoryModule;
 import com.patflow.app.core.notifications.NotificationReceiver_GeneratedInjector;
 import com.patflow.app.core.notifications.OverdueCheckWorker_HiltModule;
+import com.patflow.app.core.notifications.RecurringIncomeWorker_HiltModule;
 import com.patflow.app.core.notifications.ReminderSyncWorker_HiltModule;
 import com.patflow.app.core.theme.ThemeViewModel_HiltModules;
 import com.patflow.app.core.utils.HapticViewModel_HiltModules;
@@ -14,6 +15,10 @@ import com.patflow.app.feature.bills.AddEditBillViewModel_HiltModules;
 import com.patflow.app.feature.bills.BillDetailViewModel_HiltModules;
 import com.patflow.app.feature.bills.BillListViewModel_HiltModules;
 import com.patflow.app.feature.dashboard.DashboardViewModel_HiltModules;
+import com.patflow.app.feature.income.AddEditIncomeSourceViewModel_HiltModules;
+import com.patflow.app.feature.income.AddEditIncomeViewModel_HiltModules;
+import com.patflow.app.feature.income.IncomeSourceListViewModel_HiltModules;
+import com.patflow.app.feature.income.IncomeViewModel_HiltModules;
 import com.patflow.app.feature.payment.PaymentDetailViewModel_HiltModules;
 import com.patflow.app.feature.payment.PaymentHistoryViewModel_HiltModules;
 import com.patflow.app.feature.reports.ReportsViewModel_HiltModules;
@@ -152,6 +157,7 @@ public final class PatFlowApplication_HiltComponents {
           OverdueCheckWorker_HiltModule.class,
           ActivityRetainedCBuilderModule.class,
           ServiceCBuilderModule.class,
+          RecurringIncomeWorker_HiltModule.class,
           ReminderSyncWorker_HiltModule.class,
           RepositoryModule.class
       }
@@ -178,6 +184,8 @@ public final class PatFlowApplication_HiltComponents {
   @Subcomponent(
       modules = {
           AddEditBillViewModel_HiltModules.KeyModule.class,
+          AddEditIncomeSourceViewModel_HiltModules.KeyModule.class,
+          AddEditIncomeViewModel_HiltModules.KeyModule.class,
           BillDetailViewModel_HiltModules.KeyModule.class,
           BillListViewModel_HiltModules.KeyModule.class,
           DashboardViewModel_HiltModules.KeyModule.class,
@@ -185,6 +193,8 @@ public final class PatFlowApplication_HiltComponents {
           HapticViewModel_HiltModules.KeyModule.class,
           HiltWrapper_ActivityRetainedComponentManager_LifecycleModule.class,
           HiltWrapper_SavedStateHandleModule.class,
+          IncomeSourceListViewModel_HiltModules.KeyModule.class,
+          IncomeViewModel_HiltModules.KeyModule.class,
           ActivityCBuilderModule.class,
           ViewModelCBuilderModule.class,
           PaymentDetailViewModel_HiltModules.KeyModule.class,
@@ -228,12 +238,16 @@ public final class PatFlowApplication_HiltComponents {
   @Subcomponent(
       modules = {
           AddEditBillViewModel_HiltModules.BindsModule.class,
+          AddEditIncomeSourceViewModel_HiltModules.BindsModule.class,
+          AddEditIncomeViewModel_HiltModules.BindsModule.class,
           BillDetailViewModel_HiltModules.BindsModule.class,
           BillListViewModel_HiltModules.BindsModule.class,
           DashboardViewModel_HiltModules.BindsModule.class,
           DataManagementViewModel_HiltModules.BindsModule.class,
           HapticViewModel_HiltModules.BindsModule.class,
           HiltWrapper_HiltViewModelFactory_ViewModelModule.class,
+          IncomeSourceListViewModel_HiltModules.BindsModule.class,
+          IncomeViewModel_HiltModules.BindsModule.class,
           PaymentDetailViewModel_HiltModules.BindsModule.class,
           PaymentHistoryViewModel_HiltModules.BindsModule.class,
           ReportsViewModel_HiltModules.BindsModule.class,

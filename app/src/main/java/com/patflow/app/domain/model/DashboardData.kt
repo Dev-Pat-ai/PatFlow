@@ -10,6 +10,7 @@ data class DashboardData(
     val totalIncomeThisMonth: Double = 0.0,
     val totalIncomeThisYear: Double = 0.0,
     val netCashFlow: Double = 0.0,
+    val netBalance: Double = 0.0,
     val billsDueToday: Int = 0,
     val upcomingBillsCount: Int = 0,
     val overdueBillsCount: Int = 0,

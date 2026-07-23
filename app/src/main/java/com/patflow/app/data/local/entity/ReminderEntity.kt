@@ -17,15 +17,28 @@ import kotlinx.datetime.LocalDateTime
             childColumns = ["bill_cycle_id"],
             onDelete = ForeignKey.CASCADE,
         ),
+        ForeignKey(
+            entity = IncomeSourceEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["income_source_id"],
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
-    indices = [Index(value = ["remind_at"])],
+    indices = [
+        Index(value = ["remind_at"]),
+        Index(value = ["bill_cycle_id"]),
+        Index(value = ["income_source_id"]),
+    ],
 )
 data class ReminderEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
 
     @ColumnInfo(name = "bill_cycle_id")
-    val billCycleId: Long,
+    val billCycleId: Long? = null,
+
+    @ColumnInfo(name = "income_source_id")
+    val incomeSourceId: Long? = null,
 
     @ColumnInfo(name = "remind_at")
     val remindAt: LocalDateTime,

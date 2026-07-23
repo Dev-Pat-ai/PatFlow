@@ -1,6 +1,7 @@
 package com.patflow.app.data.local.database;
 
 import com.patflow.app.data.local.dao.CategoryDao;
+import com.patflow.app.data.local.dao.IncomeDao;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
 import dagger.internal.QualifierMetadata;
@@ -26,20 +27,25 @@ import javax.inject.Provider;
 public final class DatabaseInitializer_Factory implements Factory<DatabaseInitializer> {
   private final Provider<CategoryDao> categoryDaoProvider;
 
-  public DatabaseInitializer_Factory(Provider<CategoryDao> categoryDaoProvider) {
+  private final Provider<IncomeDao> incomeDaoProvider;
+
+  public DatabaseInitializer_Factory(Provider<CategoryDao> categoryDaoProvider,
+      Provider<IncomeDao> incomeDaoProvider) {
     this.categoryDaoProvider = categoryDaoProvider;
+    this.incomeDaoProvider = incomeDaoProvider;
   }
 
   @Override
   public DatabaseInitializer get() {
-    return newInstance(categoryDaoProvider.get());
+    return newInstance(categoryDaoProvider.get(), incomeDaoProvider.get());
   }
 
-  public static DatabaseInitializer_Factory create(Provider<CategoryDao> categoryDaoProvider) {
-    return new DatabaseInitializer_Factory(categoryDaoProvider);
+  public static DatabaseInitializer_Factory create(Provider<CategoryDao> categoryDaoProvider,
+      Provider<IncomeDao> incomeDaoProvider) {
+    return new DatabaseInitializer_Factory(categoryDaoProvider, incomeDaoProvider);
   }
 
-  public static DatabaseInitializer newInstance(CategoryDao categoryDao) {
-    return new DatabaseInitializer(categoryDao);
+  public static DatabaseInitializer newInstance(CategoryDao categoryDao, IncomeDao incomeDao) {
+    return new DatabaseInitializer(categoryDao, incomeDao);
   }
 }

@@ -45,8 +45,23 @@ class NotificationScheduler @Inject constructor(
         )
     }
 
+    /**
+     * Schedules a daily job to check for recurring income templates.
+     */
+    fun scheduleIncomeGeneration() {
+        val workRequest = PeriodicWorkRequestBuilder<RecurringIncomeWorker>(1, TimeUnit.DAYS)
+            .build()
+
+        workManager.enqueueUniquePeriodicWork(
+            WORK_INCOME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            workRequest
+        )
+    }
+
     companion object {
         const val WORK_REMINDERS = "patflow_reminder_sync"
         const val WORK_OVERDUE = "patflow_overdue_check"
+        const val WORK_INCOME = "patflow_income_generation"
     }
 }

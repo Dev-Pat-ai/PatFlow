@@ -51,6 +51,9 @@ data class IncomeSourceEntity(
     @ColumnInfo(name = "is_active", defaultValue = "1")
     val isActive: Boolean = true,
 
+    @ColumnInfo(name = "is_archived", defaultValue = "0")
+    val isArchived: Boolean = false,
+
     @ColumnInfo(name = "is_deleted", defaultValue = "0")
     val isDeleted: Boolean = false,
 )

@@ -2,32 +2,47 @@ package com.patflow.app.data.local.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 
 /**
- * `budget` — total monthly budget (Architecture §8.3 / FR-5.1, FR-5.2).
- *
- * NOTE (Phase 0 review — logged as a future implementation consideration,
- * not a blocker): unlike bill/income/goal, this table has no `currency_code`.
- * total_amount is implicitly in the user's default currency; multi-currency
- * budget math is undefined and deferred.
+ * Room entity representing a budget (Architecture §8.3 / FR-5.1, FR-5.2).
+ * Generalized to support Monthly, Weekly, Yearly, and Custom ranges in Phase 10.
  */
-@Entity(
-    tableName = "budget",
-    indices = [Index(value = ["month", "year"], unique = true)],
-)
+@Entity(tableName = "budget")
 data class BudgetEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
 
-    val month: Int, // 1-12
+    val name: String,
 
-    val year: Int,
+    val type: String, // BudgetType enum name
 
     @ColumnInfo(name = "total_amount")
     val totalAmount: Double,
 
-    @ColumnInfo(name = "is_recurring_default", defaultValue = "0")
-    val isRecurringDefault: Boolean = false,
+    @ColumnInfo(name = "currency_code", defaultValue = "PHP")
+    val currencyCode: String = "PHP",
+
+    @ColumnInfo(name = "start_date")
+    val startDate: LocalDate,
+
+    @ColumnInfo(name = "end_date")
+    val endDate: LocalDate,
+
+    @ColumnInfo(name = "is_active", defaultValue = "1")
+    val isActive: Boolean = true,
+
+    @ColumnInfo(name = "is_archived", defaultValue = "0")
+    val isArchived: Boolean = false,
+
+    @ColumnInfo(name = "is_deleted", defaultValue = "0")
+    val isDeleted: Boolean = false,
+
+    @ColumnInfo(name = "created_at")
+    val createdAt: LocalDateTime,
+
+    @ColumnInfo(name = "updated_at")
+    val updatedAt: LocalDateTime
 )

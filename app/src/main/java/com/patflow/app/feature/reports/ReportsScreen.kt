@@ -20,9 +20,11 @@ import com.patflow.app.domain.model.ReportData
 import com.patflow.app.domain.model.ReportFilter
 import com.patflow.app.domain.model.UserPreferences
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberColumnCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.core.cartesian.data.columnSeries
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -114,6 +116,7 @@ private fun ReportContent(
 ) {
     val trendModelProducer = remember { CartesianChartModelProducer() }
     val incomeTrendModelProducer = remember { CartesianChartModelProducer() }
+    val categorySpendingModelProducer = remember { CartesianChartModelProducer() }
     val currencyCode = preferences?.profile?.preferredCurrency ?: "PHP"
 
     LaunchedEffect(data.trendAnalysis.monthlySpending) {
@@ -128,6 +131,14 @@ private fun ReportContent(
         if (data.trendAnalysis.monthlyIncome.isNotEmpty()) {
             incomeTrendModelProducer.runTransaction {
                 lineSeries { series(data.trendAnalysis.monthlyIncome.values) }
+            }
+        }
+    }
+
+    LaunchedEffect(data.categoryAnalysis.spendingByCategory) {
+        if (data.categoryAnalysis.spendingByCategory.isNotEmpty()) {
+            categorySpendingModelProducer.runTransaction {
+                columnSeries { series(data.categoryAnalysis.spendingByCategory.values) }
             }
         }
     }
@@ -172,7 +183,7 @@ private fun ReportContent(
 
         // 4. Category Breakdown
         item {
-            CategoryBreakdownSection(data, currencyCode)
+            CategoryBreakdownSection(data, currencyCode, categorySpendingModelProducer)
         }
 
         // 5. Performance & Insights
@@ -230,11 +241,21 @@ private fun FinancialSummarySection(data: ReportData, currencyCode: String) {
 }
 
 @Composable
-private fun CategoryBreakdownSection(data: ReportData, currencyCode: String) {
+private fun CategoryBreakdownSection(
+    data: ReportData,
+    currencyCode: String,
+    modelProducer: CartesianChartModelProducer
+) {
     Column(verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
         SectionHeader(title = "Category Breakdown")
         
         if (data.categoryAnalysis.spendingByCategory.isNotEmpty()) {
+            CartesianChartHost(
+                chart = rememberCartesianChart(rememberColumnCartesianLayer()),
+                modelProducer = modelProducer,
+                modifier = Modifier.height(200.dp)
+            )
+
             data.categoryAnalysis.highestSpendingCategory?.let {
                 StatisticCard(
                     title = "Highest Spending",

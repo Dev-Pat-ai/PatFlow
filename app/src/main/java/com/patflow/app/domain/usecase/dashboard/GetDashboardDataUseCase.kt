@@ -49,6 +49,10 @@ class GetDashboardDataUseCase @Inject constructor(
             val totalIncomeMonth = monthIncome.sumOf { it.entry.amount }
             val totalIncomeYear = allIncome.filter { it.entry.entryDate >= startOfYear }.sumOf { it.entry.amount }
             
+            val totalAllIncome = allIncome.sumOf { it.entry.amount }
+            val totalAllPaid = allPayments.sumOf { it.payment.amount }
+            val netBalance = totalAllIncome - totalAllPaid
+            
             val netCashFlow = totalIncomeMonth - totalPaid
             
             val dueToday = monthCycles.count { (it.dueDate == now) && (it.status != BillStatus.PAID) }
@@ -105,6 +109,7 @@ class GetDashboardDataUseCase @Inject constructor(
                 totalIncomeThisMonth = totalIncomeMonth,
                 totalIncomeThisYear = totalIncomeYear,
                 netCashFlow = netCashFlow,
+                netBalance = netBalance,
                 billsDueToday = dueToday,
                 upcomingBillsCount = monthCycles.count { it.status != BillStatus.PAID },
                 overdueBillsCount = overdue,

@@ -54,6 +54,7 @@ fun AddEditIncomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val categories by viewModel.categories.collectAsState()
+    val sources by viewModel.sources.collectAsState()
     val haptic = rememberHapticFeedbackController()
     var showDatePicker by remember { mutableStateOf(false) }
 
@@ -88,6 +89,12 @@ fun AddEditIncomeScreen(
                 .padding(PatFlowSpacing.space4),
             verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space4)
         ) {
+            IncomeSourceDropdown(
+                sources = sources,
+                selectedSourceId = uiState.incomeSourceId,
+                onSourceSelected = viewModel::onSourceChange
+            )
+
             AmountTextField(
                 value = uiState.amount,
                 onValueChange = viewModel::onAmountChange,
@@ -141,6 +148,53 @@ fun AddEditIncomeScreen(
             onDismiss = { showDatePicker = false },
             initialDate = uiState.date
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun IncomeSourceDropdown(
+    sources: List<com.patflow.app.domain.model.IncomeSource>,
+    selectedSourceId: Long?,
+    onSourceSelected: (com.patflow.app.domain.model.IncomeSource?) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val selectedSource = sources.find { it.id == selectedSourceId }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
+        AppTextField(
+            value = selectedSource?.name ?: "One-time Income",
+            onValueChange = {},
+            readOnly = true,
+            label = "Income Source",
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable)
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text("One-time Income") },
+                onClick = {
+                    onSourceSelected(null)
+                    expanded = false
+                }
+            )
+            sources.forEach { source ->
+                DropdownMenuItem(
+                    text = { Text(source.name) },
+                    onClick = {
+                        onSourceSelected(source)
+                        expanded = false
+                    }
+                )
+            }
+        }
     }
 }
 

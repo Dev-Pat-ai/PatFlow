@@ -21,6 +21,7 @@ interface IncomeRepository {
     suspend fun insertSource(source: IncomeSource): Long
     suspend fun updateSource(source: IncomeSource)
     suspend fun deleteSource(id: Long)
+    suspend fun archiveSource(id: Long, archived: Boolean)
     
     // ---- Entries ----
     fun getEntries(): Flow<List<IncomeWithDetails>>

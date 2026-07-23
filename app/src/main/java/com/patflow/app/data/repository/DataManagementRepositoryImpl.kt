@@ -25,6 +25,7 @@ class DataManagementRepositoryImpl @Inject constructor(
     private val billCycleDao: BillCycleDao,
     private val paymentDao: PaymentDao,
     private val categoryDao: CategoryDao,
+    private val incomeDao: IncomeDao,
     private val settingsRepository: SettingsRepository
 ) : DataManagementRepository {
 
@@ -37,6 +38,9 @@ class DataManagementRepositoryImpl @Inject constructor(
             bills = billDao.getAllEntities().map { it.toBackup() },
             billCycles = billCycleDao.getAllEntities().map { it.toBackup() },
             payments = paymentDao.getAllEntities().map { it.toBackup() },
+            incomeCategories = incomeDao.getAllCategoryEntities().map { it.toBackup() },
+            incomeSources = incomeDao.getAllSourceEntities().map { it.toBackup() },
+            incomeEntries = incomeDao.getAllEntryEntities().map { it.toBackup() },
             profile = UserProfileBackup(
                 displayName = prefs.profile.displayName,
                 monthlyBudget = prefs.profile.monthlyBudget,
@@ -67,12 +71,18 @@ class DataManagementRepositoryImpl @Inject constructor(
             billCycleDao.deleteAll()
             billDao.deleteAll()
             categoryDao.deleteAll()
+            incomeDao.deleteAllEntries()
+            incomeDao.deleteAllSources()
+            incomeDao.deleteAllCategories()
             
             // 2. Insert backup data
             categoryDao.insertAll(backup.data.categories.map { it.toEntity() })
             billDao.insertAll(backup.data.bills.map { it.toEntity() })
             billCycleDao.insertAll(backup.data.billCycles.map { it.toEntity() })
             paymentDao.insertAll(backup.data.payments.map { it.toEntity() })
+            incomeDao.insertAllCategories(backup.data.incomeCategories.map { it.toEntity() })
+            incomeDao.insertAllSources(backup.data.incomeSources.map { it.toEntity() })
+            incomeDao.insertAllEntries(backup.data.incomeEntries.map { it.toEntity() })
             
             // 3. Restore preferences
             val themeMode = try {
@@ -111,10 +121,17 @@ class DataManagementRepositoryImpl @Inject constructor(
         payments.forEach {
             paymentsCsv.append("${it.payment.id},${it.billName},${it.payment.amount},${it.payment.paymentDate},${it.payment.method},${it.payment.note ?: ""}\n")
         }
+
+        val incomeEntries = incomeDao.getAllEntryEntities()
+        val incomeCsv = StringBuilder("ID,Amount,Currency,Date,Note\n")
+        incomeEntries.forEach {
+            incomeCsv.append("${it.id},${it.amount},${it.currencyCode},${it.entryDate},${it.note ?: ""}\n")
+        }
         
         return mapOf(
             "bills_export.csv" to billsCsv.toString(),
-            "payments_export.csv" to paymentsCsv.toString()
+            "payments_export.csv" to paymentsCsv.toString(),
+            "income_export.csv" to incomeCsv.toString()
         )
     }
 }

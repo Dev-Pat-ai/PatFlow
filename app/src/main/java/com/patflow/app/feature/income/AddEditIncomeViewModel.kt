@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.patflow.app.domain.model.IncomeCategory
 import com.patflow.app.domain.model.IncomeEntry
+import com.patflow.app.domain.model.IncomeSource
 import com.patflow.app.domain.model.Recurrence
 import com.patflow.app.domain.model.RecurrenceType
 import com.patflow.app.domain.repository.IncomeRepository
@@ -41,14 +42,26 @@ class AddEditIncomeViewModel @Inject constructor(
     private val _categories = MutableStateFlow<List<IncomeCategory>>(emptyList())
     val categories: StateFlow<List<IncomeCategory>> = _categories
 
+    private val _sources = MutableStateFlow<List<IncomeSource>>(emptyList())
+    val sources: StateFlow<List<IncomeSource>> = _sources
+
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow: SharedFlow<UiEvent> = _eventFlow.asSharedFlow()
 
     init {
         loadCategories()
+        loadSources()
         loadPreferredSettings()
         entryId?.let { id ->
             loadEntry(id)
+        }
+    }
+
+    private fun loadSources() {
+        viewModelScope.launch {
+            repository.getSources().collect {
+                _sources.value = it.filter { !it.isDeleted && !it.isArchived }
+            }
         }
     }
 
@@ -104,6 +117,14 @@ class AddEditIncomeViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(note = note)
     }
 
+    fun onSourceChange(source: IncomeSource?) {
+        _uiState.value = _uiState.value.copy(
+            incomeSourceId = source?.id,
+            category = source?.category ?: _uiState.value.category,
+            amount = source?.defaultAmount?.toString() ?: _uiState.value.amount
+        )
+    }
+
     fun saveEntry() {
         val state = _uiState.value
         val amountValue = state.amount.toDoubleOrNull()
@@ -120,7 +141,7 @@ class AddEditIncomeViewModel @Inject constructor(
             val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
             val entry = IncomeEntry(
                 id = entryId ?: 0,
-                incomeSourceId = null, // Logic for sources/recurring moves to Phase 9 Part 2
+                incomeSourceId = state.incomeSourceId,
                 category = state.category,
                 amount = amountValue,
                 currencyCode = state.currencyCode,
@@ -149,6 +170,7 @@ data class AddEditIncomeUiState(
     val currencyCode: String = "PHP",
     val category: IncomeCategory? = null,
     val categoryError: String? = null,
+    val incomeSourceId: Long? = null,
     val date: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
     val note: String = "",
     val isEditMode: Boolean = false

@@ -1,5 +1,7 @@
 package com.patflow.app.feature.income
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,13 +12,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.ReceiptLong
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.automirrored.rounded.List
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -31,10 +38,11 @@ import com.patflow.app.core.components.AppTopBar
 import com.patflow.app.core.components.CategoryChip
 import com.patflow.app.core.components.EmptyState
 import com.patflow.app.core.components.LoadingState
-import com.patflow.app.core.components.SectionHeader
+import com.patflow.app.core.components.SwipeableBillRow
 import com.patflow.app.core.theme.PatFlowSpacing
 import com.patflow.app.core.utils.CategoryMapper
 import com.patflow.app.core.utils.CurrencyFormatter
+import com.patflow.app.core.utils.rememberHapticFeedbackController
 import com.patflow.app.domain.model.IncomeWithDetails
 
 /**
@@ -44,6 +52,7 @@ import com.patflow.app.domain.model.IncomeWithDetails
 @Composable
 fun IncomeListScreen(
     onAddIncomeClick: () -> Unit,
+    onManageSourcesClick: () -> Unit,
     onEntryClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: IncomeViewModel = hiltViewModel()
@@ -52,15 +61,36 @@ fun IncomeListScreen(
     val searchQuery by viewModel.searchQuery.collectAsState()
     val categories by viewModel.categories.collectAsState()
     val selectedCategoryId by viewModel.selectedCategoryId.collectAsState()
+    val selectedIds by viewModel.selectedIds.collectAsState()
+    val haptic = rememberHapticFeedbackController()
 
     Scaffold(
-        topBar = { AppTopBar(title = "Income") },
+        topBar = {
+            if (selectedIds.isNotEmpty()) {
+                ContextualIncomeActionBar(
+                    selectedCount = selectedIds.size,
+                    onClose = viewModel::clearSelection,
+                    onDelete = viewModel::deleteSelected
+                )
+            } else {
+                AppTopBar(
+                    title = "Income",
+                    actions = {
+                        IconButton(onClick = onManageSourcesClick) {
+                            Icon(Icons.AutoMirrored.Rounded.List, contentDescription = "Manage Sources")
+                        }
+                    }
+                )
+            }
+        },
         floatingActionButton = {
-            AppFab(
-                onClick = onAddIncomeClick,
-                icon = Icons.Rounded.Add,
-                contentDescription = "Add Income"
-            )
+            if (selectedIds.isEmpty()) {
+                AppFab(
+                    onClick = onAddIncomeClick,
+                    icon = Icons.Rounded.Add,
+                    contentDescription = "Add Income"
+                )
+            }
         }
     ) { padding ->
         Column(
@@ -68,13 +98,15 @@ fun IncomeListScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            IncomeListHeader(
-                searchQuery = searchQuery,
-                onSearchQueryChange = viewModel::onSearchQueryChange,
-                categories = categories,
-                selectedCategoryId = selectedCategoryId,
-                onCategoryChange = viewModel::onCategoryFilterChange
-            )
+            if (selectedIds.isEmpty()) {
+                IncomeListHeader(
+                    searchQuery = searchQuery,
+                    onSearchQueryChange = viewModel::onSearchQueryChange,
+                    categories = categories,
+                    selectedCategoryId = selectedCategoryId,
+                    onCategoryChange = viewModel::onCategoryFilterChange
+                )
+            }
 
             when (val state = uiState) {
                 IncomeUiState.Loading -> LoadingState()
@@ -88,7 +120,21 @@ fun IncomeListScreen(
                     } else {
                         IncomeListContent(
                             entries = state.entries,
-                            onEntryClick = onEntryClick
+                            selectedIds = selectedIds,
+                            onEntryClick = { id ->
+                                if (selectedIds.isNotEmpty()) {
+                                    haptic.tick()
+                                    viewModel.toggleSelection(id)
+                                } else {
+                                    onEntryClick(id)
+                                }
+                            },
+                            onLongClick = { id ->
+                                haptic.confirm()
+                                viewModel.toggleSelection(id)
+                            },
+                            onDelete = viewModel::deleteEntry,
+                            onDuplicate = viewModel::duplicateEntry
                         )
                     }
                 }
@@ -136,9 +182,46 @@ private fun IncomeListHeader(
 }
 
 @Composable
+private fun ContextualIncomeActionBar(
+    selectedCount: Int,
+    onClose: () -> Unit,
+    onDelete: () -> Unit
+) {
+    Surface(
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = PatFlowSpacing.space4, vertical = PatFlowSpacing.space2)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space2)
+        ) {
+            IconButton(onClick = onClose) {
+                Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Close")
+            }
+            Text(
+                text = "$selectedCount selected",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.weight(1f)
+            )
+            IconButton(onClick = onDelete) {
+                Icon(Icons.Rounded.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error)
+            }
+        }
+    }
+}
+
+@Composable
 private fun IncomeListContent(
     entries: List<IncomeWithDetails>,
-    onEntryClick: (Long) -> Unit
+    selectedIds: Set<Long>,
+    onEntryClick: (Long) -> Unit,
+    onLongClick: (Long) -> Unit,
+    onDelete: (Long) -> Unit,
+    onDuplicate: (Long) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -146,25 +229,40 @@ private fun IncomeListContent(
         verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)
     ) {
         items(entries, key = { it.entry.id }) { item ->
-            IncomeItem(
-                history = item,
-                onClick = { onEntryClick(item.entry.id) }
-            )
+            val isSelected = selectedIds.contains(item.entry.id)
+            SwipeableBillRow(
+                onMarkAsPaid = { onDuplicate(item.entry.id) }, // Reusing swipe right for Duplicate
+                onEdit = { onDelete(item.entry.id) } // Reusing swipe left for Delete
+            ) {
+                IncomeItem(
+                    history = item,
+                    isSelected = isSelected,
+                    onClick = { onEntryClick(item.entry.id) },
+                    onLongClick = { onLongClick(item.entry.id) }
+                )
+            }
         }
     }
 }
 
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 private fun IncomeItem(
     history: IncomeWithDetails,
-    onClick: () -> Unit
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit
 ) {
     androidx.compose.material3.Card(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            ),
         shape = com.patflow.app.core.theme.PatFlowShapes.lg,
         colors = androidx.compose.material3.CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
         ),
         elevation = androidx.compose.material3.CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {

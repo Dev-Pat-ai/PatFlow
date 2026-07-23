@@ -25,6 +25,7 @@ data class IncomeSource(
     val defaultAmount: Double,
     val recurrence: Recurrence,
     val isActive: Boolean = true,
+    val isArchived: Boolean = false,
     val isDeleted: Boolean = false
 )
 

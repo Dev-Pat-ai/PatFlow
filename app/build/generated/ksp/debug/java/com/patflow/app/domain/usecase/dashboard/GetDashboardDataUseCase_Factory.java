@@ -1,6 +1,7 @@
 package com.patflow.app.domain.usecase.dashboard;
 
 import com.patflow.app.domain.repository.BillRepository;
+import com.patflow.app.domain.repository.IncomeRepository;
 import com.patflow.app.domain.repository.PaymentRepository;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
@@ -29,25 +30,30 @@ public final class GetDashboardDataUseCase_Factory implements Factory<GetDashboa
 
   private final Provider<PaymentRepository> paymentRepositoryProvider;
 
+  private final Provider<IncomeRepository> incomeRepositoryProvider;
+
   public GetDashboardDataUseCase_Factory(Provider<BillRepository> billRepositoryProvider,
-      Provider<PaymentRepository> paymentRepositoryProvider) {
+      Provider<PaymentRepository> paymentRepositoryProvider,
+      Provider<IncomeRepository> incomeRepositoryProvider) {
     this.billRepositoryProvider = billRepositoryProvider;
     this.paymentRepositoryProvider = paymentRepositoryProvider;
+    this.incomeRepositoryProvider = incomeRepositoryProvider;
   }
 
   @Override
   public GetDashboardDataUseCase get() {
-    return newInstance(billRepositoryProvider.get(), paymentRepositoryProvider.get());
+    return newInstance(billRepositoryProvider.get(), paymentRepositoryProvider.get(), incomeRepositoryProvider.get());
   }
 
   public static GetDashboardDataUseCase_Factory create(
       Provider<BillRepository> billRepositoryProvider,
-      Provider<PaymentRepository> paymentRepositoryProvider) {
-    return new GetDashboardDataUseCase_Factory(billRepositoryProvider, paymentRepositoryProvider);
+      Provider<PaymentRepository> paymentRepositoryProvider,
+      Provider<IncomeRepository> incomeRepositoryProvider) {
+    return new GetDashboardDataUseCase_Factory(billRepositoryProvider, paymentRepositoryProvider, incomeRepositoryProvider);
   }
 
   public static GetDashboardDataUseCase newInstance(BillRepository billRepository,
-      PaymentRepository paymentRepository) {
-    return new GetDashboardDataUseCase(billRepository, paymentRepository);
+      PaymentRepository paymentRepository, IncomeRepository incomeRepository) {
+    return new GetDashboardDataUseCase(billRepository, paymentRepository, incomeRepository);
   }
 }

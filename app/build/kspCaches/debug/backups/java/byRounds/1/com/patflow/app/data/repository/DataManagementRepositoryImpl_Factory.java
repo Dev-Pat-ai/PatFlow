@@ -3,6 +3,7 @@ package com.patflow.app.data.repository;
 import com.patflow.app.data.local.dao.BillCycleDao;
 import com.patflow.app.data.local.dao.BillDao;
 import com.patflow.app.data.local.dao.CategoryDao;
+import com.patflow.app.data.local.dao.IncomeDao;
 import com.patflow.app.data.local.dao.PaymentDao;
 import com.patflow.app.data.local.database.PatFlowDatabase;
 import com.patflow.app.domain.repository.SettingsRepository;
@@ -39,36 +40,40 @@ public final class DataManagementRepositoryImpl_Factory implements Factory<DataM
 
   private final Provider<CategoryDao> categoryDaoProvider;
 
+  private final Provider<IncomeDao> incomeDaoProvider;
+
   private final Provider<SettingsRepository> settingsRepositoryProvider;
 
   public DataManagementRepositoryImpl_Factory(Provider<PatFlowDatabase> databaseProvider,
       Provider<BillDao> billDaoProvider, Provider<BillCycleDao> billCycleDaoProvider,
       Provider<PaymentDao> paymentDaoProvider, Provider<CategoryDao> categoryDaoProvider,
+      Provider<IncomeDao> incomeDaoProvider,
       Provider<SettingsRepository> settingsRepositoryProvider) {
     this.databaseProvider = databaseProvider;
     this.billDaoProvider = billDaoProvider;
     this.billCycleDaoProvider = billCycleDaoProvider;
     this.paymentDaoProvider = paymentDaoProvider;
     this.categoryDaoProvider = categoryDaoProvider;
+    this.incomeDaoProvider = incomeDaoProvider;
     this.settingsRepositoryProvider = settingsRepositoryProvider;
   }
 
   @Override
   public DataManagementRepositoryImpl get() {
-    return newInstance(databaseProvider.get(), billDaoProvider.get(), billCycleDaoProvider.get(), paymentDaoProvider.get(), categoryDaoProvider.get(), settingsRepositoryProvider.get());
+    return newInstance(databaseProvider.get(), billDaoProvider.get(), billCycleDaoProvider.get(), paymentDaoProvider.get(), categoryDaoProvider.get(), incomeDaoProvider.get(), settingsRepositoryProvider.get());
   }
 
   public static DataManagementRepositoryImpl_Factory create(
       Provider<PatFlowDatabase> databaseProvider, Provider<BillDao> billDaoProvider,
       Provider<BillCycleDao> billCycleDaoProvider, Provider<PaymentDao> paymentDaoProvider,
-      Provider<CategoryDao> categoryDaoProvider,
+      Provider<CategoryDao> categoryDaoProvider, Provider<IncomeDao> incomeDaoProvider,
       Provider<SettingsRepository> settingsRepositoryProvider) {
-    return new DataManagementRepositoryImpl_Factory(databaseProvider, billDaoProvider, billCycleDaoProvider, paymentDaoProvider, categoryDaoProvider, settingsRepositoryProvider);
+    return new DataManagementRepositoryImpl_Factory(databaseProvider, billDaoProvider, billCycleDaoProvider, paymentDaoProvider, categoryDaoProvider, incomeDaoProvider, settingsRepositoryProvider);
   }
 
   public static DataManagementRepositoryImpl newInstance(PatFlowDatabase database, BillDao billDao,
       BillCycleDao billCycleDao, PaymentDao paymentDao, CategoryDao categoryDao,
-      SettingsRepository settingsRepository) {
-    return new DataManagementRepositoryImpl(database, billDao, billCycleDao, paymentDao, categoryDao, settingsRepository);
+      IncomeDao incomeDao, SettingsRepository settingsRepository) {
+    return new DataManagementRepositoryImpl(database, billDao, billCycleDao, paymentDao, categoryDao, incomeDao, settingsRepository);
   }
 }

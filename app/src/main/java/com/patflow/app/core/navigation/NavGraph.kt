@@ -28,7 +28,9 @@ import com.patflow.app.feature.bills.AddEditBillScreen
 import com.patflow.app.feature.bills.BillDetailScreen
 import com.patflow.app.feature.dashboard.DashboardScreen
 import com.patflow.app.feature.income.AddEditIncomeScreen
+import com.patflow.app.feature.income.AddEditIncomeSourceScreen
 import com.patflow.app.feature.income.IncomeListScreen
+import com.patflow.app.feature.income.IncomeSourceListScreen
 import com.patflow.app.feature.money.MoneyScreen
 import com.patflow.app.feature.payment.PaymentDetailScreen
 import com.patflow.app.feature.payment.PaymentHistoryScreen
@@ -122,8 +124,11 @@ fun PatFlowNavGraph(
                     onAddIncomeClick = {
                         navController.navigate(Destinations.ADD_EDIT_INCOME)
                     },
+                    onManageIncomeSourcesClick = {
+                        navController.navigate(Destinations.INCOME_SOURCES)
+                    },
                     onIncomeClick = { entryId ->
-                        navController.navigate(Destinations.addEditIncome(entryId))
+                        navController.navigate("${Destinations.ADD_EDIT_INCOME}?entryId=$entryId")
                     }
                 )
             }
@@ -162,6 +167,31 @@ fun PatFlowNavGraph(
                 })
             ) {
                 AddEditIncomeScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(Destinations.INCOME_SOURCES) {
+                IncomeSourceListScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onAddSourceClick = {
+                        navController.navigate(Destinations.ADD_EDIT_INCOME_SOURCE)
+                    },
+                    onSourceClick = { sourceId ->
+                        navController.navigate("${Destinations.ADD_EDIT_INCOME_SOURCE}?sourceId=$sourceId")
+                    }
+                )
+            }
+
+            composable(
+                route = "${Destinations.ADD_EDIT_INCOME_SOURCE}?sourceId={sourceId}",
+                arguments = listOf(navArgument("sourceId") { 
+                    type = androidx.navigation.NavType.StringType
+                    nullable = true
+                    defaultValue = null 
+                })
+            ) {
+                AddEditIncomeSourceScreen(
                     onNavigateBack = { navController.popBackStack() }
                 )
             }

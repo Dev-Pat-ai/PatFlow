@@ -40,6 +40,7 @@ fun MoneyScreen(
     onEditBillClick: (Long) -> Unit,
     onAddBillClick: () -> Unit,
     onAddIncomeClick: () -> Unit,
+    onManageIncomeSourcesClick: () -> Unit,
     onIncomeClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -96,7 +97,7 @@ fun MoneyScreen(
             }
         },
         floatingActionButton = {
-            if (selectedTabIndex == 0) {
+            if (selectedTabIndex == 0 || selectedTabIndex == 1) {
                 SpeedDialFab(actions = speedDialActions)
             }
         },
@@ -114,6 +115,7 @@ fun MoneyScreen(
                 )
                 1 -> IncomeListScreen(
                     onAddIncomeClick = onAddIncomeClick,
+                    onManageSourcesClick = onManageIncomeSourcesClick,
                     onEntryClick = onIncomeClick
                 )
                 2 -> ComingSoonState(title = "Savings goals are coming soon")

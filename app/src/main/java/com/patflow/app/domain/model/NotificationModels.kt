@@ -29,7 +29,8 @@ enum class SnoozeOption {
  */
 data class Reminder(
     val id: Long = 0,
-    val billCycleId: Long,
+    val billCycleId: Long? = null,
+    val incomeSourceId: Long? = null,
     val remindAt: LocalDateTime,
     val isSent: Boolean = false,
     val offsetDays: Int

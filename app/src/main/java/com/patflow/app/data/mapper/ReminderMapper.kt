@@ -6,6 +6,7 @@ import com.patflow.app.domain.model.Reminder
 fun ReminderEntity.toDomain(): Reminder = Reminder(
     id = id,
     billCycleId = billCycleId,
+    incomeSourceId = incomeSourceId,
     remindAt = remindAt,
     isSent = isSent,
     offsetDays = offsetDays
@@ -14,6 +15,7 @@ fun ReminderEntity.toDomain(): Reminder = Reminder(
 fun Reminder.toEntity(): ReminderEntity = ReminderEntity(
     id = id,
     billCycleId = billCycleId,
+    incomeSourceId = incomeSourceId,
     remindAt = remindAt,
     isSent = isSent,
     offsetDays = offsetDays

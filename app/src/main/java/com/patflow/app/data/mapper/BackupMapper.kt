@@ -27,6 +27,21 @@ fun IncomeEntryEntity.toBackup(): IncomeEntryBackup = IncomeEntryBackup(
 )
 
 fun CategoryBackup.toEntity(): BillCategoryEntity = BillCategoryEntity(id, name, iconKey, colorHex, isCustom)
+
+fun IncomeCategoryBackup.toEntity(): IncomeCategoryEntity = IncomeCategoryEntity(id, name, iconKey, colorHex, isCustom)
+fun IncomeSourceBackup.toEntity(): IncomeSourceEntity = IncomeSourceEntity(
+    id = id, categoryId = categoryId, name = name, defaultAmount = defaultAmount,
+    recurrenceType = recurrenceType, recurrenceInterval = recurrenceInterval,
+    startDate = kotlinx.datetime.LocalDate.parse(startDate),
+    endDate = endDate?.let { kotlinx.datetime.LocalDate.parse(it) },
+    isActive = isActive, isArchived = false, isDeleted = isDeleted
+)
+fun IncomeEntryBackup.toEntity(): IncomeEntryEntity = IncomeEntryEntity(
+    id = id, incomeSourceId = incomeSourceId, categoryId = categoryId, amount = amount,
+    currencyCode = currencyCode, entryDate = kotlinx.datetime.LocalDate.parse(entryDate),
+    note = note, createdAt = kotlinx.datetime.LocalDateTime.parse(createdAt)
+)
+
 fun BillBackup.toEntity(): BillEntity = BillEntity(
     id = id, categoryId = categoryId, name = name, defaultAmount = defaultAmount, currencyCode = currencyCode,
     merchant = merchant, recurrenceType = recurrenceType, recurrenceInterval = recurrenceInterval,
