@@ -1,5 +1,6 @@
 package com.patflow.app.core.notifications;
 
+import com.patflow.app.domain.repository.ReminderRepository;
 import com.patflow.app.domain.usecase.bill.MarkBillAsPaidUseCase;
 import dagger.MembersInjector;
 import dagger.internal.DaggerGenerated;
@@ -25,24 +26,36 @@ import javax.inject.Provider;
 public final class NotificationReceiver_MembersInjector implements MembersInjector<NotificationReceiver> {
   private final Provider<MarkBillAsPaidUseCase> markBillAsPaidUseCaseProvider;
 
+  private final Provider<ReminderRepository> reminderRepositoryProvider;
+
   public NotificationReceiver_MembersInjector(
-      Provider<MarkBillAsPaidUseCase> markBillAsPaidUseCaseProvider) {
+      Provider<MarkBillAsPaidUseCase> markBillAsPaidUseCaseProvider,
+      Provider<ReminderRepository> reminderRepositoryProvider) {
     this.markBillAsPaidUseCaseProvider = markBillAsPaidUseCaseProvider;
+    this.reminderRepositoryProvider = reminderRepositoryProvider;
   }
 
   public static MembersInjector<NotificationReceiver> create(
-      Provider<MarkBillAsPaidUseCase> markBillAsPaidUseCaseProvider) {
-    return new NotificationReceiver_MembersInjector(markBillAsPaidUseCaseProvider);
+      Provider<MarkBillAsPaidUseCase> markBillAsPaidUseCaseProvider,
+      Provider<ReminderRepository> reminderRepositoryProvider) {
+    return new NotificationReceiver_MembersInjector(markBillAsPaidUseCaseProvider, reminderRepositoryProvider);
   }
 
   @Override
   public void injectMembers(NotificationReceiver instance) {
     injectMarkBillAsPaidUseCase(instance, markBillAsPaidUseCaseProvider.get());
+    injectReminderRepository(instance, reminderRepositoryProvider.get());
   }
 
   @InjectedFieldSignature("com.patflow.app.core.notifications.NotificationReceiver.markBillAsPaidUseCase")
   public static void injectMarkBillAsPaidUseCase(NotificationReceiver instance,
       MarkBillAsPaidUseCase markBillAsPaidUseCase) {
     instance.markBillAsPaidUseCase = markBillAsPaidUseCase;
+  }
+
+  @InjectedFieldSignature("com.patflow.app.core.notifications.NotificationReceiver.reminderRepository")
+  public static void injectReminderRepository(NotificationReceiver instance,
+      ReminderRepository reminderRepository) {
+    instance.reminderRepository = reminderRepository;
   }
 }

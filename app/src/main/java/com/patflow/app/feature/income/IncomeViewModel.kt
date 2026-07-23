@@ -26,7 +26,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class IncomeViewModel @Inject constructor(
-    private val getIncomeEntriesUseCase: GetIncomeEntriesUseCase,
+    getIncomeEntriesUseCase: GetIncomeEntriesUseCase,
     private val deleteIncomeEntryUseCase: DeleteIncomeEntryUseCase,
     private val duplicateIncomeEntryUseCase: DuplicateIncomeEntryUseCase,
     private val repository: IncomeRepository
@@ -68,19 +68,15 @@ class IncomeViewModel @Inject constructor(
     ) { args: Array<Any?> ->
         @Suppress("UNCHECKED_CAST")
         val entries = args[0] as List<IncomeWithDetails>
-        @Suppress("UNCHECKED_CAST")
         val query = args[1] as String
-        @Suppress("UNCHECKED_CAST")
         val categoryId = args[2] as Long?
         @Suppress("UNCHECKED_CAST")
         val dates = args[3] as Pair<LocalDate?, LocalDate?>
         @Suppress("UNCHECKED_CAST")
         val amounts = args[4] as Pair<Double?, Double?>
-        @Suppress("UNCHECKED_CAST")
         val recurring = args[5] as Boolean
         @Suppress("UNCHECKED_CAST")
         val selectedIds = args[6] as Set<Long>
-        @Suppress("UNCHECKED_CAST")
         val sort = args[7] as IncomeSortOrder
 
         val filtered = entries.filter { item ->

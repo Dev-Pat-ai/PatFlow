@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 8.6.0" type="conditional_incidents">
+
+    <incident
+        id="NotificationPermission"
+        severity="error"
+        message="When targeting Android 13 or higher, posting a permission requires holding the `POST_NOTIFICATIONS` permission">
+        <fix-data missing="android.permission.POST_NOTIFICATIONS"/>
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/patflow/app/data/repository/NotificationRepositoryImpl.kt"
+            line="59"
+            column="9"
+            startOffset="2221"
+            endLine="59"
+            endColumn="73"
+            endOffset="2285"/>
+    </incident>
+
+    <incident
+        id="NotificationPermission"
+        severity="error"
+        message="When targeting Android 13 or higher, posting a permission requires holding the `POST_NOTIFICATIONS` permission">
+        <fix-data missing="android.permission.POST_NOTIFICATIONS"/>
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/patflow/app/data/repository/NotificationRepositoryImpl.kt"
+            line="80"
+            column="9"
+            startOffset="2981"
+            endLine="80"
+            endColumn="88"
+            endOffset="3060"/>
+    </incident>
+
+</incidents>
