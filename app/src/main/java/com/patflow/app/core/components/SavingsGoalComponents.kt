@@ -25,8 +25,9 @@ fun SavingsGoalProgressCard(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
         shape = PatFlowShapes.lg,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Column(
             modifier = Modifier.padding(PatFlowSpacing.space4),

@@ -1,6 +1,7 @@
 package com.patflow.app.core.notifications
 
 import android.content.Context
+import android.util.Log
 import androidx.work.*
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.concurrent.TimeUnit
@@ -14,8 +15,6 @@ import javax.inject.Singleton
 class NotificationScheduler @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    private val workManager = WorkManager.getInstance(context)
-
     /**
      * Schedules a periodic job to check for due reminders every 15 minutes (WorkManager minimum).
      */
@@ -24,7 +23,7 @@ class NotificationScheduler @Inject constructor(
             .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.NOT_REQUIRED).build())
             .build()
 
-        workManager.enqueueUniquePeriodicWork(
+        enqueueUniquePeriodicWork(
             WORK_REMINDERS,
             ExistingPeriodicWorkPolicy.KEEP,
             workRequest
@@ -38,7 +37,7 @@ class NotificationScheduler @Inject constructor(
         val workRequest = PeriodicWorkRequestBuilder<OverdueCheckWorker>(1, TimeUnit.DAYS)
             .build()
 
-        workManager.enqueueUniquePeriodicWork(
+        enqueueUniquePeriodicWork(
             WORK_OVERDUE,
             ExistingPeriodicWorkPolicy.KEEP,
             workRequest
@@ -52,7 +51,7 @@ class NotificationScheduler @Inject constructor(
         val workRequest = PeriodicWorkRequestBuilder<RecurringIncomeWorker>(1, TimeUnit.DAYS)
             .build()
 
-        workManager.enqueueUniquePeriodicWork(
+        enqueueUniquePeriodicWork(
             WORK_INCOME,
             ExistingPeriodicWorkPolicy.KEEP,
             workRequest
@@ -66,14 +65,31 @@ class NotificationScheduler @Inject constructor(
         val workRequest = PeriodicWorkRequestBuilder<BudgetCheckWorker>(1, TimeUnit.DAYS)
             .build()
 
-        workManager.enqueueUniquePeriodicWork(
+        enqueueUniquePeriodicWork(
             WORK_BUDGET,
             ExistingPeriodicWorkPolicy.KEEP,
             workRequest
         )
     }
 
+    private fun enqueueUniquePeriodicWork(
+        uniqueWorkName: String,
+        policy: ExistingPeriodicWorkPolicy,
+        workRequest: PeriodicWorkRequest
+    ) {
+        runCatching {
+            WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                uniqueWorkName,
+                policy,
+                workRequest
+            )
+        }.onFailure {
+            Log.e(TAG, "Unable to schedule $uniqueWorkName", it)
+        }
+    }
+
     companion object {
+        private const val TAG = "NotificationScheduler"
         const val WORK_REMINDERS = "patflow_reminder_sync"
         const val WORK_OVERDUE = "patflow_overdue_check"
         const val WORK_INCOME = "patflow_income_generation"

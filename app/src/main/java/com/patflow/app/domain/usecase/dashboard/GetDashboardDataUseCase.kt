@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 /**
  * Use case for aggregating all data required for the Dashboard screen (Architecture §1.3).
- * Updated in Phase 11 to include Savings Goals and contextual insights.
+ * Updated in Phase 13 with stability improvements and enhanced error handling.
  */
 class GetDashboardDataUseCase @Inject constructor(
     private val billRepository: BillRepository,
@@ -32,12 +32,12 @@ class GetDashboardDataUseCase @Inject constructor(
         val sixMonthsAgo = startOfMonth - DatePeriod(months = 5)
 
         return combine(
-            billRepository.getBillsWithCycles(),
-            billRepository.getCyclesByDateRange(startOfMonth.toString(), endOfMonth.toString()),
-            paymentRepository.getPayments(),
-            incomeRepository.getEntries(),
-            budgetRepository.getBudgets(),
-            savingsRepository.getGoals()
+            billRepository.getBillsWithCycles().catch { emit(emptyList()) },
+            billRepository.getCyclesByDateRange(startOfMonth.toString(), endOfMonth.toString()).catch { emit(emptyList()) },
+            paymentRepository.getPayments().catch { emit(emptyList()) },
+            incomeRepository.getEntries().catch { emit(emptyList()) },
+            budgetRepository.getBudgets().catch { emit(emptyList()) },
+            savingsRepository.getGoals().catch { emit(emptyList()) }
         ) { args: Array<Any?> ->
             @Suppress("UNCHECKED_CAST")
             val allBillDetails = args[0] as List<BillWithCycle>
@@ -112,6 +112,6 @@ class GetDashboardDataUseCase @Inject constructor(
                     insights = insights
                 )
             }
-        }
+        }.catch { emit(DashboardData()) } // Fallback to empty data on severe failure
     }
 }

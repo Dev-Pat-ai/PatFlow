@@ -1,5 +1,26 @@
-<resources>
-    <!-- Compose owns all real theming (core/theme/Theme.kt); this is just the
-         pre-Compose window background so there's no flash-of-unstyled-window. -->
-    <style name="Theme.PatFlow" parent="android:Theme.Material.Light.NoActionBar" />
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.PatFlow" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Main Brand color -->
+        <item name="colorPrimary">@color/brand_blue</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Global Background -->
+        <item name="android:windowBackground">@color/bg_light</item>
+
+        <!-- Surface/Card Colors -->
+        <item name="colorSurface">@color/card_bg_light</item>
+        <item name="colorOnSurface">@color/text_main_light</item>
+        <item name="colorSurfaceVariant">@color/card_bg_light</item>
+
+        <!-- Custom Semantic Attributes for Labels and Status -->
+        <item name="colorTextLabel">@color/text_label_light</item>
+        <item name="colorStatusPositive">@color/status_positive_light</item>
+        <item name="colorStatusNegative">@color/status_negative_light</item>
+    </style>
+
+    <!-- Custom attributes for consistent text styling in XML -->
+    <attr name="colorTextLabel" format="color" />
+    <attr name="colorStatusPositive" format="color" />
+    <attr name="colorStatusNegative" format="color" />
 </resources>

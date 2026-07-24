@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.patflow.app.core.components.AppTopBar
 import com.patflow.app.core.components.LoadingState
 import com.patflow.app.core.components.SectionHeader
+import com.patflow.app.core.theme.PatFlowShapes
 import com.patflow.app.core.theme.PatFlowSpacing
 import com.patflow.app.core.utils.CurrencyFormatter
 import kotlinx.datetime.*
@@ -101,22 +102,29 @@ private fun CalendarGrid(
 ) {
     val daysInMonth = month.month.length(month.year % 4 == 0 && (month.year % 100 != 0 || month.year % 400 == 0))
     val firstDayOfMonth = LocalDate(month.year, month.month, 1)
-    val dayOfWeekOffset = (firstDayOfMonth.dayOfWeek.ordinal + 1) % 7 // Adjusted for Sun-Sat or similar if needed. Ordinal 0 is Mon.
+    val dayOfWeekOffset = (firstDayOfMonth.dayOfWeek.ordinal + 1) % 7 
 
-    Column(modifier = Modifier.padding(horizontal = PatFlowSpacing.space4)) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = PatFlowSpacing.space4)
+            .background(MaterialTheme.colorScheme.surfaceContainerLow, shape = PatFlowShapes.lg)
+            .padding(PatFlowSpacing.space4)
+    ) {
         // Weekdays Header
         Row(modifier = Modifier.fillMaxWidth()) {
-            listOf("M", "T", "W", "T", "F", "S", "S").forEach { day ->
+            listOf("S", "M", "T", "W", "T", "F", "S").forEach { day ->
                 Text(
                     text = day,
                     modifier = Modifier.weight(1f),
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                    style = MaterialTheme.typography.labelMedium
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         }
         
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(PatFlowSpacing.space3))
 
         // Dates Grid
         var day = 1
@@ -129,12 +137,13 @@ private fun CalendarGrid(
                     } else {
                         val date = LocalDate(month.year, month.month, day)
                         val isSelected = date == selectedDate
-                        val hasEvents = allEvents.any { it.date == date }
+                        val dayEvents = allEvents.filter { it.date == date }
                         
                         CalendarDayItem(
                             day = day,
+                            date = date,
                             isSelected = isSelected,
-                            hasEvents = hasEvents,
+                            events = dayEvents,
                             onClick = { onDateClick(date) },
                             modifier = Modifier.weight(1f)
                         )
@@ -150,18 +159,25 @@ private fun CalendarGrid(
 @Composable
 private fun CalendarDayItem(
     day: Int,
+    date: LocalDate, // Pass the full date
     isSelected: Boolean,
-    hasEvents: Boolean,
+    events: List<CalendarEvent>,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+    val isToday = date == today
+    
     Box(
         modifier = modifier
             .aspectRatio(1f)
-            .padding(4.dp)
+            .padding(2.dp)
             .background(
-                color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
-                shape = RoundedCornerShape(8.dp)
+                color = when {
+                    isSelected -> MaterialTheme.colorScheme.primary
+                    else -> Color.Transparent
+                },
+                shape = PatFlowShapes.md
             )
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
@@ -169,18 +185,35 @@ private fun CalendarDayItem(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = day.toString(),
-                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodyLarge
+                color = when {
+                    isSelected -> MaterialTheme.colorScheme.onPrimary
+                    else -> MaterialTheme.colorScheme.onSurface
+                },
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = if (isToday) FontWeight.Bold else FontWeight.Normal
             )
-            if (hasEvents) {
-                Box(
-                    modifier = Modifier
-                        .size(4.dp)
-                        .background(
-                            color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary,
-                            shape = CircleShape
+            if (events.isNotEmpty()) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    modifier = Modifier.padding(top = 2.dp)
+                ) {
+                    // Show up to 3 colored dots
+                    events.take(3).forEach { event ->
+                        val dotColor = when (event) {
+                            is CalendarEvent.BillDue -> MaterialTheme.colorScheme.error
+                            is CalendarEvent.PaymentMade -> MaterialTheme.colorScheme.primary
+                            is CalendarEvent.IncomeReceived -> MaterialTheme.colorScheme.tertiary
+                        }
+                        Box(
+                            modifier = Modifier
+                                .size(4.dp)
+                                .background(
+                                    color = if (isSelected) MaterialTheme.colorScheme.onPrimary else dotColor,
+                                    shape = CircleShape
+                                )
                         )
-                )
+                    }
+                }
             }
         }
     }

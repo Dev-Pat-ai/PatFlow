@@ -5,6 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -15,6 +20,44 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.patflow.app.core.theme.PatFlowShapes
 import com.patflow.app.core.theme.PatFlowTheme
+
+/**
+ * Specialized text field for search.
+ */
+@Composable
+fun SearchTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    placeholder: String = "Search bills, categories...",
+    onClear: () -> Unit = { onValueChange("") }
+) {
+    AppTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier,
+        placeholder = placeholder,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Rounded.Search,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        },
+        trailingIcon = if (value.isNotEmpty()) {
+            {
+                IconButton(onClick = onClear) {
+                    Icon(
+                        imageVector = Icons.Rounded.Clear,
+                        contentDescription = "Clear",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        } else null,
+        shape = PatFlowShapes.full // Search bars usually use full pill shape in M3
+    )
+}
 
 /**
  * Design System §7.3 — Text Fields.
@@ -33,6 +76,7 @@ fun AppTextField(
     leadingIcon: @Composable (() -> Unit)? = null,
     singleLine: Boolean = true,
     readOnly: Boolean = false,
+    shape: androidx.compose.ui.graphics.Shape = PatFlowShapes.sm,
 ) {
     OutlinedTextField(
         value = value,
@@ -47,7 +91,7 @@ fun AppTextField(
         leadingIcon = leadingIcon,
         singleLine = singleLine,
         readOnly = readOnly,
-        shape = PatFlowShapes.sm,
+        shape = shape,
     )
 }
 

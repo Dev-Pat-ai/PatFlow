@@ -33,6 +33,7 @@ interface PaymentDao {
     @Query("SELECT * FROM payment WHERE payment_date BETWEEN :start AND :end ORDER BY payment_date DESC")
     fun getByDateRange(start: String, end: String): Flow<List<PaymentEntity>>
 
+    @androidx.room.Transaction
     @Query("""
         SELECT 
             p.*, 

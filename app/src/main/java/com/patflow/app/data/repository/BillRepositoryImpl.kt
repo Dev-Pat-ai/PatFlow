@@ -48,11 +48,11 @@ class BillRepositoryImpl @Inject constructor(
 
     override fun getBillById(id: Long): Flow<Bill?> = flow {
         val map = billDao.getBillWithCategoryById(id)
-        if (map == null) {
+        if (map.isNullOrEmpty()) {
             emit(null)
         } else {
-            val (billEntity, categoryEntity) = map.entries.first()
-            emit(billEntity.toDomain(categoryEntity.toDomain()))
+            val entry = map.entries.first()
+            emit(entry.key.toDomain(entry.value.toDomain()))
         }
     }
 
@@ -90,7 +90,7 @@ class BillRepositoryImpl @Inject constructor(
             )
             
             reminderRepository.insertReminder(
-                com.patflow.app.domain.model.Reminder(
+                Reminder(
                     billCycleId = cycleId,
                     remindAt = remindAt,
                     offsetDays = offset
@@ -104,7 +104,8 @@ class BillRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteBill(id: Long) {
-        val bill = billDao.getBillWithCategoryById(id)?.keys?.first()
+        val map = billDao.getBillWithCategoryById(id)
+        val bill = map?.keys?.firstOrNull()
         bill?.let {
             billDao.update(it.copy(isDeleted = true))
         }

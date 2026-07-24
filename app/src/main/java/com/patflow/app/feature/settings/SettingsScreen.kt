@@ -22,9 +22,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.patflow.app.core.components.AppTopBar
 import com.patflow.app.core.components.SectionHeader
 import com.patflow.app.core.components.AppTextField
+import com.patflow.app.core.theme.PatFlowShapes
 import com.patflow.app.core.theme.PatFlowSpacing
 import com.patflow.app.domain.model.UserPreferences
-import java.util.Locale
 
 enum class EditType { DISPLAY_NAME, MONTHLY_BUDGET, THEME, CURRENCY, DATE_FORMAT, FIRST_DAY_OF_WEEK }
 
@@ -111,6 +111,7 @@ fun SettingsScreen(
                     onExportCsv = dataViewModel::exportCsv
                 )
                 NotificationsSection(prefs, viewModel)
+                CloudSyncSection()
                 AboutSection()
             }
         }
@@ -235,6 +236,16 @@ private fun NotificationsSection(prefs: UserPreferences, viewModel: SettingsView
 }
 
 @Composable
+private fun CloudSyncSection() {
+    SectionHeader(title = "Cloud Synchronization", modifier = Modifier.padding(horizontal = PatFlowSpacing.space4))
+    PreferenceCard {
+        ComingSoonRow(title = "Sync with Cloud")
+        ComingSoonRow(title = "Multi-device Support")
+        ComingSoonRow(title = "Automated Backups")
+    }
+}
+
+@Composable
 private fun AboutSection() {
     SectionHeader(title = "About", modifier = Modifier.padding(horizontal = PatFlowSpacing.space4))
     PreferenceCard {
@@ -285,8 +296,17 @@ private fun SettingsValueDialog(type: EditType, initialValue: String, onDismiss:
     var value by remember { mutableStateOf(initialValue) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Update ${type.name.lowercase().replace("_", " ").replaceFirstChar { it.titlecase() }}") },
-        text = { AppTextField(value = value, onValueChange = { value = it }, label = "Value") },
+        title = { 
+            Text(
+                text = "Update ${type.name.lowercase().split("_").joinToString(" ") { it.replaceFirstChar { char -> char.titlecase() } }}",
+                style = MaterialTheme.typography.titleLarge
+            ) 
+        },
+        text = { 
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                AppTextField(value = value, onValueChange = { value = it }, label = "New Value") 
+            }
+        },
         confirmButton = { TextButton(onClick = { onConfirm(value) }) { Text("Save") } },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }
     )
@@ -294,17 +314,54 @@ private fun SettingsValueDialog(type: EditType, initialValue: String, onDismiss:
 
 @Composable
 private fun PreferenceCard(content: @Composable ColumnScope.() -> Unit) {
-    Card(modifier = Modifier.fillMaxWidth().padding(horizontal = PatFlowSpacing.space4, vertical = PatFlowSpacing.space2), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = PatFlowSpacing.space4, vertical = PatFlowSpacing.space2),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+        ),
+        shape = PatFlowShapes.lg,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+    ) {
         Column(modifier = Modifier.fillMaxWidth(), content = content)
     }
 }
 
 @Composable
 private fun PreferenceRow(title: String, subtitle: String? = null, icon: ImageVector? = null, onClick: (() -> Unit)? = null) {
-    ListItem(headlineContent = { Text(title) }, supportingContent = subtitle?.let { { Text(it) } }, leadingContent = icon?.let { { Icon(it, contentDescription = null) } }, modifier = Modifier.then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier))
+    ListItem(
+        headlineContent = { Text(title, style = MaterialTheme.typography.titleMedium) },
+        supportingContent = subtitle?.let { { Text(it, style = MaterialTheme.typography.bodyMedium) } },
+        leadingContent = icon?.let { { Icon(it, contentDescription = null, tint = MaterialTheme.colorScheme.primary) } },
+        trailingContent = onClick?.let { { Icon(Icons.Rounded.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) } },
+        modifier = Modifier.then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
+        colors = ListItemDefaults.colors(containerColor = androidx.compose.ui.graphics.Color.Transparent)
+    )
 }
 
 @Composable
 private fun SwitchRow(title: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit, subtitle: String? = null, icon: ImageVector? = null) {
-    ListItem(headlineContent = { Text(title) }, supportingContent = subtitle?.let { { Text(it) } }, leadingContent = icon?.let { { Icon(it, contentDescription = null) } }, trailingContent = { Switch(checked = checked, onCheckedChange = onCheckedChange) })
+    ListItem(
+        headlineContent = { Text(title, style = MaterialTheme.typography.titleMedium) },
+        supportingContent = subtitle?.let { { Text(it, style = MaterialTheme.typography.bodyMedium) } },
+        leadingContent = icon?.let { { Icon(it, contentDescription = null, tint = MaterialTheme.colorScheme.primary) } },
+        trailingContent = { Switch(checked = checked, onCheckedChange = onCheckedChange) },
+        colors = ListItemDefaults.colors(containerColor = androidx.compose.ui.graphics.Color.Transparent)
+    )
+}
+
+@Composable
+private fun ComingSoonRow(title: String) {
+    ListItem(
+        headlineContent = { Text(title) },
+        trailingContent = { 
+            Text(
+                "Coming Soon", 
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.primary
+            ) 
+        },
+        modifier = Modifier.alpha(0.5f)
+    )
 }

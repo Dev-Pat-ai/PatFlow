@@ -21,6 +21,7 @@ val PatFlowTypography = Typography(
         fontWeight = FontWeight.Medium,
         fontSize = 36.sp,
         lineHeight = 44.sp,
+        letterSpacing = (-0.25).sp,
     ),
     headlineSmall = TextStyle(
         fontFamily = PatFlowFontFamily,
@@ -30,8 +31,8 @@ val PatFlowTypography = Typography(
     ),
     titleLarge = TextStyle(
         fontFamily = PatFlowFontFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 22.sp,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 20.sp, // Refined from 22sp for better scale
         lineHeight = 28.sp,
     ),
     titleMedium = TextStyle(
@@ -39,18 +40,21 @@ val PatFlowTypography = Typography(
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
         lineHeight = 24.sp,
+        letterSpacing = 0.15.sp,
     ),
     bodyLarge = TextStyle(
         fontFamily = PatFlowFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
+        letterSpacing = 0.5.sp,
     ),
     bodyMedium = TextStyle(
         fontFamily = PatFlowFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 20.sp,
+        letterSpacing = 0.25.sp,
     ),
     labelLarge = TextStyle(
         fontFamily = PatFlowFontFamily,

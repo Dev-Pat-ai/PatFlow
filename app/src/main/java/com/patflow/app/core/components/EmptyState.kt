@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.patflow.app.core.theme.PatFlowShapes
 import com.patflow.app.core.theme.PatFlowSpacing
 import com.patflow.app.core.theme.PatFlowTheme
 
@@ -39,48 +40,48 @@ fun EmptyState(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(PatFlowSpacing.space4),
+            .padding(PatFlowSpacing.space6),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Box(
             modifier = Modifier
-                .size(80.dp)
+                .size(120.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    shape = CircleShape
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    shape = PatFlowShapes.xl
                 ),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                modifier = Modifier.size(40.dp),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                modifier = Modifier.size(56.dp),
+                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
             )
         }
         
-        Spacer(modifier = Modifier.height(PatFlowSpacing.space4))
+        Spacer(modifier = Modifier.height(PatFlowSpacing.space6))
         
         Text(
             text = title,
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center
         )
         
-        Spacer(modifier = Modifier.height(PatFlowSpacing.space2))
+        Spacer(modifier = Modifier.height(PatFlowSpacing.space3))
         
         Text(
             text = description,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = PatFlowSpacing.space4)
         )
         
         if (action != null) {
-            Spacer(modifier = Modifier.height(PatFlowSpacing.space5))
+            Spacer(modifier = Modifier.height(PatFlowSpacing.space6))
             action()
         }
     }

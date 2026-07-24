@@ -1,0 +1,20 @@
+<resources>
+    <style name="Theme.PatFlow" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Main Brand color -->
+        <item name="colorPrimary">@color/brand_blue</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Global Background -->
+        <item name="android:windowBackground">@color/bg_dark</item>
+
+        <!-- Surface/Card Colors -->
+        <item name="colorSurface">@color/card_bg_dark</item>
+        <item name="colorOnSurface">@color/text_main_dark</item>
+        <item name="colorSurfaceVariant">@color/card_bg_dark</item>
+
+        <!-- Custom Semantic Attributes for Labels and Status -->
+        <item name="colorTextLabel">@color/text_label_dark</item>
+        <item name="colorStatusPositive">@color/status_positive_dark</item>
+        <item name="colorStatusNegative">@color/status_negative_dark</item>
+    </style>
+</resources>

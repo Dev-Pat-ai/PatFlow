@@ -37,7 +37,7 @@ fun SummaryCard(
     value: String,
     icon: ImageVector,
     modifier: Modifier = Modifier,
-    containerColor: Color = MaterialTheme.colorScheme.surface,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerLow,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     onClick: () -> Unit = {}
 ) {
@@ -49,7 +49,8 @@ fun SummaryCard(
             containerColor = containerColor,
             contentColor = contentColor
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Column(
             modifier = Modifier.padding(PatFlowSpacing.space4),
@@ -64,7 +65,9 @@ fun SummaryCard(
             Column {
                 Text(
                     text = value,
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontFeatureSettings = "tnum"
+                    ),
                     color = contentColor
                 )
                 Text(
@@ -95,9 +98,10 @@ fun StatisticCard(
         modifier = modifier.fillMaxWidth(),
         shape = PatFlowShapes.lg,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Row(
             modifier = Modifier.padding(PatFlowSpacing.space4),
@@ -138,7 +142,7 @@ fun StatisticCard(
                     Text(
                         text = subtitle,
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.secondary
                     )
                 }
             }

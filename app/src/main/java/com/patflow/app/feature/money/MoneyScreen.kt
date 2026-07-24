@@ -1,5 +1,6 @@
 package com.patflow.app.feature.money
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,7 +10,11 @@ import androidx.compose.material.icons.automirrored.rounded.ReceiptLong
 import androidx.compose.material.icons.automirrored.rounded.TrendingUp
 import androidx.compose.material.icons.rounded.Payments
 import androidx.compose.material.icons.rounded.Savings
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -92,8 +97,15 @@ fun MoneyScreen(
 
     Scaffold(
         topBar = {
-            Column {
-                AppTopBar(title = "Money")
+            Column(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+                AppTopBar(
+                    title = "Money",
+                    actions = {
+                        IconButton(onClick = { /* TODO: Search */ }) {
+                            Icon(Icons.Rounded.Search, contentDescription = "Search")
+                        }
+                    }
+                )
                 AppSegmentedControl(
                     options = tabs,
                     selectedIndex = selectedTabIndex,

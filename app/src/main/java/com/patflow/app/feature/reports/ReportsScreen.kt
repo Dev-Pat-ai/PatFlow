@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.patflow.app.core.components.*
+import com.patflow.app.core.theme.PatFlowShapes
 import com.patflow.app.core.theme.PatFlowSpacing
 import com.patflow.app.core.utils.CurrencyFormatter
 import com.patflow.app.domain.model.ReportData
@@ -117,7 +118,6 @@ private fun ReportContent(
 ) {
     val trendModelProducer = remember { CartesianChartModelProducer() }
     val incomeTrendModelProducer = remember { CartesianChartModelProducer() }
-    val savingsModelProducer = remember { CartesianChartModelProducer() }
     val categorySpendingModelProducer = remember { CartesianChartModelProducer() }
     val currencyCode = preferences?.profile?.preferredCurrency ?: "PHP"
 
@@ -197,67 +197,60 @@ private fun ReportContent(
 
 @Composable
 private fun FinancialSummarySection(data: ReportData, currencyCode: String) {
+    val totalExpenses = data.summary.totalExpenses
+    val totalPaid = data.summary.totalPaid
+    val utilization = remember(totalPaid, data.summary.totalBudget) {
+        if (data.summary.totalBudget > 0) (totalPaid / data.summary.totalBudget) * 100 else 0.0
+    }
+
     Column(verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
         SectionHeader(title = "Financial Summary")
-        Row(horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
-            SummaryCard(
-                title = "Total Income",
-                value = CurrencyFormatter.formatAmount(data.summary.totalIncome, currencyCode),
-                icon = Icons.Rounded.Payments,
-                modifier = Modifier.weight(1f),
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-            SummaryCard(
-                title = "Net Flow",
-                value = CurrencyFormatter.formatAmount(data.summary.netCashFlow, currencyCode),
-                icon = Icons.Rounded.Payments,
-                modifier = Modifier.weight(1f),
-                containerColor = if (data.summary.netCashFlow >= 0) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer,
-                contentColor = if (data.summary.netCashFlow >= 0) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer
-            )
+        
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = PatFlowShapes.lg,
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+        ) {
+            Column(modifier = Modifier.padding(PatFlowSpacing.space4), verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space4)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
+                    SummaryCard(
+                        title = "Total Income",
+                        value = CurrencyFormatter.formatAmount(data.summary.totalIncome, currencyCode),
+                        icon = Icons.Rounded.Payments,
+                        modifier = Modifier.weight(1f),
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                    SummaryCard(
+                        title = "Net Flow",
+                        value = CurrencyFormatter.formatAmount(data.summary.netCashFlow, currencyCode),
+                        icon = Icons.Rounded.Payments,
+                        modifier = Modifier.weight(1f),
+                        containerColor = if (data.summary.netCashFlow >= 0) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer,
+                        contentColor = if (data.summary.netCashFlow >= 0) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer
+                    )
+                }
+                
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                
+                Row(horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
+                    Column(modifier = Modifier.weight(1f), horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
+                        Text(text = "Budget", style = MaterialTheme.typography.labelSmall)
+                        Text(text = CurrencyFormatter.formatAmount(data.summary.totalBudget, currencyCode), style = MaterialTheme.typography.titleMedium)
+                    }
+                    Column(modifier = Modifier.weight(1f), horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
+                        Text(text = "Utilization", style = MaterialTheme.typography.labelSmall)
+                        Text(text = "${utilization.toInt()}%", style = MaterialTheme.typography.titleMedium, color = if (utilization > 100) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary)
+                    }
+                    Column(modifier = Modifier.weight(1f), horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
+                        Text(text = "Saved", style = MaterialTheme.typography.labelSmall)
+                        Text(text = CurrencyFormatter.formatAmount(data.summary.totalSaved, currencyCode), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.tertiary)
+                    }
+                }
+            }
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
-            SummaryCard(
-                title = "Expenses",
-                value = CurrencyFormatter.formatAmount(data.summary.totalExpenses, currencyCode),
-                icon = Icons.Rounded.CalendarToday,
-                modifier = Modifier.weight(1f)
-            )
-            SummaryCard(
-                title = "Total Paid",
-                value = CurrencyFormatter.formatAmount(data.summary.totalPaid, currencyCode),
-                icon = Icons.Rounded.Payments,
-                modifier = Modifier.weight(1f),
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-            SummaryCard(
-                title = "Total Saved",
-                value = CurrencyFormatter.formatAmount(data.summary.totalSaved, currencyCode),
-                icon = Icons.Rounded.Savings,
-                modifier = Modifier.weight(1f),
-                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-            )
-        }
-        Row(horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
-            SummaryCard(
-                title = "Budget",
-                value = CurrencyFormatter.formatAmount(data.summary.totalBudget, currencyCode),
-                icon = Icons.Rounded.PieChart,
-                modifier = Modifier.weight(1f)
-            )
-            val utilization = if (data.summary.totalBudget > 0) (data.summary.totalPaid / data.summary.totalBudget) * 100 else 0.0
-            SummaryCard(
-                title = "Utilization",
-                value = "${utilization.toInt()}%",
-                icon = Icons.Rounded.PieChart,
-                modifier = Modifier.weight(1f),
-                containerColor = if (utilization > 100) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.surfaceVariant,
-                contentColor = if (utilization > 100) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
+
         StatisticCard(
             title = "Outstanding Balance",
             value = CurrencyFormatter.formatAmount(data.summary.outstandingBalance, currencyCode),

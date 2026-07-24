@@ -3,6 +3,7 @@ package com.patflow.app.core.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountBalance
 import androidx.compose.material.icons.rounded.CalendarMonth
@@ -45,7 +46,9 @@ fun AppTopBar(
         title = {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                )
             )
         },
         modifier = modifier,
@@ -54,7 +57,7 @@ fun AppTopBar(
         scrollBehavior = scrollBehavior,
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.background,
-            scrolledContainerColor = MaterialTheme.colorScheme.surface
+            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer
         )
     )
 }
@@ -71,7 +74,10 @@ fun AppSegmentedControl(
     onOptionSelected: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    SingleChoiceSegmentedButtonRow(modifier = modifier) {
+    SingleChoiceSegmentedButtonRow(
+        modifier = modifier,
+        space = SegmentedButtonDefaults.BorderWidth // Standard M3 spacing
+    ) {
         options.forEachIndexed { index, label ->
             SegmentedButton(
                 selected = index == selectedIndex,
@@ -80,9 +86,13 @@ fun AppSegmentedControl(
                 label = {
                     Text(
                         text = label,
-                        style = MaterialTheme.typography.labelMedium
+                        style = MaterialTheme.typography.labelLarge
                     )
-                }
+                },
+                colors = SegmentedButtonDefaults.colors(
+                    activeContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    activeContentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                )
             )
         }
     }
@@ -101,8 +111,8 @@ fun BottomNavigationBar(
 ) {
     NavigationBar(
         modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.surface,
-        tonalElevation = NavigationBarDefaults_TonalElevation
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        tonalElevation = 0.dp
     ) {
         items.forEach { item ->
             val isSelected = selectedRoute == item.route
@@ -112,15 +122,25 @@ fun BottomNavigationBar(
                 icon = {
                     Icon(
                         imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
-                        contentDescription = item.label
+                        contentDescription = item.label,
+                        modifier = Modifier.size(24.dp)
                     )
                 },
                 label = {
                     Text(
                         text = item.label,
-                        style = MaterialTheme.typography.labelMedium
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontWeight = if (isSelected) androidx.compose.ui.text.font.FontWeight.Bold else androidx.compose.ui.text.font.FontWeight.Medium
+                        )
                     )
-                }
+                },
+                colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
+                    selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    selectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    indicatorColor = MaterialTheme.colorScheme.primaryContainer
+                )
             )
         }
     }

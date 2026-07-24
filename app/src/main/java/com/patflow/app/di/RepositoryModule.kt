@@ -74,4 +74,16 @@ abstract class RepositoryModule {
     abstract fun bindSavingsGoalRepository(
         impl: SavingsGoalRepositoryImpl
     ): SavingsGoalRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSyncRepository(
+        impl: SyncRepositoryImpl
+    ): SyncRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepository(
+        impl: AuthRepositoryImpl
+    ): AuthRepository
 }

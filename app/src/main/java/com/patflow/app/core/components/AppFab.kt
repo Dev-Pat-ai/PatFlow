@@ -23,9 +23,11 @@ import androidx.compose.material.icons.rounded.ReceiptLong
 import androidx.compose.material.icons.rounded.Savings
 import androidx.compose.material.icons.rounded.TrendingUp
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SmallFloatingActionButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -75,15 +77,19 @@ fun SpeedDialFab(
     mainActionIcon: ImageVector = Icons.Rounded.Add
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val rotation by animateFloatAsState(if (expanded) 45f else 0f, label = "fabRotation")
+    val rotation by animateFloatAsState(if (expanded) 135f else 0f, label = "fabRotation")
 
     Box(modifier = modifier, contentAlignment = Alignment.BottomEnd) {
         // Scrim
-        if (expanded) {
+        androidx.compose.animation.AnimatedVisibility(
+            visible = expanded,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.32f))
+                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.4f))
                     .clickable { expanded = false }
             )
         }
@@ -91,13 +97,12 @@ fun SpeedDialFab(
         Column(
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3),
-            modifier = Modifier.padding(bottom = 72.dp, end = 16.dp) // Adjusted to sit above main FAB
+            modifier = Modifier.padding(bottom = 88.dp, end = 20.dp) // Refined positioning
         ) {
-            actions.forEach { action ->
-                AnimatedVisibility(
+            actions.forEachIndexed { index, action ->
+                SpeedDialItemAnimation(
                     visible = expanded,
-                    enter = fadeIn() + expandVertically(),
-                    exit = fadeOut() + shrinkVertically()
+                    index = index
                 ) {
                     SpeedDialItem(action = action, onClick = {
                         expanded = false
@@ -112,7 +117,8 @@ fun SpeedDialFab(
             modifier = Modifier.padding(16.dp),
             containerColor = MaterialTheme.colorScheme.tertiaryContainer,
             contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-            shape = PatFlowShapes.full
+            shape = PatFlowShapes.full,
+            elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 6.dp)
         ) {
             Icon(
                 imageVector = if (expanded) Icons.Rounded.Close else mainActionIcon,
@@ -120,6 +126,21 @@ fun SpeedDialFab(
                 modifier = Modifier.rotate(rotation)
             )
         }
+    }
+}
+
+@Composable
+private fun SpeedDialItemAnimation(
+    visible: Boolean,
+    index: Int,
+    content: @Composable () -> Unit
+) {
+    androidx.compose.animation.AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn() + expandVertically() + androidx.compose.animation.slideInVertically { it / 2 },
+        exit = fadeOut() + shrinkVertically() + androidx.compose.animation.slideOutVertically { it / 2 }
+    ) {
+        content()
     }
 }
 
@@ -133,29 +154,32 @@ private fun SpeedDialItem(
         horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)
     ) {
         // Label
-        Box(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.surface, shape = PatFlowShapes.full)
-                .padding(horizontal = 12.dp, vertical = 6.dp)
+        Surface(
+            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+            shape = PatFlowShapes.md,
+            tonalElevation = 2.dp,
+            modifier = Modifier.clickable { onClick() }
         ) {
             Text(
                 text = action.label,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
             )
         }
 
         // Mini FAB
         SmallFloatingActionButton(
             onClick = onClick,
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-            shape = PatFlowShapes.full
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            shape = PatFlowShapes.full,
+            elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 4.dp)
         ) {
             Icon(
                 imageVector = action.icon,
                 contentDescription = null,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(20.dp)
             )
         }
     }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,18 +19,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ReceiptLong
 import androidx.compose.material.icons.rounded.CalendarToday
 import androidx.compose.material.icons.rounded.Error
+import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Payments
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -38,7 +40,6 @@ import com.patflow.app.core.components.AppButton
 import com.patflow.app.core.components.AppTopBar
 import com.patflow.app.core.components.BillCard
 import com.patflow.app.core.components.BudgetProgressCard
-import com.patflow.app.core.components.CategoryType
 import com.patflow.app.core.components.EmptyState
 import com.patflow.app.core.components.SavingsGoalProgressCard
 import com.patflow.app.core.components.FullScreenError
@@ -79,23 +80,34 @@ fun DashboardScreen(
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val preferences by viewModel.userPreferences.collectAsState()
 
-    val speedDialActions = remember(onAddBillClick, onLogPaymentClick) {
-        listOf(
-            SpeedDialAction(
-                label = "Add Bill",
-                icon = Icons.AutoMirrored.Rounded.ReceiptLong,
-                onClick = onAddBillClick
-            ),
-            SpeedDialAction(
-                label = "Log Payment",
-                icon = Icons.Rounded.Payments,
-                onClick = onLogPaymentClick
+    val speedDialActions by remember {
+        derivedStateOf {
+            listOf(
+                SpeedDialAction(
+                    label = "Add Bill",
+                    icon = Icons.AutoMirrored.Rounded.ReceiptLong,
+                    onClick = onAddBillClick
+                ),
+                SpeedDialAction(
+                    label = "Log Payment",
+                    icon = Icons.Rounded.Payments,
+                    onClick = onLogPaymentClick
+                )
             )
-        )
+        }
     }
 
     Scaffold(
-        topBar = { AppTopBar(title = "Dashboard") },
+        topBar = { 
+            AppTopBar(
+                title = "Dashboard",
+                actions = {
+                    IconButton(onClick = { /* TODO: Search */ }) {
+                        Icon(Icons.Rounded.Search, contentDescription = "Search")
+                    }
+                }
+            ) 
+        },
         floatingActionButton = { SpeedDialFab(actions = speedDialActions) }
     ) { padding ->
         PullToRefreshBox(
@@ -190,12 +202,41 @@ private fun DashboardContent(
         contentPadding = PaddingValues(PatFlowSpacing.space4),
         verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space4)
     ) {
-        // Summary Row
+        // 1. Financial Summary Section
         item {
-            SummaryRow(data, currencyCode)
+            Column(verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
+                SectionHeader(title = "Financial Summary")
+                SummaryRow(data, currencyCode)
+            }
         }
 
-        // Budget Progress
+        // 2. Upcoming Bills
+        if (data.upcomingBills.isNotEmpty()) {
+            item { SectionHeader(title = "Upcoming Bills") }
+            items(data.upcomingBills) { item ->
+                BillCard(
+                    name = item.bill.name,
+                    amount = item.currentCycle?.amountDue ?: item.bill.defaultAmount,
+                    dueDate = item.currentCycle?.dueDate?.toString() ?: "N/A",
+                    category = CategoryMapper.mapToType(item.bill.category.name),
+                    status = item.currentCycle?.status ?: BillStatus.UNPAID,
+                    onClick = { onBillClick(item.bill.id) }
+                )
+            }
+        }
+
+        // 3. Recent Transactions (Payments)
+        if (data.recentPayments.isNotEmpty()) {
+            item { SectionHeader(title = "Recent Transactions") }
+            items(data.recentPayments) { item ->
+                RecentPaymentItem(
+                    history = item,
+                    onClick = { onPaymentClick(item.payment.id) }
+                )
+            }
+        }
+
+        // 4. Budget Progress
         data.budgetAnalytics?.let { analytics ->
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
@@ -212,11 +253,11 @@ private fun DashboardContent(
             }
         }
 
-        // Savings Goals
+        // 5. Savings Progress
         if (data.savingsGoals.isNotEmpty()) {
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
-                    SectionHeader(title = "Savings Goals")
+                    SectionHeader(title = "Savings Progress")
                     data.savingsGoals.forEach { goal ->
                         SavingsGoalProgressCard(
                             name = goal.goal.name,
@@ -231,76 +272,54 @@ private fun DashboardContent(
             }
         }
 
-        // Spending Trend
-        if (data.spendingTrend.isNotEmpty()) {
-            item {
-                Column(verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
-                    SectionHeader(title = "Monthly Spending")
-                    CartesianChartHost(
-                        chart = rememberCartesianChart(rememberLineCartesianLayer()),
-                        modelProducer = trendModelProducer,
-                        modifier = Modifier.height(200.dp)
-                    )
-                }
-            }
-        }
-
-        // Category Breakdown
-        if (data.spendingByCategory.isNotEmpty()) {
-            item {
-                Column(verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
-                    SectionHeader(title = "Spending by Category")
-                    CartesianChartHost(
-                        chart = rememberCartesianChart(rememberColumnCartesianLayer()),
-                        modelProducer = categoryModelProducer,
-                        modifier = Modifier.height(200.dp)
-                    )
-                }
-            }
-        }
-
-        // Insights Section
+        // 6. Insights
         if (data.insights.isNotEmpty()) {
             item {
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.4f),
+                            shape = PatFlowShapes.lg
+                        )
+                        .padding(PatFlowSpacing.space4),
                     verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space2)
                 ) {
-                    SectionHeader(title = "Insights")
+                    SectionHeader(title = "Financial Insights")
                     data.insights.forEach { insight ->
                         Text(
                             text = "• $insight",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurface
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer
                         )
                     }
                 }
             }
         }
 
-        // Upcoming Bills
-        if (data.upcomingBills.isNotEmpty()) {
-            item { SectionHeader(title = "Upcoming Bills") }
-            items(data.upcomingBills) { item ->
-                BillCard(
-                    name = item.bill.name,
-                    amount = item.currentCycle?.amountDue ?: item.bill.defaultAmount,
-                    dueDate = item.currentCycle?.dueDate?.toString() ?: "N/A",
-                    category = CategoryMapper.mapToType(item.bill.category.name),
-                    status = item.currentCycle?.status ?: BillStatus.UNPAID,
-                    onClick = { onBillClick(item.bill.id) }
-                )
-            }
-        }
-
-        // Recent Payments
-        if (data.recentPayments.isNotEmpty()) {
-            item { SectionHeader(title = "Recent Payments") }
-            items(data.recentPayments) { item ->
-                RecentPaymentItem(
-                    history = item,
-                    onClick = { onPaymentClick(item.payment.id) }
-                )
+        // 7. Visual Analytics (Spending Trend & Category) - Optional extra visual polish
+        if (data.spendingTrend.isNotEmpty() || data.spendingByCategory.isNotEmpty()) {
+            item { SectionHeader(title = "Analytics") }
+            
+            if (data.spendingTrend.isNotEmpty()) {
+                item {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = PatFlowShapes.lg,
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                    ) {
+                        Column(modifier = Modifier.padding(PatFlowSpacing.space4)) {
+                            Text(text = "Monthly Spending", style = MaterialTheme.typography.labelLarge)
+                            Spacer(modifier = Modifier.height(PatFlowSpacing.space2))
+                            CartesianChartHost(
+                                chart = rememberCartesianChart(rememberLineCartesianLayer()),
+                                modelProducer = trendModelProducer,
+                                modifier = Modifier.height(160.dp)
+                            )
+                        }
+                    }
+                }
             }
         }
     }

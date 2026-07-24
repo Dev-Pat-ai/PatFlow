@@ -57,20 +57,20 @@ private fun StatusChipContent(
 ) {
     Row(
         modifier = modifier
-            .background(color = colors.containerColor, shape = PatFlowShapes.xs)
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+            .background(color = colors.containerColor, shape = PatFlowShapes.sm) // Refined from xs to sm
+            .padding(horizontal = 10.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            modifier = Modifier.size(16.dp),
+            modifier = Modifier.size(14.dp),
             tint = colors.onColor
         )
         Text(
             text = label,
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.labelSmall.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold),
             color = colors.onColor
         )
     }
