@@ -66,12 +66,12 @@ fun EmptyState(
         
         Text(
             text = title,
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold),
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center
         )
         
-        Spacer(modifier = Modifier.height(PatFlowSpacing.space3))
+        Spacer(modifier = Modifier.height(PatFlowSpacing.space2))
         
         Text(
             text = description,

@@ -272,7 +272,8 @@ private fun FinancialSummarySection(data: ReportData, currencyCode: String) {
             title = "Outstanding Balance",
             value = CurrencyFormatter.formatAmount(data.summary.outstandingBalance, currencyCode),
             subtitle = "${data.summary.totalBills} bills · ${data.summary.totalPayments} payments",
-            icon = Icons.AutoMirrored.Rounded.ReceiptLong
+            icon = Icons.AutoMirrored.Rounded.ReceiptLong,
+            iconTint = MaterialTheme.colorScheme.error
         )
     }
 }
@@ -298,7 +299,8 @@ private fun CategoryBreakdownSection(
                     title = "Highest Spending",
                     value = it.name,
                     subtitle = "${CurrencyFormatter.formatAmount(data.categoryAnalysis.spendingByCategory[it] ?: 0.0, currencyCode)} spent",
-                    icon = Icons.Rounded.PieChart
+                    icon = Icons.Rounded.PieChart,
+                    iconTint = MaterialTheme.colorScheme.secondary
                 )
             }
         } else {

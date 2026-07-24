@@ -92,6 +92,7 @@ fun StatisticCard(
     modifier: Modifier = Modifier,
     subtitle: String? = null,
     icon: ImageVector? = null,
+    iconTint: Color = MaterialTheme.colorScheme.primary,
     onClick: () -> Unit = {}
 ) {
     Card(
@@ -123,7 +124,7 @@ fun StatisticCard(
                         imageVector = icon,
                         contentDescription = null,
                         modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        tint = iconTint
                     )
                 }
             }
