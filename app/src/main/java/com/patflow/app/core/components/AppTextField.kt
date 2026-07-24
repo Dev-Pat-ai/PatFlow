@@ -55,7 +55,8 @@ fun SearchTextField(
                 }
             }
         } else null,
-        shape = PatFlowShapes.full // Search bars usually use full pill shape in M3
+        shape = PatFlowShapes.full,
+        singleLine = true
     )
 }
 

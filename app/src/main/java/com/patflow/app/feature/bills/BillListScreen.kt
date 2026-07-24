@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -45,6 +47,9 @@ import com.patflow.app.core.components.FullScreenError
 import com.patflow.app.core.components.SkeletonBox
 import com.patflow.app.core.components.SwipeableBillRow
 import com.patflow.app.core.theme.PatFlowSpacing
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material.icons.rounded.Search
+import com.patflow.app.core.components.SearchTextField
 import com.patflow.app.core.utils.CategoryMapper
 import com.patflow.app.core.utils.rememberHapticFeedbackController
 import com.patflow.app.domain.model.BillStatus
@@ -176,14 +181,14 @@ private fun BillListHeader(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = PatFlowSpacing.space4, vertical = PatFlowSpacing.space2),
-        verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space2)
+        verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3) // Increased spacing
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space2)
         ) {
-            AppTextField(
+            SearchTextField(
                 value = searchQuery,
                 onValueChange = onSearchQueryChange,
                 placeholder = "Search bills...",
@@ -194,21 +199,40 @@ private fun BillListHeader(
             }
         }
 
-        Row(
+        LazyRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space2)
         ) {
-            BillStatus.entries.forEach { status ->
+            items(BillStatus.entries.toTypedArray()) { status ->
+                val label = when (status) {
+                    BillStatus.UNPAID -> "Unpaid"
+                    BillStatus.PARTIALLY_PAID -> "Partially Paid"
+                    BillStatus.PAID -> "Paid"
+                    BillStatus.OVERDUE -> "Overdue"
+                }
                 FilterChip(
                     selected = selectedStatus == status,
                     onClick = { 
                         onStatusFilterChange(if (selectedStatus == status) null else status)
                     },
                     label = { 
-                        Text(status.name.lowercase().replaceFirstChar { 
-                            if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() 
-                        }) 
-                    }
+                        Text(
+                            text = label,
+                            modifier = Modifier.widthIn(min = 80.dp), // Minimum width for responsiveness
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                            maxLines = 1,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                        ) 
+                    },
+                    leadingIcon = if (selectedStatus == status) {
+                        {
+                            Icon(
+                                imageVector = Icons.Rounded.Check,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    } else null
                 )
             }
         }

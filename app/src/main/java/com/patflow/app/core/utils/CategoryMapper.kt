@@ -17,9 +17,13 @@ object CategoryMapper {
      */
     fun mapToType(name: String): CategoryType {
         return try {
-            CategoryType.valueOf(name.uppercase().replace(" ", "_"))
+            val normalized = name.uppercase().replace(" ", "_")
+            when (normalized) {
+                "CASH_BACK" -> CategoryType.CASHBACK
+                else -> CategoryType.valueOf(normalized)
+            }
         } catch (_: Exception) {
-            CategoryType.ELECTRICITY
+            CategoryType.OTHER
         }
     }
 }

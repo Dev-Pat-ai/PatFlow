@@ -87,7 +87,9 @@ fun SavingsGoalDetailScreen(
                             Text(
                                 text = analytics.goal.name,
                                 style = MaterialTheme.typography.headlineMedium,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                             )
                             
                             LinearProgressIndicator(
@@ -100,11 +102,13 @@ fun SavingsGoalDetailScreen(
                                 Text(
                                     text = "${(analytics.progressPercentage * 100).toInt()}% Complete",
                                     style = MaterialTheme.typography.labelLarge,
-                                    color = MaterialTheme.colorScheme.primary
+                                    color = MaterialTheme.colorScheme.primary,
+                                    maxLines = 1
                                 )
                                 Text(
                                     text = CurrencyFormatter.formatAmount(analytics.goal.targetAmount),
-                                    style = MaterialTheme.typography.labelLarge
+                                    style = MaterialTheme.typography.labelLarge,
+                                    maxLines = 1
                                 )
                             }
                         }

@@ -183,73 +183,94 @@ fun SettingsScreen(
 
 @Composable
 private fun ProfileSection(prefs: UserPreferences, onEdit: (EditType) -> Unit) {
-    SectionHeader(title = "User Profile", modifier = Modifier.padding(horizontal = PatFlowSpacing.space4))
-    PreferenceCard {
-        PreferenceRow(title = "Display Name", subtitle = prefs.profile.displayName.ifBlank { "Not set" }, icon = Icons.Rounded.AccountCircle, onClick = { onEdit(EditType.DISPLAY_NAME) })
-        PreferenceRow(title = "Monthly Budget", subtitle = prefs.profile.monthlyBudget?.let { "₱$it" } ?: "Not set", icon = Icons.Rounded.AccountBalanceWallet, onClick = { onEdit(EditType.MONTHLY_BUDGET) })
+    Column(modifier = Modifier.padding(horizontal = PatFlowSpacing.space4, vertical = PatFlowSpacing.space2)) {
+        Text(text = "User Profile", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+        Spacer(modifier = Modifier.height(PatFlowSpacing.space2))
+        PreferenceCard {
+            PreferenceRow(title = "Display Name", subtitle = prefs.profile.displayName.ifBlank { "Not set" }, icon = Icons.Rounded.AccountCircle, onClick = { onEdit(EditType.DISPLAY_NAME) })
+            PreferenceRow(title = "Monthly Budget", subtitle = prefs.profile.monthlyBudget?.let { "₱$it" } ?: "Not set", icon = Icons.Rounded.AccountBalanceWallet, onClick = { onEdit(EditType.MONTHLY_BUDGET) })
+        }
     }
 }
 
 @Composable
 private fun AppearanceSection(prefs: UserPreferences, viewModel: SettingsViewModel, onEdit: (EditType) -> Unit) {
-    SectionHeader(title = "Appearance", modifier = Modifier.padding(horizontal = PatFlowSpacing.space4))
-    PreferenceCard {
-        PreferenceRow(title = "Theme", subtitle = prefs.profile.preferredTheme.name.lowercase().replaceFirstChar { it.titlecase() }, icon = Icons.Rounded.BrightnessMedium, onClick = { onEdit(EditType.THEME) })
-        SwitchRow(title = "Material You", subtitle = "Dynamic color from wallpaper", icon = Icons.Rounded.Palette, checked = prefs.useDynamicColor, onCheckedChange = viewModel::updateDynamicColor)
+    Column(modifier = Modifier.padding(horizontal = PatFlowSpacing.space4, vertical = PatFlowSpacing.space2)) {
+        Text(text = "Appearance", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+        Spacer(modifier = Modifier.height(PatFlowSpacing.space2))
+        PreferenceCard {
+            PreferenceRow(title = "Theme", subtitle = prefs.profile.preferredTheme.name.lowercase().replaceFirstChar { it.titlecase() }, icon = Icons.Rounded.BrightnessMedium, onClick = { onEdit(EditType.THEME) })
+            SwitchRow(title = "Material You", subtitle = "Dynamic color from wallpaper", icon = Icons.Rounded.Palette, checked = prefs.useDynamicColor, onCheckedChange = viewModel::updateDynamicColor)
+        }
     }
 }
 
 @Composable
 private fun PreferencesSection(prefs: UserPreferences, viewModel: SettingsViewModel, onEdit: (EditType) -> Unit) {
-    SectionHeader(title = "Preferences", modifier = Modifier.padding(horizontal = PatFlowSpacing.space4))
-    PreferenceCard {
-        PreferenceRow(title = "Preferred Currency", subtitle = prefs.profile.preferredCurrency, icon = Icons.Rounded.CurrencyExchange, onClick = { onEdit(EditType.CURRENCY) })
-        PreferenceRow(title = "Date Format", subtitle = prefs.dateFormat, icon = Icons.Rounded.DateRange, onClick = { onEdit(EditType.DATE_FORMAT) })
-        PreferenceRow(title = "First Day of Week", subtitle = if (prefs.firstDayOfWeek == 1) "Sunday" else "Monday", icon = Icons.Rounded.CalendarToday, onClick = { onEdit(EditType.FIRST_DAY_OF_WEEK) })
-        SwitchRow(title = "Haptic Feedback", subtitle = "Subtle vibration for interactions", icon = Icons.Rounded.TouchApp, checked = prefs.hapticFeedbackEnabled, onCheckedChange = viewModel::updateHapticFeedback)
+    Column(modifier = Modifier.padding(horizontal = PatFlowSpacing.space4, vertical = PatFlowSpacing.space2)) {
+        Text(text = "Preferences", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+        Spacer(modifier = Modifier.height(PatFlowSpacing.space2))
+        PreferenceCard {
+            PreferenceRow(title = "Preferred Currency", subtitle = prefs.profile.preferredCurrency, icon = Icons.Rounded.CurrencyExchange, onClick = { onEdit(EditType.CURRENCY) })
+            PreferenceRow(title = "Date Format", subtitle = prefs.dateFormat, icon = Icons.Rounded.DateRange, onClick = { onEdit(EditType.DATE_FORMAT) })
+            PreferenceRow(title = "First Day of Week", subtitle = if (prefs.firstDayOfWeek == 1) "Sunday" else "Monday", icon = Icons.Rounded.CalendarToday, onClick = { onEdit(EditType.FIRST_DAY_OF_WEEK) })
+            SwitchRow(title = "Haptic Feedback", subtitle = "Subtle vibration for interactions", icon = Icons.Rounded.TouchApp, checked = prefs.hapticFeedbackEnabled, onCheckedChange = viewModel::updateHapticFeedback)
+        }
     }
 }
 
 @Composable
 private fun DataManagementSection(onBackup: () -> Unit, onRestore: () -> Unit, onExportJson: () -> Unit, onExportCsv: () -> Unit) {
-    SectionHeader(title = "Data Management", modifier = Modifier.padding(horizontal = PatFlowSpacing.space4))
-    PreferenceCard {
-        PreferenceRow(title = "Backup Data", subtitle = "Create a JSON backup file", icon = Icons.Rounded.Backup, onClick = onBackup)
-        PreferenceRow(title = "Import Backup", subtitle = "Restore data from a file", icon = Icons.Rounded.FileUpload, onClick = onRestore)
-        PreferenceRow(title = "Export as JSON", icon = Icons.Rounded.FileDownload, onClick = onExportJson)
-        PreferenceRow(title = "Export as CSV", subtitle = "Financial history", icon = Icons.Rounded.Download, onClick = onExportCsv)
+    Column(modifier = Modifier.padding(horizontal = PatFlowSpacing.space4, vertical = PatFlowSpacing.space2)) {
+        Text(text = "Data Management", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+        Spacer(modifier = Modifier.height(PatFlowSpacing.space2))
+        PreferenceCard {
+            PreferenceRow(title = "Backup Data", subtitle = "Create a JSON backup file", icon = Icons.Rounded.Backup, onClick = onBackup)
+            PreferenceRow(title = "Import Backup", subtitle = "Restore data from a file", icon = Icons.Rounded.FileUpload, onClick = onRestore)
+            PreferenceRow(title = "Export as JSON", icon = Icons.Rounded.FileDownload, onClick = onExportJson)
+            PreferenceRow(title = "Export as CSV", subtitle = "Financial history", icon = Icons.Rounded.Download, onClick = onExportCsv)
+        }
     }
 }
 
 @Composable
 private fun NotificationsSection(prefs: UserPreferences, viewModel: SettingsViewModel) {
-    SectionHeader(title = "Notifications", modifier = Modifier.padding(horizontal = PatFlowSpacing.space4))
-    PreferenceCard {
-        SwitchRow(title = "Master Toggle", checked = prefs.notificationsMasterEnabled, onCheckedChange = viewModel::updateNotifMaster)
-        if (prefs.notificationsMasterEnabled) {
-            SwitchRow(title = "Upcoming Bills", checked = prefs.notificationUpcomingEnabled, onCheckedChange = viewModel::updateNotifUpcoming)
-            SwitchRow(title = "Due Today", checked = prefs.notificationDueTodayEnabled, onCheckedChange = viewModel::updateNotifDueToday)
-            SwitchRow(title = "Overdue Alerts", checked = prefs.notificationOverdueEnabled, onCheckedChange = viewModel::updateNotifOverdue)
-            PreferenceRow(title = "Test Notification", icon = Icons.Rounded.Notifications, onClick = viewModel::testNotification)
+    Column(modifier = Modifier.padding(horizontal = PatFlowSpacing.space4, vertical = PatFlowSpacing.space2)) {
+        Text(text = "Notifications", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+        Spacer(modifier = Modifier.height(PatFlowSpacing.space2))
+        PreferenceCard {
+            SwitchRow(title = "Master Toggle", checked = prefs.notificationsMasterEnabled, onCheckedChange = viewModel::updateNotifMaster)
+            if (prefs.notificationsMasterEnabled) {
+                SwitchRow(title = "Upcoming Bills", checked = prefs.notificationUpcomingEnabled, onCheckedChange = viewModel::updateNotifUpcoming)
+                SwitchRow(title = "Due Today", checked = prefs.notificationDueTodayEnabled, onCheckedChange = viewModel::updateNotifDueToday)
+                SwitchRow(title = "Overdue Alerts", checked = prefs.notificationOverdueEnabled, onCheckedChange = viewModel::updateNotifOverdue)
+                PreferenceRow(title = "Test Notification", icon = Icons.Rounded.Notifications, onClick = viewModel::testNotification)
+            }
         }
     }
 }
 
 @Composable
 private fun CloudSyncSection() {
-    SectionHeader(title = "Cloud Synchronization", modifier = Modifier.padding(horizontal = PatFlowSpacing.space4))
-    PreferenceCard {
-        ComingSoonRow(title = "Sync with Cloud")
-        ComingSoonRow(title = "Multi-device Support")
-        ComingSoonRow(title = "Automated Backups")
+    Column(modifier = Modifier.padding(horizontal = PatFlowSpacing.space4, vertical = PatFlowSpacing.space2)) {
+        Text(text = "Cloud Synchronization", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+        Spacer(modifier = Modifier.height(PatFlowSpacing.space2))
+        PreferenceCard {
+            ComingSoonRow(title = "Sync with Cloud", icon = Icons.Rounded.CloudSync)
+            ComingSoonRow(title = "Multi-device Support", icon = Icons.Rounded.Devices)
+            ComingSoonRow(title = "Automated Backups", icon = Icons.Rounded.AutoMode)
+        }
     }
 }
 
 @Composable
 private fun AboutSection() {
-    SectionHeader(title = "About", modifier = Modifier.padding(horizontal = PatFlowSpacing.space4))
-    PreferenceCard {
-        PreferenceRow(title = "App Version", subtitle = "1.0.0 (Build 100)", icon = Icons.Rounded.Info)
+    Column(modifier = Modifier.padding(horizontal = PatFlowSpacing.space4, vertical = PatFlowSpacing.space2)) {
+        Text(text = "About", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+        Spacer(modifier = Modifier.height(PatFlowSpacing.space2))
+        PreferenceCard {
+            PreferenceRow(title = "App Version", subtitle = "1.0.0 (Build 100)", icon = Icons.Rounded.Info)
+        }
     }
 }
 
@@ -352,9 +373,10 @@ private fun SwitchRow(title: String, checked: Boolean, onCheckedChange: (Boolean
 }
 
 @Composable
-private fun ComingSoonRow(title: String) {
+private fun ComingSoonRow(title: String, icon: ImageVector? = null) {
     ListItem(
-        headlineContent = { Text(title) },
+        headlineContent = { Text(title, style = MaterialTheme.typography.titleMedium) },
+        leadingContent = icon?.let { { Icon(it, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)) } },
         trailingContent = { 
             Text(
                 "Coming Soon", 
@@ -362,6 +384,7 @@ private fun ComingSoonRow(title: String) {
                 color = MaterialTheme.colorScheme.primary
             ) 
         },
-        modifier = Modifier.alpha(0.5f)
+        modifier = Modifier.alpha(0.5f),
+        colors = ListItemDefaults.colors(containerColor = androidx.compose.ui.graphics.Color.Transparent)
     )
 }

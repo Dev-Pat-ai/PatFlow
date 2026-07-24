@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ReceiptLong
 import androidx.compose.material.icons.automirrored.rounded.TrendingUp
+import androidx.compose.material.icons.automirrored.rounded.List
 import androidx.compose.material.icons.rounded.Payments
 import androidx.compose.material.icons.rounded.Savings
 import androidx.compose.material.icons.rounded.Search
@@ -101,6 +102,11 @@ fun MoneyScreen(
                 AppTopBar(
                     title = "Money",
                     actions = {
+                        if (selectedTabIndex == 1) { // Income tab
+                            IconButton(onClick = onManageIncomeSourcesClick) {
+                                Icon(Icons.AutoMirrored.Rounded.List, contentDescription = "Manage Sources")
+                            }
+                        }
                         IconButton(onClick = { /* TODO: Search */ }) {
                             Icon(Icons.Rounded.Search, contentDescription = "Search")
                         }

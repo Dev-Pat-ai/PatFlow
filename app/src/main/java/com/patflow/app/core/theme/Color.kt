@@ -138,6 +138,19 @@ interface CategoryColors {
     val loan: CategoryColorPair
     val savings: CategoryColorPair
     val hoaFees: CategoryColorPair
+
+    // Income categories
+    val salary: CategoryColorPair
+    val freelance: CategoryColorPair
+    val business: CategoryColorPair
+    val allowance: CategoryColorPair
+    val bonus: CategoryColorPair
+    val commission: CategoryColorPair
+    val investment: CategoryColorPair
+    val cashback: CategoryColorPair
+    val refund: CategoryColorPair
+    val gift: CategoryColorPair
+    val other: CategoryColorPair
 }
 
 object PatFlowCategoryColors {
@@ -153,6 +166,18 @@ object PatFlowCategoryColors {
         override val loan = CategoryColorPair(Color(0xFF8B5000), Color(0xFFFFDEAD))
         override val savings = CategoryColorPair(Color(0xFF006874), Color(0xFF97F0FF))
         override val hoaFees = CategoryColorPair(Color(0xFF5B5D72), Color(0xFFE0E1F9))
+
+        override val salary = CategoryColorPair(Color(0xFF2E8B57), Color(0xFFD7F0E2))
+        override val freelance = CategoryColorPair(Color(0xFF00658F), Color(0xFFC3E8FF))
+        override val business = CategoryColorPair(Color(0xFF8C5A00), Color(0xFFFFE9C2))
+        override val allowance = CategoryColorPair(Color(0xFF3D4E85), Color(0xFFDCE1FF))
+        override val bonus = CategoryColorPair(Color(0xFFBA1A1A), Color(0xFFFFDAD6))
+        override val commission = CategoryColorPair(Color(0xFF6B4F1C), Color(0xFFF3E0BC))
+        override val investment = CategoryColorPair(Color(0xFF7D2E68), Color(0xFFFFD8EC))
+        override val cashback = CategoryColorPair(Color(0xFF8C3B00), Color(0xFFFFDBC7))
+        override val refund = CategoryColorPair(Color(0xFF5B5D72), Color(0xFFE0E1F9))
+        override val gift = CategoryColorPair(Color(0xFF8C5A00), Color(0xFFFFE9C2))
+        override val other = CategoryColorPair(Color(0xFF46464F), Color(0xFFE3E1EC))
     }
     object Dark : CategoryColors {
         override val electricity = CategoryColorPair(Color(0xFFFFB945), Color(0xFF4A3200))
@@ -166,5 +191,17 @@ object PatFlowCategoryColors {
         override val loan = CategoryColorPair(Color(0xFFFFB870), Color(0xFF5C3900))
         override val savings = CategoryColorPair(Color(0xFF4FD8EB), Color(0xFF00363D))
         override val hoaFees = CategoryColorPair(Color(0xFFC4C5DD), Color(0xFF434659))
+
+        override val salary = CategoryColorPair(Color(0xFF8FD9A8), Color(0xFF0F3D22))
+        override val freelance = CategoryColorPair(Color(0xFF89CFF4), Color(0xFF003548))
+        override val business = CategoryColorPair(Color(0xFFFFB945), Color(0xFF4A3200))
+        override val allowance = CategoryColorPair(Color(0xFFB7C3FF), Color(0xFF28376E))
+        override val bonus = CategoryColorPair(Color(0xFFFFB4AB), Color(0xFF93000A))
+        override val commission = CategoryColorPair(Color(0xFFE3C57F), Color(0xFF3D2C00))
+        override val investment = CategoryColorPair(Color(0xFFF2A6D7), Color(0xFF4B1339))
+        override val cashback = CategoryColorPair(Color(0xFFFFB68B), Color(0xFF4A2100))
+        override val refund = CategoryColorPair(Color(0xFFC4C5DD), Color(0xFF434659))
+        override val gift = CategoryColorPair(Color(0xFFFFB945), Color(0xFF4A3200))
+        override val other = CategoryColorPair(Color(0xFFC7C5D0), Color(0xFF46464F))
     }
 }

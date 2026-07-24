@@ -67,7 +67,7 @@ public final class PatFlowDatabase_Impl extends PatFlowDatabase {
   @Override
   @NonNull
   protected SupportSQLiteOpenHelper createOpenHelper(@NonNull final DatabaseConfiguration config) {
-    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(1) {
+    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(2) {
       @Override
       public void createAllTables(@NonNull final SupportSQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS `bill_category` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `icon_key` TEXT NOT NULL, `color_hex` TEXT NOT NULL, `is_custom` INTEGER NOT NULL, `is_deleted` INTEGER NOT NULL DEFAULT 0, `remote_id` TEXT, `sync_status` TEXT NOT NULL DEFAULT 'LOCAL_ONLY')");

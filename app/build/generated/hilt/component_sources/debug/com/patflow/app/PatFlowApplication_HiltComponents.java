@@ -6,6 +6,7 @@ import com.patflow.app.core.notifications.NotificationReceiver_GeneratedInjector
 import com.patflow.app.core.notifications.OverdueCheckWorker_HiltModule;
 import com.patflow.app.core.notifications.RecurringIncomeWorker_HiltModule;
 import com.patflow.app.core.notifications.ReminderSyncWorker_HiltModule;
+import com.patflow.app.core.notifications.SyncWorker_HiltModule;
 import com.patflow.app.core.theme.ThemeViewModel_HiltModules;
 import com.patflow.app.core.utils.HapticViewModel_HiltModules;
 import com.patflow.app.di.DataStoreModule;
@@ -168,7 +169,8 @@ public final class PatFlowApplication_HiltComponents {
           ServiceCBuilderModule.class,
           RecurringIncomeWorker_HiltModule.class,
           ReminderSyncWorker_HiltModule.class,
-          RepositoryModule.class
+          RepositoryModule.class,
+          SyncWorker_HiltModule.class
       }
   )
   @Singleton

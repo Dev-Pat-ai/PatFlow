@@ -34,6 +34,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.patflow.app.core.components.AppButton
@@ -337,16 +338,18 @@ private fun SummaryRow(data: DashboardData, currencyCode: String) {
                 value = CurrencyFormatter.formatAmount(data.totalIncomeThisMonth, currencyCode),
                 icon = Icons.Rounded.Payments,
                 modifier = Modifier.weight(1f),
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                iconTint = MaterialTheme.colorScheme.primary
             )
             SummaryCard(
                 title = "Net Cash Flow",
                 value = CurrencyFormatter.formatAmount(data.netCashFlow, currencyCode),
                 icon = Icons.Rounded.Payments,
                 modifier = Modifier.weight(1f),
-                containerColor = if (data.netCashFlow >= 0) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer,
-                contentColor = if (data.netCashFlow >= 0) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer
+                containerColor = if (data.netCashFlow >= 0) MaterialTheme.colorScheme.surfaceContainer else MaterialTheme.colorScheme.errorContainer,
+                contentColor = if (data.netCashFlow >= 0) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onErrorContainer,
+                iconTint = if (data.netCashFlow >= 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
             )
         }
         Row(
@@ -357,15 +360,16 @@ private fun SummaryRow(data: DashboardData, currencyCode: String) {
                 title = "Total Due",
                 value = CurrencyFormatter.formatAmount(data.totalBillsThisMonth, currencyCode),
                 icon = Icons.Rounded.CalendarToday,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                containerColor = MaterialTheme.colorScheme.surfaceContainer
             )
             SummaryCard(
                 title = "Paid",
                 value = CurrencyFormatter.formatAmount(data.totalPaidThisMonth, currencyCode),
                 icon = Icons.Rounded.Payments,
                 modifier = Modifier.weight(1f),
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                iconTint = MaterialTheme.colorScheme.primary
             )
         }
         Row(
@@ -377,14 +381,16 @@ private fun SummaryRow(data: DashboardData, currencyCode: String) {
                 value = data.overdueBillsCount.toString(),
                 icon = Icons.Rounded.Error,
                 modifier = Modifier.weight(1f),
-                containerColor = if (data.overdueBillsCount > 0) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.surface,
-                contentColor = if (data.overdueBillsCount > 0) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onSurface
+                containerColor = if (data.overdueBillsCount > 0) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.surfaceContainer,
+                contentColor = if (data.overdueBillsCount > 0) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onSurface,
+                iconTint = if (data.overdueBillsCount > 0) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
             )
             SummaryCard(
                 title = "Upcoming",
                 value = data.upcomingBillsCount.toString(),
                 icon = Icons.Rounded.CalendarToday,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                containerColor = MaterialTheme.colorScheme.surfaceContainer
             )
         }
     }
@@ -420,17 +426,26 @@ private fun RecentPaymentItem(
             )
         }
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = history.billName, style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = history.billName, 
+                style = MaterialTheme.typography.titleMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
             Text(
                 text = history.payment.paymentDate.toString(),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
         Text(
             text = CurrencyFormatter.formatAmount(history.payment.amount, history.payment.currencyCode),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.primary
+            style = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum"),
+            color = MaterialTheme.colorScheme.primary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }

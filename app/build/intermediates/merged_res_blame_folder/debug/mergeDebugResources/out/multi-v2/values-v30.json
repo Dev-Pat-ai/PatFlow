@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.patflow.app-mergeDebugResources-74:/values-v30/values-v30.xml",
+            "outputFile": "com.patflow.app-mergeDebugResources-82:/values-v30/values-v30.xml",
             "map": [
                 {
                     "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\3e2568ea708ae9e2a56252443036e378\\workspace\\transformed\\material3-release\\res\\values-v30\\values-v30.xml",

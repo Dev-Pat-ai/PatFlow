@@ -25,6 +25,7 @@ import hilt_aggregated_deps._com_patflow_app_core_notifications_NotificationRece
 import hilt_aggregated_deps._com_patflow_app_core_notifications_OverdueCheckWorker_HiltModule;
 import hilt_aggregated_deps._com_patflow_app_core_notifications_RecurringIncomeWorker_HiltModule;
 import hilt_aggregated_deps._com_patflow_app_core_notifications_ReminderSyncWorker_HiltModule;
+import hilt_aggregated_deps._com_patflow_app_core_notifications_SyncWorker_HiltModule;
 import hilt_aggregated_deps._com_patflow_app_core_theme_ThemeViewModel_HiltModules_BindsModule;
 import hilt_aggregated_deps._com_patflow_app_core_theme_ThemeViewModel_HiltModules_KeyModule;
 import hilt_aggregated_deps._com_patflow_app_core_utils_HapticViewModel_HiltModules_BindsModule;
@@ -121,6 +122,7 @@ import hilt_aggregated_deps._dagger_hilt_android_internal_modules_HiltWrapper_Ac
         _com_patflow_app_core_notifications_OverdueCheckWorker_HiltModule.class,
         _com_patflow_app_core_notifications_RecurringIncomeWorker_HiltModule.class,
         _com_patflow_app_core_notifications_ReminderSyncWorker_HiltModule.class,
+        _com_patflow_app_core_notifications_SyncWorker_HiltModule.class,
         _com_patflow_app_core_theme_ThemeViewModel_HiltModules_BindsModule.class,
         _com_patflow_app_core_theme_ThemeViewModel_HiltModules_KeyModule.class,
         _com_patflow_app_core_utils_HapticViewModel_HiltModules_BindsModule.class,

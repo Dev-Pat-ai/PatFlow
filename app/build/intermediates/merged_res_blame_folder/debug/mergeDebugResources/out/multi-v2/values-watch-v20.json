@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.patflow.app-mergeDebugResources-74:/values-watch-v20/values-watch-v20.xml",
+            "outputFile": "com.patflow.app-mergeDebugResources-82:/values-watch-v20/values-watch-v20.xml",
             "map": [
                 {
                     "source": "C:\\Users\\charm\\.gradle\\caches\\9.3.0\\transforms\\8288eb23306262be7006f7c60d859eb9\\workspace\\transformed\\appcompat-1.7.0\\res\\values-watch-v20\\values-watch-v20.xml",

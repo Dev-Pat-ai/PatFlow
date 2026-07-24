@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ReceiptLong
 import androidx.compose.material.icons.rounded.CalendarToday
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Payments
 import androidx.compose.material.icons.rounded.PieChart
 import androidx.compose.material.icons.rounded.Savings
@@ -15,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.patflow.app.core.components.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import com.patflow.app.core.theme.PatFlowShapes
 import com.patflow.app.core.theme.PatFlowSpacing
 import com.patflow.app.core.utils.CurrencyFormatter
@@ -70,43 +73,57 @@ fun ReportsScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ReportFilterSection(
     currentFilter: ReportFilter,
     onFilterChange: (ReportFilter) -> Unit
 ) {
-    ScrollableTabRow(
-        selectedTabIndex = when (currentFilter) {
-            ReportFilter.ThisMonth -> 0
-            ReportFilter.Last3Months -> 1
-            ReportFilter.Last6Months -> 2
-            ReportFilter.ThisYear -> 3
-            is ReportFilter.Custom -> 4
-        },
-        edgePadding = PatFlowSpacing.space4,
-        containerColor = MaterialTheme.colorScheme.surface,
-        contentColor = MaterialTheme.colorScheme.primary,
-        divider = {}
+    val filters = listOf(
+        ReportFilter.ThisMonth to "This Month",
+        ReportFilter.Last3Months to "Last 3M",
+        ReportFilter.Last6Months to "Last 6M",
+        ReportFilter.ThisYear to "This Year"
+    )
+    
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = PatFlowSpacing.space2),
+        contentPadding = PaddingValues(horizontal = PatFlowSpacing.space4),
+        horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space2)
     ) {
-        Tab(selected = currentFilter == ReportFilter.ThisMonth, onClick = { onFilterChange(ReportFilter.ThisMonth) }) {
-            Text(text = "This Month", modifier = Modifier.padding(vertical = 12.dp))
+        items(filters) { (filter, label) ->
+            FilterChip(
+                selected = currentFilter == filter,
+                onClick = { onFilterChange(filter) },
+                label = { Text(text = label) },
+                leadingIcon = if (currentFilter == filter) {
+                    {
+                        Icon(
+                            imageVector = Icons.Rounded.Check,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                } else null
+            )
         }
-        Tab(selected = currentFilter == ReportFilter.Last3Months, onClick = { onFilterChange(ReportFilter.Last3Months) }) {
-            Text(text = "Last 3M", modifier = Modifier.padding(vertical = 12.dp))
-        }
-        Tab(selected = currentFilter == ReportFilter.Last6Months, onClick = { onFilterChange(ReportFilter.Last6Months) }) {
-            Text(text = "Last 6M", modifier = Modifier.padding(vertical = 12.dp))
-        }
-        Tab(selected = currentFilter == ReportFilter.ThisYear, onClick = { onFilterChange(ReportFilter.ThisYear) }) {
-            Text(text = "This Year", modifier = Modifier.padding(vertical = 12.dp))
-        }
-        Tab(
-            selected = currentFilter is ReportFilter.Custom,
-            onClick = { 
-                // Custom range picker logic moves to Phase 7: Personalization & Data Management
-            }
-        ) {
-            Text(text = "Custom", modifier = Modifier.padding(vertical = 12.dp))
+        item {
+            FilterChip(
+                selected = currentFilter is ReportFilter.Custom,
+                onClick = { /* TODO */ },
+                label = { Text(text = "Custom") },
+                leadingIcon = if (currentFilter is ReportFilter.Custom) {
+                    {
+                        Icon(
+                            imageVector = Icons.Rounded.Check,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                } else null
+            )
         }
     }
 }

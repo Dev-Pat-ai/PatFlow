@@ -177,12 +177,16 @@ private fun DetailHeroSection(detail: com.patflow.app.domain.usecase.bill.BillDe
         Text(
             text = detail.bill.name,
             style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 1,
+            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
         )
         Text(
             text = CurrencyFormatter.formatAmount(currentCycle?.amountDue ?: detail.bill.defaultAmount),
             style = MaterialTheme.typography.displayLarge,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
+            maxLines = 1,
+            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
         )
         if (currentCycle != null) {
             StatusChip(status = currentCycle.status)

@@ -83,10 +83,13 @@ fun AppSegmentedControl(
                 selected = index == selectedIndex,
                 onClick = { onOptionSelected(index) },
                 shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
+                modifier = Modifier.weight(1f), // Equal width tabs
                 label = {
                     Text(
                         text = label,
-                        style = MaterialTheme.typography.labelLarge
+                        style = MaterialTheme.typography.labelLarge,
+                        maxLines = 1,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                     )
                 },
                 colors = SegmentedButtonDefaults.colors(

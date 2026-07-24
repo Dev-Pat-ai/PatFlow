@@ -15,7 +15,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.patflow.app.core.components.*
 import com.patflow.app.core.theme.PatFlowSpacing
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SavingsGoalListScreen(
     onAddGoalClick: () -> Unit,
@@ -25,49 +24,38 @@ fun SavingsGoalListScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Scaffold(
-        topBar = { AppTopBar(title = "Savings Goals") },
-        floatingActionButton = {
-            AppFab(
-                onClick = onAddGoalClick,
-                icon = Icons.Rounded.Add,
-                contentDescription = "New Goal"
-            )
-        }
-    ) { padding ->
-        Box(modifier = modifier.fillMaxSize().padding(padding)) {
-            when (val state = uiState) {
-                SavingsUiState.Loading -> LoadingState()
-                SavingsUiState.Empty -> EmptyState(
-                    title = "No savings goals",
-                    description = "Start saving for something big!",
-                    icon = Icons.Rounded.Savings,
-                    action = {
-                        AppButton(onClick = onAddGoalClick) {
-                            Text("Create Goal")
-                        }
-                    }
-                )
-                is SavingsUiState.Success -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(PatFlowSpacing.space4),
-                        verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)
-                    ) {
-                        items(state.goals) { analytics ->
-                            SavingsGoalProgressCard(
-                                name = analytics.goal.name,
-                                targetAmount = analytics.goal.targetAmount,
-                                currentAmount = analytics.goal.currentAmount,
-                                percentageUsed = analytics.progressPercentage,
-                                currencyCode = analytics.goal.currencyCode,
-                                onClick = { onGoalClick(analytics.goal.id) }
-                            )
-                        }
+    Box(modifier = modifier.fillMaxSize()) {
+        when (val state = uiState) {
+            SavingsUiState.Loading -> LoadingState()
+            SavingsUiState.Empty -> EmptyState(
+                title = "No savings goals",
+                description = "Start saving for something big!",
+                icon = Icons.Rounded.Savings,
+                action = {
+                    AppButton(onClick = onAddGoalClick) {
+                        Text("Create Goal")
                     }
                 }
-                is SavingsUiState.Error -> FullScreenError(title = "Error", description = state.message)
+            )
+            is SavingsUiState.Success -> {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(PatFlowSpacing.space4),
+                    verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)
+                ) {
+                    items(state.goals) { analytics ->
+                        SavingsGoalProgressCard(
+                            name = analytics.goal.name,
+                            targetAmount = analytics.goal.targetAmount,
+                            currentAmount = analytics.goal.currentAmount,
+                            percentageUsed = analytics.progressPercentage,
+                            currencyCode = analytics.goal.currencyCode,
+                            onClick = { onGoalClick(analytics.goal.id) }
+                        )
+                    }
+                }
             }
+            is SavingsUiState.Error -> FullScreenError(title = "Error", description = state.message)
         }
     }
 }

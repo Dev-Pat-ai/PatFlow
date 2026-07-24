@@ -246,8 +246,9 @@ private fun AgendaView(
 private fun AgendaItem(event: CalendarEvent) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
+        shape = PatFlowShapes.md,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Row(
             modifier = Modifier.padding(12.dp),
@@ -256,8 +257,8 @@ private fun AgendaItem(event: CalendarEvent) {
         ) {
             val (icon, tint, title, amount) = when (event) {
                 is CalendarEvent.BillDue -> Quad(Icons.AutoMirrored.Rounded.ReceiptLong, MaterialTheme.colorScheme.error, event.bill.name, event.cycle.amountDue)
-                is CalendarEvent.PaymentMade -> Quad(Icons.Rounded.Payments, MaterialTheme.colorScheme.primary, event.billName, event.payment.amount)
-                is CalendarEvent.IncomeReceived -> Quad(Icons.Rounded.ChevronRight, MaterialTheme.colorScheme.tertiary, event.sourceName, event.entry.amount)
+                is CalendarEvent.PaymentMade -> Quad(Icons.Rounded.Payments, androidx.compose.ui.graphics.Color(0xFF10B981), event.billName, event.payment.amount)
+                is CalendarEvent.IncomeReceived -> Quad(Icons.Rounded.ChevronRight, MaterialTheme.colorScheme.primary, event.sourceName, event.entry.amount)
             }
             
             Box(
@@ -268,20 +269,26 @@ private fun AgendaItem(event: CalendarEvent) {
             }
             
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = title, style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                )
                 Text(
                     text = when(event) {
                         is CalendarEvent.BillDue -> "Bill Due"
                         is CalendarEvent.PaymentMade -> "Payment Made"
                         is CalendarEvent.IncomeReceived -> "Income Received"
                     },
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             
             Text(
                 text = CurrencyFormatter.formatAmount(amount),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum"),
                 fontWeight = FontWeight.Bold
             )
         }

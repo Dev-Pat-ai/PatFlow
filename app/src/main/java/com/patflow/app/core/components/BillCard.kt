@@ -9,21 +9,34 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.TrendingUp
+import androidx.compose.material.icons.automirrored.rounded.Undo
 import androidx.compose.material.icons.rounded.AccountBalance
+import androidx.compose.material.icons.rounded.AccountBalanceWallet
+import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material.icons.rounded.Apartment
 import androidx.compose.material.icons.rounded.Bolt
+import androidx.compose.material.icons.rounded.CardGiftcard
+import androidx.compose.material.icons.rounded.Celebration
+import androidx.compose.material.icons.rounded.ChildCare
 import androidx.compose.material.icons.rounded.House
+import androidx.compose.material.icons.rounded.LaptopMac
+import androidx.compose.material.icons.rounded.Payments
 import androidx.compose.material.icons.rounded.Savings
 import androidx.compose.material.icons.rounded.School
 import androidx.compose.material.icons.rounded.Shield
 import androidx.compose.material.icons.rounded.Smartphone
+import androidx.compose.material.icons.rounded.Store
 import androidx.compose.material.icons.rounded.Subscriptions
 import androidx.compose.material.icons.rounded.WaterDrop
 import androidx.compose.material.icons.rounded.Wifi
+import androidx.compose.material.icons.rounded.Work
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
@@ -34,6 +47,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.patflow.app.core.theme.PatFlowShapes
@@ -65,7 +80,7 @@ fun BillCard(
 ) {
     val categoryColors = patFlowCategoryColors()
     
-    val (icon, colors) = remember(category, categoryColors) {
+    val (icon: ImageVector, colors) = remember(category, categoryColors) {
         when (category) {
             CategoryType.ELECTRICITY -> Icons.Rounded.Bolt to categoryColors.electricity
             CategoryType.WATER -> Icons.Rounded.WaterDrop to categoryColors.water
@@ -78,6 +93,18 @@ fun BillCard(
             CategoryType.LOAN -> Icons.Rounded.AccountBalance to categoryColors.loan
             CategoryType.SAVINGS -> Icons.Rounded.Savings to categoryColors.savings
             CategoryType.HOA_FEES -> Icons.Rounded.Apartment to categoryColors.hoaFees
+            
+            CategoryType.SALARY -> Icons.Rounded.Work to categoryColors.salary
+            CategoryType.FREELANCE -> Icons.Rounded.LaptopMac to categoryColors.freelance
+            CategoryType.BUSINESS -> Icons.Rounded.Store to categoryColors.business
+            CategoryType.ALLOWANCE -> Icons.Rounded.ChildCare to categoryColors.allowance
+            CategoryType.BONUS -> Icons.Rounded.Celebration to categoryColors.bonus
+            CategoryType.COMMISSION -> Icons.AutoMirrored.Rounded.TrendingUp to categoryColors.commission
+            CategoryType.INVESTMENT -> Icons.Rounded.AccountBalanceWallet to categoryColors.investment
+            CategoryType.CASHBACK -> Icons.Rounded.Payments to categoryColors.cashback
+            CategoryType.REFUND -> Icons.AutoMirrored.Rounded.Undo to categoryColors.refund
+            CategoryType.GIFT -> Icons.Rounded.CardGiftcard to categoryColors.gift
+            CategoryType.OTHER -> Icons.Rounded.AddCircle to categoryColors.other
         }
     }
 
@@ -91,10 +118,10 @@ fun BillCard(
         shape = PatFlowShapes.lg,
         colors = CardDefaults.cardColors(
             containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer 
-                             else MaterialTheme.colorScheme.surfaceContainerLow
+                             else MaterialTheme.colorScheme.surfaceContainer
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = if (isSelected) 2.dp else 0.dp),
-        border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant) else null
+        elevation = CardDefaults.cardElevation(defaultElevation = if (isSelected) 2.dp else 1.dp),
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Row(
             modifier = Modifier
@@ -134,23 +161,32 @@ fun BillCard(
                 Text(
                     text = name,
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = "Due · $dueDate",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
 
             // Amount and Status
-            Column(horizontalAlignment = Alignment.End) {
+            Column(
+                horizontalAlignment = Alignment.End,
+                modifier = Modifier.widthIn(min = 80.dp)
+            ) {
                 Text(
                     text = CurrencyFormatter.formatAmount(amount, currencyCode),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontFeatureSettings = "tnum"
                     ),
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.size(PatFlowSpacing.space1))
                 StatusChip(status = status)
@@ -190,9 +226,4 @@ private fun BillCardPreview() {
             )
         }
     }
-}
-
-@Composable
-private fun Spacer(modifier: Modifier) {
-    Box(modifier = modifier)
 }

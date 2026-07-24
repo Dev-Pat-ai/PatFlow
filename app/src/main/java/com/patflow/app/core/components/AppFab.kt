@@ -53,16 +53,32 @@ fun AppFab(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     icon: ImageVector = Icons.Rounded.Add,
+    label: String? = null,
+    expanded: Boolean = false,
     contentDescription: String? = "Add"
 ) {
-    FloatingActionButton(
-        onClick = onClick,
-        modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-        contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-        shape = PatFlowShapes.full
-    ) {
-        Icon(imageVector = icon, contentDescription = contentDescription)
+    if (label != null) {
+        androidx.compose.material3.ExtendedFloatingActionButton(
+            onClick = onClick,
+            modifier = modifier,
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+            shape = PatFlowShapes.full,
+            expanded = expanded,
+            icon = { Icon(imageVector = icon, contentDescription = null) },
+            text = { Text(text = label) }
+        )
+    } else {
+        FloatingActionButton(
+            onClick = onClick,
+            modifier = modifier,
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+            shape = PatFlowShapes.full,
+            elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 3.dp)
+        ) {
+            Icon(imageVector = icon, contentDescription = contentDescription)
+        }
     }
 }
 

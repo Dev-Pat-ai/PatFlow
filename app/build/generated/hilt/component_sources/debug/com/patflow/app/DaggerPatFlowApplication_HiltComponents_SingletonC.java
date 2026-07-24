@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.work.ListenableWorker;
 import androidx.work.WorkManager;
 import androidx.work.WorkerParameters;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.patflow.app.core.notifications.BudgetCheckWorker;
 import com.patflow.app.core.notifications.BudgetCheckWorker_AssistedFactory;
 import com.patflow.app.core.notifications.NotificationReceiver;
@@ -26,6 +27,8 @@ import com.patflow.app.core.notifications.RecurringIncomeWorker;
 import com.patflow.app.core.notifications.RecurringIncomeWorker_AssistedFactory;
 import com.patflow.app.core.notifications.ReminderSyncWorker;
 import com.patflow.app.core.notifications.ReminderSyncWorker_AssistedFactory;
+import com.patflow.app.core.notifications.SyncWorker;
+import com.patflow.app.core.notifications.SyncWorker_AssistedFactory;
 import com.patflow.app.core.theme.ThemeViewModel;
 import com.patflow.app.core.theme.ThemeViewModel_HiltModules;
 import com.patflow.app.core.utils.HapticViewModel;
@@ -50,6 +53,7 @@ import com.patflow.app.data.repository.PaymentRepositoryImpl;
 import com.patflow.app.data.repository.ReminderRepositoryImpl;
 import com.patflow.app.data.repository.SavingsGoalRepositoryImpl;
 import com.patflow.app.data.repository.SettingsRepositoryImpl;
+import com.patflow.app.data.repository.SyncRepositoryImpl;
 import com.patflow.app.di.DataStoreModule_ProvidePreferencesDataStoreFactory;
 import com.patflow.app.di.DatabaseModule_ProvideBillCycleDaoFactory;
 import com.patflow.app.di.DatabaseModule_ProvideBillDaoFactory;
@@ -70,6 +74,7 @@ import com.patflow.app.domain.repository.PaymentRepository;
 import com.patflow.app.domain.repository.ReminderRepository;
 import com.patflow.app.domain.repository.SavingsGoalRepository;
 import com.patflow.app.domain.repository.SettingsRepository;
+import com.patflow.app.domain.repository.SyncRepository;
 import com.patflow.app.domain.usecase.bill.AddBillUseCase;
 import com.patflow.app.domain.usecase.bill.DeleteBillUseCase;
 import com.patflow.app.domain.usecase.bill.GetBillDetailUseCase;
@@ -524,6 +529,7 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
       return new ViewCBuilder(singletonCImpl, activityRetainedCImpl, activityCImpl);
     }
 
+    @CanIgnoreReturnValue
     private MainActivity injectMainActivity2(MainActivity instance) {
       MainActivity_MembersInjector.injectDatabaseInitializer(instance, singletonCImpl.databaseInitializerProvider.get());
       MainActivity_MembersInjector.injectNotificationScheduler(instance, singletonCImpl.notificationSchedulerProvider.get());
@@ -532,115 +538,115 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_patflow_app_core_utils_HapticViewModel = "com.patflow.app.core.utils.HapticViewModel";
-
       static String com_patflow_app_feature_income_AddEditIncomeViewModel = "com.patflow.app.feature.income.AddEditIncomeViewModel";
-
-      static String com_patflow_app_feature_calendar_CalendarViewModel = "com.patflow.app.feature.calendar.CalendarViewModel";
-
-      static String com_patflow_app_feature_bills_AddEditBillViewModel = "com.patflow.app.feature.bills.AddEditBillViewModel";
-
-      static String com_patflow_app_feature_reports_ReportsViewModel = "com.patflow.app.feature.reports.ReportsViewModel";
-
-      static String com_patflow_app_feature_income_AddEditIncomeSourceViewModel = "com.patflow.app.feature.income.AddEditIncomeSourceViewModel";
-
-      static String com_patflow_app_feature_budget_BudgetDetailViewModel = "com.patflow.app.feature.budget.BudgetDetailViewModel";
-
-      static String com_patflow_app_feature_income_IncomeSourceListViewModel = "com.patflow.app.feature.income.IncomeSourceListViewModel";
-
-      static String com_patflow_app_feature_bills_BillListViewModel = "com.patflow.app.feature.bills.BillListViewModel";
-
-      static String com_patflow_app_feature_savings_AddEditSavingsGoalViewModel = "com.patflow.app.feature.savings.AddEditSavingsGoalViewModel";
-
-      static String com_patflow_app_feature_budget_AddEditBudgetViewModel = "com.patflow.app.feature.budget.AddEditBudgetViewModel";
-
-      static String com_patflow_app_feature_settings_SettingsViewModel = "com.patflow.app.feature.settings.SettingsViewModel";
-
-      static String com_patflow_app_feature_dashboard_DashboardViewModel = "com.patflow.app.feature.dashboard.DashboardViewModel";
-
-      static String com_patflow_app_feature_payment_PaymentDetailViewModel = "com.patflow.app.feature.payment.PaymentDetailViewModel";
-
-      static String com_patflow_app_feature_payment_PaymentHistoryViewModel = "com.patflow.app.feature.payment.PaymentHistoryViewModel";
-
-      static String com_patflow_app_feature_savings_SavingsGoalDetailViewModel = "com.patflow.app.feature.savings.SavingsGoalDetailViewModel";
-
-      static String com_patflow_app_core_theme_ThemeViewModel = "com.patflow.app.core.theme.ThemeViewModel";
-
-      static String com_patflow_app_feature_settings_DataManagementViewModel = "com.patflow.app.feature.settings.DataManagementViewModel";
 
       static String com_patflow_app_feature_bills_BillDetailViewModel = "com.patflow.app.feature.bills.BillDetailViewModel";
 
-      static String com_patflow_app_feature_savings_SavingsGoalViewModel = "com.patflow.app.feature.savings.SavingsGoalViewModel";
+      static String com_patflow_app_feature_reports_ReportsViewModel = "com.patflow.app.feature.reports.ReportsViewModel";
+
+      static String com_patflow_app_feature_settings_SettingsViewModel = "com.patflow.app.feature.settings.SettingsViewModel";
+
+      static String com_patflow_app_feature_settings_DataManagementViewModel = "com.patflow.app.feature.settings.DataManagementViewModel";
+
+      static String com_patflow_app_feature_payment_PaymentHistoryViewModel = "com.patflow.app.feature.payment.PaymentHistoryViewModel";
 
       static String com_patflow_app_feature_budget_BudgetViewModel = "com.patflow.app.feature.budget.BudgetViewModel";
 
+      static String com_patflow_app_feature_calendar_CalendarViewModel = "com.patflow.app.feature.calendar.CalendarViewModel";
+
+      static String com_patflow_app_feature_income_AddEditIncomeSourceViewModel = "com.patflow.app.feature.income.AddEditIncomeSourceViewModel";
+
       static String com_patflow_app_feature_income_IncomeViewModel = "com.patflow.app.feature.income.IncomeViewModel";
 
-      @KeepFieldType
-      HapticViewModel com_patflow_app_core_utils_HapticViewModel2;
+      static String com_patflow_app_feature_bills_BillListViewModel = "com.patflow.app.feature.bills.BillListViewModel";
+
+      static String com_patflow_app_feature_payment_PaymentDetailViewModel = "com.patflow.app.feature.payment.PaymentDetailViewModel";
+
+      static String com_patflow_app_core_theme_ThemeViewModel = "com.patflow.app.core.theme.ThemeViewModel";
+
+      static String com_patflow_app_feature_income_IncomeSourceListViewModel = "com.patflow.app.feature.income.IncomeSourceListViewModel";
+
+      static String com_patflow_app_feature_budget_AddEditBudgetViewModel = "com.patflow.app.feature.budget.AddEditBudgetViewModel";
+
+      static String com_patflow_app_feature_bills_AddEditBillViewModel = "com.patflow.app.feature.bills.AddEditBillViewModel";
+
+      static String com_patflow_app_feature_savings_SavingsGoalDetailViewModel = "com.patflow.app.feature.savings.SavingsGoalDetailViewModel";
+
+      static String com_patflow_app_feature_budget_BudgetDetailViewModel = "com.patflow.app.feature.budget.BudgetDetailViewModel";
+
+      static String com_patflow_app_feature_dashboard_DashboardViewModel = "com.patflow.app.feature.dashboard.DashboardViewModel";
+
+      static String com_patflow_app_feature_savings_SavingsGoalViewModel = "com.patflow.app.feature.savings.SavingsGoalViewModel";
+
+      static String com_patflow_app_feature_savings_AddEditSavingsGoalViewModel = "com.patflow.app.feature.savings.AddEditSavingsGoalViewModel";
+
+      static String com_patflow_app_core_utils_HapticViewModel = "com.patflow.app.core.utils.HapticViewModel";
 
       @KeepFieldType
       AddEditIncomeViewModel com_patflow_app_feature_income_AddEditIncomeViewModel2;
 
       @KeepFieldType
-      CalendarViewModel com_patflow_app_feature_calendar_CalendarViewModel2;
-
-      @KeepFieldType
-      AddEditBillViewModel com_patflow_app_feature_bills_AddEditBillViewModel2;
+      BillDetailViewModel com_patflow_app_feature_bills_BillDetailViewModel2;
 
       @KeepFieldType
       ReportsViewModel com_patflow_app_feature_reports_ReportsViewModel2;
 
       @KeepFieldType
-      AddEditIncomeSourceViewModel com_patflow_app_feature_income_AddEditIncomeSourceViewModel2;
-
-      @KeepFieldType
-      BudgetDetailViewModel com_patflow_app_feature_budget_BudgetDetailViewModel2;
-
-      @KeepFieldType
-      IncomeSourceListViewModel com_patflow_app_feature_income_IncomeSourceListViewModel2;
-
-      @KeepFieldType
-      BillListViewModel com_patflow_app_feature_bills_BillListViewModel2;
-
-      @KeepFieldType
-      AddEditSavingsGoalViewModel com_patflow_app_feature_savings_AddEditSavingsGoalViewModel2;
-
-      @KeepFieldType
-      AddEditBudgetViewModel com_patflow_app_feature_budget_AddEditBudgetViewModel2;
-
-      @KeepFieldType
       SettingsViewModel com_patflow_app_feature_settings_SettingsViewModel2;
-
-      @KeepFieldType
-      DashboardViewModel com_patflow_app_feature_dashboard_DashboardViewModel2;
-
-      @KeepFieldType
-      PaymentDetailViewModel com_patflow_app_feature_payment_PaymentDetailViewModel2;
-
-      @KeepFieldType
-      PaymentHistoryViewModel com_patflow_app_feature_payment_PaymentHistoryViewModel2;
-
-      @KeepFieldType
-      SavingsGoalDetailViewModel com_patflow_app_feature_savings_SavingsGoalDetailViewModel2;
-
-      @KeepFieldType
-      ThemeViewModel com_patflow_app_core_theme_ThemeViewModel2;
 
       @KeepFieldType
       DataManagementViewModel com_patflow_app_feature_settings_DataManagementViewModel2;
 
       @KeepFieldType
-      BillDetailViewModel com_patflow_app_feature_bills_BillDetailViewModel2;
-
-      @KeepFieldType
-      SavingsGoalViewModel com_patflow_app_feature_savings_SavingsGoalViewModel2;
+      PaymentHistoryViewModel com_patflow_app_feature_payment_PaymentHistoryViewModel2;
 
       @KeepFieldType
       BudgetViewModel com_patflow_app_feature_budget_BudgetViewModel2;
 
       @KeepFieldType
+      CalendarViewModel com_patflow_app_feature_calendar_CalendarViewModel2;
+
+      @KeepFieldType
+      AddEditIncomeSourceViewModel com_patflow_app_feature_income_AddEditIncomeSourceViewModel2;
+
+      @KeepFieldType
       IncomeViewModel com_patflow_app_feature_income_IncomeViewModel2;
+
+      @KeepFieldType
+      BillListViewModel com_patflow_app_feature_bills_BillListViewModel2;
+
+      @KeepFieldType
+      PaymentDetailViewModel com_patflow_app_feature_payment_PaymentDetailViewModel2;
+
+      @KeepFieldType
+      ThemeViewModel com_patflow_app_core_theme_ThemeViewModel2;
+
+      @KeepFieldType
+      IncomeSourceListViewModel com_patflow_app_feature_income_IncomeSourceListViewModel2;
+
+      @KeepFieldType
+      AddEditBudgetViewModel com_patflow_app_feature_budget_AddEditBudgetViewModel2;
+
+      @KeepFieldType
+      AddEditBillViewModel com_patflow_app_feature_bills_AddEditBillViewModel2;
+
+      @KeepFieldType
+      SavingsGoalDetailViewModel com_patflow_app_feature_savings_SavingsGoalDetailViewModel2;
+
+      @KeepFieldType
+      BudgetDetailViewModel com_patflow_app_feature_budget_BudgetDetailViewModel2;
+
+      @KeepFieldType
+      DashboardViewModel com_patflow_app_feature_dashboard_DashboardViewModel2;
+
+      @KeepFieldType
+      SavingsGoalViewModel com_patflow_app_feature_savings_SavingsGoalViewModel2;
+
+      @KeepFieldType
+      AddEditSavingsGoalViewModel com_patflow_app_feature_savings_AddEditSavingsGoalViewModel2;
+
+      @KeepFieldType
+      HapticViewModel com_patflow_app_core_utils_HapticViewModel2;
     }
   }
 
@@ -862,115 +868,115 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_patflow_app_feature_bills_BillDetailViewModel = "com.patflow.app.feature.bills.BillDetailViewModel";
+      static String com_patflow_app_feature_dashboard_DashboardViewModel = "com.patflow.app.feature.dashboard.DashboardViewModel";
 
       static String com_patflow_app_feature_income_IncomeSourceListViewModel = "com.patflow.app.feature.income.IncomeSourceListViewModel";
 
-      static String com_patflow_app_feature_savings_SavingsGoalViewModel = "com.patflow.app.feature.savings.SavingsGoalViewModel";
-
-      static String com_patflow_app_feature_budget_BudgetViewModel = "com.patflow.app.feature.budget.BudgetViewModel";
-
-      static String com_patflow_app_feature_calendar_CalendarViewModel = "com.patflow.app.feature.calendar.CalendarViewModel";
-
-      static String com_patflow_app_core_utils_HapticViewModel = "com.patflow.app.core.utils.HapticViewModel";
-
       static String com_patflow_app_core_theme_ThemeViewModel = "com.patflow.app.core.theme.ThemeViewModel";
-
-      static String com_patflow_app_feature_budget_AddEditBudgetViewModel = "com.patflow.app.feature.budget.AddEditBudgetViewModel";
-
-      static String com_patflow_app_feature_dashboard_DashboardViewModel = "com.patflow.app.feature.dashboard.DashboardViewModel";
-
-      static String com_patflow_app_feature_settings_SettingsViewModel = "com.patflow.app.feature.settings.SettingsViewModel";
-
-      static String com_patflow_app_feature_payment_PaymentDetailViewModel = "com.patflow.app.feature.payment.PaymentDetailViewModel";
-
-      static String com_patflow_app_feature_savings_SavingsGoalDetailViewModel = "com.patflow.app.feature.savings.SavingsGoalDetailViewModel";
-
-      static String com_patflow_app_feature_savings_AddEditSavingsGoalViewModel = "com.patflow.app.feature.savings.AddEditSavingsGoalViewModel";
-
-      static String com_patflow_app_feature_payment_PaymentHistoryViewModel = "com.patflow.app.feature.payment.PaymentHistoryViewModel";
-
-      static String com_patflow_app_feature_bills_BillListViewModel = "com.patflow.app.feature.bills.BillListViewModel";
-
-      static String com_patflow_app_feature_reports_ReportsViewModel = "com.patflow.app.feature.reports.ReportsViewModel";
-
-      static String com_patflow_app_feature_settings_DataManagementViewModel = "com.patflow.app.feature.settings.DataManagementViewModel";
-
-      static String com_patflow_app_feature_income_IncomeViewModel = "com.patflow.app.feature.income.IncomeViewModel";
 
       static String com_patflow_app_feature_bills_AddEditBillViewModel = "com.patflow.app.feature.bills.AddEditBillViewModel";
 
-      static String com_patflow_app_feature_income_AddEditIncomeSourceViewModel = "com.patflow.app.feature.income.AddEditIncomeSourceViewModel";
+      static String com_patflow_app_feature_budget_BudgetViewModel = "com.patflow.app.feature.budget.BudgetViewModel";
 
-      static String com_patflow_app_feature_income_AddEditIncomeViewModel = "com.patflow.app.feature.income.AddEditIncomeViewModel";
+      static String com_patflow_app_core_utils_HapticViewModel = "com.patflow.app.core.utils.HapticViewModel";
+
+      static String com_patflow_app_feature_savings_SavingsGoalViewModel = "com.patflow.app.feature.savings.SavingsGoalViewModel";
+
+      static String com_patflow_app_feature_income_IncomeViewModel = "com.patflow.app.feature.income.IncomeViewModel";
+
+      static String com_patflow_app_feature_savings_SavingsGoalDetailViewModel = "com.patflow.app.feature.savings.SavingsGoalDetailViewModel";
 
       static String com_patflow_app_feature_budget_BudgetDetailViewModel = "com.patflow.app.feature.budget.BudgetDetailViewModel";
 
-      @KeepFieldType
-      BillDetailViewModel com_patflow_app_feature_bills_BillDetailViewModel2;
+      static String com_patflow_app_feature_budget_AddEditBudgetViewModel = "com.patflow.app.feature.budget.AddEditBudgetViewModel";
 
-      @KeepFieldType
-      IncomeSourceListViewModel com_patflow_app_feature_income_IncomeSourceListViewModel2;
+      static String com_patflow_app_feature_income_AddEditIncomeViewModel = "com.patflow.app.feature.income.AddEditIncomeViewModel";
 
-      @KeepFieldType
-      SavingsGoalViewModel com_patflow_app_feature_savings_SavingsGoalViewModel2;
+      static String com_patflow_app_feature_income_AddEditIncomeSourceViewModel = "com.patflow.app.feature.income.AddEditIncomeSourceViewModel";
 
-      @KeepFieldType
-      BudgetViewModel com_patflow_app_feature_budget_BudgetViewModel2;
+      static String com_patflow_app_feature_bills_BillDetailViewModel = "com.patflow.app.feature.bills.BillDetailViewModel";
 
-      @KeepFieldType
-      CalendarViewModel com_patflow_app_feature_calendar_CalendarViewModel2;
+      static String com_patflow_app_feature_calendar_CalendarViewModel = "com.patflow.app.feature.calendar.CalendarViewModel";
 
-      @KeepFieldType
-      HapticViewModel com_patflow_app_core_utils_HapticViewModel2;
+      static String com_patflow_app_feature_settings_SettingsViewModel = "com.patflow.app.feature.settings.SettingsViewModel";
 
-      @KeepFieldType
-      ThemeViewModel com_patflow_app_core_theme_ThemeViewModel2;
+      static String com_patflow_app_feature_settings_DataManagementViewModel = "com.patflow.app.feature.settings.DataManagementViewModel";
 
-      @KeepFieldType
-      AddEditBudgetViewModel com_patflow_app_feature_budget_AddEditBudgetViewModel2;
+      static String com_patflow_app_feature_payment_PaymentHistoryViewModel = "com.patflow.app.feature.payment.PaymentHistoryViewModel";
+
+      static String com_patflow_app_feature_payment_PaymentDetailViewModel = "com.patflow.app.feature.payment.PaymentDetailViewModel";
+
+      static String com_patflow_app_feature_reports_ReportsViewModel = "com.patflow.app.feature.reports.ReportsViewModel";
+
+      static String com_patflow_app_feature_savings_AddEditSavingsGoalViewModel = "com.patflow.app.feature.savings.AddEditSavingsGoalViewModel";
+
+      static String com_patflow_app_feature_bills_BillListViewModel = "com.patflow.app.feature.bills.BillListViewModel";
 
       @KeepFieldType
       DashboardViewModel com_patflow_app_feature_dashboard_DashboardViewModel2;
 
       @KeepFieldType
-      SettingsViewModel com_patflow_app_feature_settings_SettingsViewModel2;
+      IncomeSourceListViewModel com_patflow_app_feature_income_IncomeSourceListViewModel2;
 
       @KeepFieldType
-      PaymentDetailViewModel com_patflow_app_feature_payment_PaymentDetailViewModel2;
-
-      @KeepFieldType
-      SavingsGoalDetailViewModel com_patflow_app_feature_savings_SavingsGoalDetailViewModel2;
-
-      @KeepFieldType
-      AddEditSavingsGoalViewModel com_patflow_app_feature_savings_AddEditSavingsGoalViewModel2;
-
-      @KeepFieldType
-      PaymentHistoryViewModel com_patflow_app_feature_payment_PaymentHistoryViewModel2;
-
-      @KeepFieldType
-      BillListViewModel com_patflow_app_feature_bills_BillListViewModel2;
-
-      @KeepFieldType
-      ReportsViewModel com_patflow_app_feature_reports_ReportsViewModel2;
-
-      @KeepFieldType
-      DataManagementViewModel com_patflow_app_feature_settings_DataManagementViewModel2;
-
-      @KeepFieldType
-      IncomeViewModel com_patflow_app_feature_income_IncomeViewModel2;
+      ThemeViewModel com_patflow_app_core_theme_ThemeViewModel2;
 
       @KeepFieldType
       AddEditBillViewModel com_patflow_app_feature_bills_AddEditBillViewModel2;
 
       @KeepFieldType
-      AddEditIncomeSourceViewModel com_patflow_app_feature_income_AddEditIncomeSourceViewModel2;
+      BudgetViewModel com_patflow_app_feature_budget_BudgetViewModel2;
+
+      @KeepFieldType
+      HapticViewModel com_patflow_app_core_utils_HapticViewModel2;
+
+      @KeepFieldType
+      SavingsGoalViewModel com_patflow_app_feature_savings_SavingsGoalViewModel2;
+
+      @KeepFieldType
+      IncomeViewModel com_patflow_app_feature_income_IncomeViewModel2;
+
+      @KeepFieldType
+      SavingsGoalDetailViewModel com_patflow_app_feature_savings_SavingsGoalDetailViewModel2;
+
+      @KeepFieldType
+      BudgetDetailViewModel com_patflow_app_feature_budget_BudgetDetailViewModel2;
+
+      @KeepFieldType
+      AddEditBudgetViewModel com_patflow_app_feature_budget_AddEditBudgetViewModel2;
 
       @KeepFieldType
       AddEditIncomeViewModel com_patflow_app_feature_income_AddEditIncomeViewModel2;
 
       @KeepFieldType
-      BudgetDetailViewModel com_patflow_app_feature_budget_BudgetDetailViewModel2;
+      AddEditIncomeSourceViewModel com_patflow_app_feature_income_AddEditIncomeSourceViewModel2;
+
+      @KeepFieldType
+      BillDetailViewModel com_patflow_app_feature_bills_BillDetailViewModel2;
+
+      @KeepFieldType
+      CalendarViewModel com_patflow_app_feature_calendar_CalendarViewModel2;
+
+      @KeepFieldType
+      SettingsViewModel com_patflow_app_feature_settings_SettingsViewModel2;
+
+      @KeepFieldType
+      DataManagementViewModel com_patflow_app_feature_settings_DataManagementViewModel2;
+
+      @KeepFieldType
+      PaymentHistoryViewModel com_patflow_app_feature_payment_PaymentHistoryViewModel2;
+
+      @KeepFieldType
+      PaymentDetailViewModel com_patflow_app_feature_payment_PaymentDetailViewModel2;
+
+      @KeepFieldType
+      ReportsViewModel com_patflow_app_feature_reports_ReportsViewModel2;
+
+      @KeepFieldType
+      AddEditSavingsGoalViewModel com_patflow_app_feature_savings_AddEditSavingsGoalViewModel2;
+
+      @KeepFieldType
+      BillListViewModel com_patflow_app_feature_bills_BillListViewModel2;
     }
 
     private static final class SwitchingProvider<T> implements Provider<T> {
@@ -1180,6 +1186,12 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
 
     private Provider<ReminderSyncWorker_AssistedFactory> reminderSyncWorker_AssistedFactoryProvider;
 
+    private Provider<SyncRepositoryImpl> syncRepositoryImplProvider;
+
+    private Provider<SyncRepository> bindSyncRepositoryProvider;
+
+    private Provider<SyncWorker_AssistedFactory> syncWorker_AssistedFactoryProvider;
+
     private Provider<DatabaseInitializer> databaseInitializerProvider;
 
     private Provider<NotificationScheduler> notificationSchedulerProvider;
@@ -1241,7 +1253,7 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
 
     private Map<String, javax.inject.Provider<WorkerAssistedFactory<? extends ListenableWorker>>> mapOfStringAndProviderOfWorkerAssistedFactoryOf(
         ) {
-      return MapBuilder.<String, javax.inject.Provider<WorkerAssistedFactory<? extends ListenableWorker>>>newMapBuilder(4).put("com.patflow.app.core.notifications.BudgetCheckWorker", ((Provider) budgetCheckWorker_AssistedFactoryProvider)).put("com.patflow.app.core.notifications.OverdueCheckWorker", ((Provider) overdueCheckWorker_AssistedFactoryProvider)).put("com.patflow.app.core.notifications.RecurringIncomeWorker", ((Provider) recurringIncomeWorker_AssistedFactoryProvider)).put("com.patflow.app.core.notifications.ReminderSyncWorker", ((Provider) reminderSyncWorker_AssistedFactoryProvider)).build();
+      return MapBuilder.<String, javax.inject.Provider<WorkerAssistedFactory<? extends ListenableWorker>>>newMapBuilder(5).put("com.patflow.app.core.notifications.BudgetCheckWorker", ((Provider) budgetCheckWorker_AssistedFactoryProvider)).put("com.patflow.app.core.notifications.OverdueCheckWorker", ((Provider) overdueCheckWorker_AssistedFactoryProvider)).put("com.patflow.app.core.notifications.RecurringIncomeWorker", ((Provider) recurringIncomeWorker_AssistedFactoryProvider)).put("com.patflow.app.core.notifications.ReminderSyncWorker", ((Provider) reminderSyncWorker_AssistedFactoryProvider)).put("com.patflow.app.core.notifications.SyncWorker", ((Provider) syncWorker_AssistedFactoryProvider)).build();
     }
 
     private HiltWorkerFactory hiltWorkerFactory() {
@@ -1282,17 +1294,20 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
       this.bindIncomeRepositoryProvider = DoubleCheck.provider((Provider) incomeRepositoryImplProvider);
       this.recurringIncomeWorker_AssistedFactoryProvider = SingleCheck.provider(new SwitchingProvider<RecurringIncomeWorker_AssistedFactory>(singletonCImpl, 11));
       this.reminderSyncWorker_AssistedFactoryProvider = SingleCheck.provider(new SwitchingProvider<ReminderSyncWorker_AssistedFactory>(singletonCImpl, 13));
-      this.databaseInitializerProvider = DoubleCheck.provider(new SwitchingProvider<DatabaseInitializer>(singletonCImpl, 14));
-      this.notificationSchedulerProvider = DoubleCheck.provider(new SwitchingProvider<NotificationScheduler>(singletonCImpl, 15));
-      this.categoryRepositoryImplProvider = new SwitchingProvider<>(singletonCImpl, 16);
-      this.bindCategoryRepositoryProvider = DoubleCheck.provider((Provider) categoryRepositoryImplProvider);
-      this.savingsGoalRepositoryImplProvider = new SwitchingProvider<>(singletonCImpl, 17);
+      this.syncRepositoryImplProvider = new SwitchingProvider<>(singletonCImpl, 15);
+      this.bindSyncRepositoryProvider = DoubleCheck.provider((Provider) syncRepositoryImplProvider);
+      this.syncWorker_AssistedFactoryProvider = SingleCheck.provider(new SwitchingProvider<SyncWorker_AssistedFactory>(singletonCImpl, 14));
+      this.databaseInitializerProvider = DoubleCheck.provider(new SwitchingProvider<DatabaseInitializer>(singletonCImpl, 16));
+      this.notificationSchedulerProvider = DoubleCheck.provider(new SwitchingProvider<NotificationScheduler>(singletonCImpl, 17));
     }
 
     @SuppressWarnings("unchecked")
     private void initialize2(final ApplicationContextModule applicationContextModuleParam) {
+      this.categoryRepositoryImplProvider = new SwitchingProvider<>(singletonCImpl, 18);
+      this.bindCategoryRepositoryProvider = DoubleCheck.provider((Provider) categoryRepositoryImplProvider);
+      this.savingsGoalRepositoryImplProvider = new SwitchingProvider<>(singletonCImpl, 19);
       this.bindSavingsGoalRepositoryProvider = DoubleCheck.provider((Provider) savingsGoalRepositoryImplProvider);
-      this.dataManagementRepositoryImplProvider = new SwitchingProvider<>(singletonCImpl, 18);
+      this.dataManagementRepositoryImplProvider = new SwitchingProvider<>(singletonCImpl, 20);
       this.bindDataManagementRepositoryProvider = DoubleCheck.provider((Provider) dataManagementRepositoryImplProvider);
     }
 
@@ -1321,11 +1336,13 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
       return new ServiceCBuilder(singletonCImpl);
     }
 
+    @CanIgnoreReturnValue
     private PatFlowApplication injectPatFlowApplication2(PatFlowApplication instance) {
       PatFlowApplication_MembersInjector.injectWorkerFactory(instance, hiltWorkerFactory());
       return instance;
     }
 
+    @CanIgnoreReturnValue
     private NotificationReceiver injectNotificationReceiver2(NotificationReceiver instance2) {
       NotificationReceiver_MembersInjector.injectMarkBillAsPaidUseCase(instance2, markBillAsPaidUseCase());
       NotificationReceiver_MembersInjector.injectReminderRepository(instance2, bindReminderRepositoryProvider.get());
@@ -1408,19 +1425,30 @@ public final class DaggerPatFlowApplication_HiltComponents_SingletonC {
             }
           };
 
-          case 14: // com.patflow.app.data.local.database.DatabaseInitializer 
+          case 14: // com.patflow.app.core.notifications.SyncWorker_AssistedFactory 
+          return (T) new SyncWorker_AssistedFactory() {
+            @Override
+            public SyncWorker create(Context context5, WorkerParameters params5) {
+              return new SyncWorker(context5, params5, singletonCImpl.bindSyncRepositoryProvider.get());
+            }
+          };
+
+          case 15: // com.patflow.app.data.repository.SyncRepositoryImpl 
+          return (T) new SyncRepositoryImpl();
+
+          case 16: // com.patflow.app.data.local.database.DatabaseInitializer 
           return (T) new DatabaseInitializer(singletonCImpl.categoryDao(), singletonCImpl.incomeDao());
 
-          case 15: // com.patflow.app.core.notifications.NotificationScheduler 
+          case 17: // com.patflow.app.core.notifications.NotificationScheduler 
           return (T) new NotificationScheduler(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
 
-          case 16: // com.patflow.app.data.repository.CategoryRepositoryImpl 
+          case 18: // com.patflow.app.data.repository.CategoryRepositoryImpl 
           return (T) new CategoryRepositoryImpl(singletonCImpl.categoryDao());
 
-          case 17: // com.patflow.app.data.repository.SavingsGoalRepositoryImpl 
+          case 19: // com.patflow.app.data.repository.SavingsGoalRepositoryImpl 
           return (T) new SavingsGoalRepositoryImpl(singletonCImpl.savingsGoalDao());
 
-          case 18: // com.patflow.app.data.repository.DataManagementRepositoryImpl 
+          case 20: // com.patflow.app.data.repository.DataManagementRepositoryImpl 
           return (T) new DataManagementRepositoryImpl(singletonCImpl.provideDatabaseProvider.get(), singletonCImpl.billDao(), singletonCImpl.billCycleDao(), singletonCImpl.paymentDao(), singletonCImpl.categoryDao(), singletonCImpl.incomeDao(), singletonCImpl.budgetDao(), singletonCImpl.savingsGoalDao(), singletonCImpl.bindSettingsRepositoryProvider.get());
 
           default: throw new AssertionError(id);

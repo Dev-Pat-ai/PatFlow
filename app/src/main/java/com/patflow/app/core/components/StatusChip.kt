@@ -4,8 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Error
@@ -13,11 +16,13 @@ import androidx.compose.material.icons.rounded.Pending
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.patflow.app.core.theme.PatFlowShapes
@@ -57,9 +62,10 @@ private fun StatusChipContent(
 ) {
     Row(
         modifier = modifier
-            .background(color = colors.containerColor, shape = PatFlowShapes.sm) // Refined from xs to sm
-            .padding(horizontal = 10.dp, vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
+            .background(color = colors.containerColor, shape = PatFlowShapes.sm)
+            .padding(horizontal = 10.dp, vertical = 4.dp)
+            .widthIn(min = 100.dp), // Ensure a consistent minimum width for all status labels
+        horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -68,10 +74,14 @@ private fun StatusChipContent(
             modifier = Modifier.size(14.dp),
             tint = colors.onColor
         )
+        Spacer(modifier = Modifier.width(6.dp))
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold),
-            color = colors.onColor
+            color = colors.onColor,
+            maxLines = 1,
+            softWrap = false,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }

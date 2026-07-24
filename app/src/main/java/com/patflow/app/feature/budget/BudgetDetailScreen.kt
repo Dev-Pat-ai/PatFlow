@@ -92,7 +92,8 @@ fun BudgetDetailScreen(
                                     Text(
                                         text = "${(analytics.percentageUsed * 100).toInt()}%",
                                         style = MaterialTheme.typography.displayMedium,
-                                        fontWeight = FontWeight.Bold
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 1
                                     )
                                     Text(
                                         text = "of total",
@@ -104,7 +105,9 @@ fun BudgetDetailScreen(
                             
                             Text(
                                 text = analytics.budget.name,
-                                style = MaterialTheme.typography.headlineSmall
+                                style = MaterialTheme.typography.headlineSmall,
+                                maxLines = 1,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                             )
                         }
 

@@ -9,12 +9,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.ReceiptLong
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.automirrored.rounded.List
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,6 +44,9 @@ import com.patflow.app.core.components.EmptyState
 import com.patflow.app.core.components.LoadingState
 import com.patflow.app.core.components.SwipeableBillRow
 import com.patflow.app.core.theme.PatFlowSpacing
+import androidx.compose.foundation.lazy.LazyRow
+import com.patflow.app.core.components.SearchTextField
+import com.patflow.app.core.theme.PatFlowShapes
 import com.patflow.app.core.utils.CategoryMapper
 import com.patflow.app.core.utils.CurrencyFormatter
 import com.patflow.app.core.utils.rememberHapticFeedbackController
@@ -64,83 +71,59 @@ fun IncomeListScreen(
     val selectedIds by viewModel.selectedIds.collectAsState()
     val haptic = rememberHapticFeedbackController()
 
-    Scaffold(
-        topBar = {
-            if (selectedIds.isNotEmpty()) {
-                ContextualIncomeActionBar(
-                    selectedCount = selectedIds.size,
-                    onClose = viewModel::clearSelection,
-                    onDelete = viewModel::deleteSelected
-                )
-            } else {
-                AppTopBar(
-                    title = "Income",
-                    actions = {
-                        IconButton(onClick = onManageSourcesClick) {
-                            Icon(Icons.AutoMirrored.Rounded.List, contentDescription = "Manage Sources")
-                        }
-                    }
-                )
-            }
-        },
-        floatingActionButton = {
-            if (selectedIds.isEmpty()) {
-                AppFab(
-                    onClick = onAddIncomeClick,
-                    icon = Icons.Rounded.Add,
-                    contentDescription = "Add Income"
-                )
-            }
+    Column(
+        modifier = modifier.fillMaxSize()
+    ) {
+        if (selectedIds.isNotEmpty()) {
+            ContextualIncomeActionBar(
+                selectedCount = selectedIds.size,
+                onClose = viewModel::clearSelection,
+                onDelete = viewModel::deleteSelected
+            )
         }
-    ) { padding ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(padding)
-        ) {
-            if (selectedIds.isEmpty()) {
-                IncomeListHeader(
-                    searchQuery = searchQuery,
-                    onSearchQueryChange = viewModel::onSearchQueryChange,
-                    categories = categories,
-                    selectedCategoryId = selectedCategoryId,
-                    onCategoryChange = viewModel::onCategoryFilterChange
-                )
-            }
 
-            when (val state = uiState) {
-                IncomeUiState.Loading -> LoadingState()
-                is IncomeUiState.Success -> {
-                    if (state.entries.isEmpty()) {
-                        EmptyState(
-                            title = "No income logged",
-                            description = "Record your first income to start tracking your cash flow.",
-                            icon = Icons.AutoMirrored.Rounded.ReceiptLong
-                        )
-                    } else {
-                        IncomeListContent(
-                            entries = state.entries,
-                            selectedIds = selectedIds,
-                            onEntryClick = { id ->
-                                if (selectedIds.isNotEmpty()) {
-                                    haptic.tick()
-                                    viewModel.toggleSelection(id)
-                                } else {
-                                    onEntryClick(id)
-                                }
-                            },
-                            onLongClick = { id ->
-                                haptic.confirm()
+        if (selectedIds.isEmpty()) {
+            IncomeListHeader(
+                searchQuery = searchQuery,
+                onSearchQueryChange = viewModel::onSearchQueryChange,
+                categories = categories,
+                selectedCategoryId = selectedCategoryId,
+                onCategoryChange = viewModel::onCategoryFilterChange
+            )
+        }
+
+        when (val state = uiState) {
+            IncomeUiState.Loading -> LoadingState()
+            is IncomeUiState.Success -> {
+                if (state.entries.isEmpty()) {
+                    EmptyState(
+                        title = "No income logged",
+                        description = "Record your first income to start tracking your cash flow.",
+                        icon = Icons.AutoMirrored.Rounded.ReceiptLong
+                    )
+                } else {
+                    IncomeListContent(
+                        entries = state.entries,
+                        selectedIds = selectedIds,
+                        onEntryClick = { id ->
+                            if (selectedIds.isNotEmpty()) {
+                                haptic.tick()
                                 viewModel.toggleSelection(id)
-                            },
-                            onDelete = viewModel::deleteEntry,
-                            onDuplicate = viewModel::duplicateEntry
-                        )
-                    }
+                            } else {
+                                onEntryClick(id)
+                            }
+                        },
+                        onLongClick = { id ->
+                            haptic.confirm()
+                            viewModel.toggleSelection(id)
+                        },
+                        onDelete = viewModel::deleteEntry,
+                        onDuplicate = viewModel::duplicateEntry
+                    )
                 }
-                is IncomeUiState.Error -> {
-                    Text(text = "Error: ${state.message}", modifier = Modifier.padding(16.dp))
-                }
+            }
+            is IncomeUiState.Error -> {
+                Text(text = "Error: ${state.message}", modifier = Modifier.padding(16.dp))
             }
         }
     }
@@ -158,23 +141,40 @@ private fun IncomeListHeader(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = PatFlowSpacing.space4, vertical = PatFlowSpacing.space2),
-        verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space2)
+        verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)
     ) {
-        AppTextField(
+        SearchTextField(
             value = searchQuery,
             onValueChange = onSearchQueryChange,
             placeholder = "Search income..."
         )
 
-        Row(
+        LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space2)
+            horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space2),
+            contentPadding = PaddingValues(horizontal = PatFlowSpacing.space4)
         ) {
-            categories.forEach { category ->
+            items(categories) { category ->
+                val displayLabel = category.name.replace("Cash back", "Cashback")
                 FilterChip(
                     selected = selectedCategoryId == category.id,
                     onClick = { onCategoryChange(if (selectedCategoryId == category.id) null else category.id) },
-                    label = { Text(category.name) }
+                    label = { 
+                        Text(
+                            text = displayLabel,
+                            maxLines = 1,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                        ) 
+                    },
+                    leadingIcon = if (selectedCategoryId == category.id) {
+                        {
+                            Icon(
+                                imageVector = Icons.Rounded.Check,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    } else null
                 )
             }
         }
@@ -260,11 +260,13 @@ private fun IncomeItem(
                 onClick = onClick,
                 onLongClick = onLongClick
             ),
-        shape = com.patflow.app.core.theme.PatFlowShapes.lg,
+        shape = PatFlowShapes.lg,
         colors = androidx.compose.material3.CardDefaults.cardColors(
-            containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
+            containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer 
+                             else MaterialTheme.colorScheme.surfaceContainerLow
         ),
-        elevation = androidx.compose.material3.CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = androidx.compose.material3.CardDefaults.cardElevation(defaultElevation = if (isSelected) 2.dp else 0.dp),
+        border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant) else null
     ) {
         Row(
             modifier = Modifier
@@ -273,24 +275,33 @@ private fun IncomeItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space4)
         ) {
-            CategoryChip(category = CategoryMapper.mapToType(history.entry.category.name))
+            CategoryChip(
+                category = CategoryMapper.mapToType(history.entry.category.name),
+                modifier = Modifier.widthIn(max = 120.dp)
+            )
             
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = history.sourceName ?: history.entry.note ?: "Income",
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                 )
                 Text(
                     text = history.entry.entryDate.toString(),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                 )
             }
 
             Text(
                 text = CurrencyFormatter.formatAmount(history.entry.amount, history.entry.currencyCode),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary
+                style = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum"),
+                color = MaterialTheme.colorScheme.primary,
+                maxLines = 1,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
             )
         }
     }

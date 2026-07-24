@@ -49,12 +49,16 @@ fun BudgetProgressCard(
                 Text(
                     text = name,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
                 )
                 Text(
                     text = "${(percentageUsed * 100).toInt()}%",
                     style = MaterialTheme.typography.labelLarge,
-                    color = progressColor
+                    color = progressColor,
+                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
 
