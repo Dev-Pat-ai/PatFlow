@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.patflow.app.core.components.AppButton
 import com.patflow.app.core.components.AppTopBar
+import com.patflow.app.core.components.TopBarType
 import com.patflow.app.core.components.CategoryChip
 import com.patflow.app.core.components.CategoryType
 import com.patflow.app.core.components.ConfirmationDialog
@@ -66,6 +67,7 @@ fun PaymentDetailScreen(
         topBar = {
             AppTopBar(
                 title = "Payment Details",
+                type = TopBarType.Small,
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back")
@@ -87,7 +89,7 @@ fun PaymentDetailScreen(
                     modifier = modifier
                         .fillMaxSize()
                         .padding(padding)
-                        .padding(PatFlowSpacing.space4),
+                        .padding(PatFlowSpacing.space5),
                     verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space4)
                 ) {
                     Column(

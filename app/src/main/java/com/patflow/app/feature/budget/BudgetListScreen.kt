@@ -41,7 +41,7 @@ fun BudgetListScreen(
             is BudgetUiState.Success -> {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(PatFlowSpacing.space4),
+                    contentPadding = PaddingValues(PatFlowSpacing.space5),
                     verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)
                 ) {
                     items(state.budgets) { analytics ->

@@ -140,7 +140,6 @@ class BillRepositoryImpl @Inject constructor(
         val newPaid = (cycle.amountPaid + deltaAmount).coerceAtLeast(0.0)
         val newStatus = when {
             newPaid >= cycle.amountDue -> BillStatus.PAID
-            newPaid > 0 -> BillStatus.PARTIALLY_PAID
             // In production, we'd also check if it's OVERDUE based on current date
             else -> BillStatus.UNPAID
         }

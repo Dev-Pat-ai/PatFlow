@@ -15,7 +15,7 @@
         errorLine2="                ^">
         <location
             file="C:\Users\charm\Documents\GitHub\PatFlow\app\src\main\AndroidManifest.xml"
-            line="34"
+            line="35"
             column="17"/>
     </issue>
 
@@ -33,7 +33,7 @@
         errorLine2="                ^">
         <location
             file="C:\Users\charm\Documents\GitHub\PatFlow\app\src\main\AndroidManifest.xml"
-            line="37"
+            line="38"
             column="17"/>
     </issue>
 
@@ -104,6 +104,22 @@
     <issue
         id="GradleDependency"
         severity="Warning"
+        message="A newer version of com.google.android.material:material than 1.12.0 is available: 1.14.0"
+        category="Correctness"
+        priority="4"
+        summary="Obsolete Gradle Dependency"
+        explanation="This detector looks for usages of libraries where the version you are using is not the current stable release. Using older versions is fine, and there are cases where you deliberately want to stick with an older version. However, you may simply not be aware that a more recent version is available, and that is what this lint check helps find."
+        errorLine1="    implementation(&quot;com.google.android.material:material:1.12.0&quot;)"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts"
+            line="65"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        severity="Warning"
         message="A newer version of androidx.navigation:navigation-compose than 2.8.3 is available: 2.9.8"
         category="Correctness"
         priority="4"
@@ -113,7 +129,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts"
-            line="69"
+            line="70"
             column="20"/>
     </issue>
 
@@ -129,7 +145,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts"
-            line="74"
+            line="75"
             column="20"/>
     </issue>
 
@@ -145,7 +161,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts"
-            line="75"
+            line="76"
             column="20"/>
     </issue>
 
@@ -161,7 +177,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts"
-            line="76"
+            line="77"
             column="9"/>
     </issue>
 
@@ -177,7 +193,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts"
-            line="79"
+            line="80"
             column="20"/>
     </issue>
 
@@ -193,7 +209,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts"
-            line="80"
+            line="81"
             column="20"/>
     </issue>
 
@@ -209,7 +225,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts"
-            line="81"
+            line="82"
             column="9"/>
     </issue>
 
@@ -225,7 +241,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts"
-            line="84"
+            line="85"
             column="20"/>
     </issue>
 
@@ -241,7 +257,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts"
-            line="91"
+            line="92"
             column="20"/>
     </issue>
 
@@ -257,7 +273,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts"
-            line="97"
+            line="98"
             column="20"/>
     </issue>
 
@@ -273,7 +289,7 @@
         errorLine2="                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts"
-            line="102"
+            line="103"
             column="24"/>
     </issue>
 
@@ -289,7 +305,7 @@
         errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts"
-            line="106"
+            line="107"
             column="31"/>
     </issue>
 
@@ -305,7 +321,7 @@
         errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts"
-            line="107"
+            line="108"
             column="31"/>
     </issue>
 
@@ -321,7 +337,7 @@
         errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts"
-            line="108"
+            line="109"
             column="31"/>
     </issue>
 
@@ -383,6 +399,22 @@
         explanation="This check flags version checks that are not necessary, because the `minSdkVersion` (or surrounding known API level) is already at least as high as the version checked for.&#xA;&#xA;Similarly, it also looks for resources in `-vNN` folders, such as `values-v14` where the version qualifier is less than or equal to the `minSdkVersion`, where the contents should be merged into the best folder.">
         <location
             file="C:\Users\charm\Documents\GitHub\PatFlow\app\src\main\res\mipmap-anydpi-v26"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        severity="Warning"
+        message="The resource `R.color.black` appears to be unused"
+        category="Performance"
+        priority="3"
+        summary="Unused resources"
+        explanation="Unused resources make applications larger and slow down builds.&#xA;&#xA;&#xA;The unused resource check can ignore tests. If you want to include resources that are only referenced from tests, consider packaging them in a test source set instead.&#xA;&#xA;You can include test sources in the unused resource check by setting the system property lint.unused-resources.include-tests =true, and to exclude them (usually for performance reasons), use lint.unused-resources.exclude-tests =true.&#xA;,"
+        errorLine1="    &lt;color name=&quot;black&quot;>#000000&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~">
+        <location
+            file="C:\Users\charm\Documents\GitHub\PatFlow\app\src\main\res\values\colors.xml"
+            line="5"
+            column="12"/>
     </issue>
 
     <issue

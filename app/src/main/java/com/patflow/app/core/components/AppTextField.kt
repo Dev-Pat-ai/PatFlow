@@ -30,6 +30,8 @@ fun SearchTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     placeholder: String = "Search bills, categories...",
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     onClear: () -> Unit = { onValueChange("") }
 ) {
     AppTextField(
@@ -37,14 +39,14 @@ fun SearchTextField(
         onValueChange = onValueChange,
         modifier = modifier,
         placeholder = placeholder,
-        leadingIcon = {
+        leadingIcon = leadingIcon ?: {
             Icon(
                 imageVector = Icons.Rounded.Search,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         },
-        trailingIcon = if (value.isNotEmpty()) {
+        trailingIcon = trailingIcon ?: if (value.isNotEmpty()) {
             {
                 IconButton(onClick = onClear) {
                     Icon(

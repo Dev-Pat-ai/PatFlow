@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.patflow.app.core.components.AppButton
 import com.patflow.app.core.components.AppSnackbarHost
 import com.patflow.app.core.components.AppTopBar
+import com.patflow.app.core.components.TopBarType
 import com.patflow.app.core.components.CategoryChip
 import com.patflow.app.core.components.CategoryType
 import com.patflow.app.core.components.DeleteConfirmationDialog
@@ -80,6 +81,7 @@ fun BillDetailScreen(
         topBar = {
             AppTopBar(
                 title = "Bill Details",
+                type = TopBarType.Small,
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back")
@@ -113,7 +115,7 @@ fun BillDetailScreen(
                         .fillMaxSize()
                         .padding(padding)
                         .verticalScroll(rememberScrollState())
-                        .padding(PatFlowSpacing.space4),
+                        .padding(horizontal = PatFlowSpacing.space5, vertical = PatFlowSpacing.space4),
                     verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space4)
                 ) {
                     DetailHeroSection(detail)

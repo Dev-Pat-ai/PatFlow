@@ -1,65 +1,127 @@
 package com.patflow.app.core.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountBalance
 import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.Dashboard
 import androidx.compose.material.icons.rounded.PieChart
 import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.patflow.app.core.theme.PatFlowTheme
 
+enum class TopBarType {
+    Small, Medium, Large
+}
+
 /**
  * Design System §7.8 — AppTopBar.
- * M3 CenterAlignedTopAppBar wrapper with consistent styling and scroll behavior.
+ * M3 TopAppBar wrapper with consistent styling and support for different sizes.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar(
     title: String,
     modifier: Modifier = Modifier,
+    type: TopBarType = TopBarType.Small,
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
+    windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
     scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
-                )
-            )
-        },
-        modifier = modifier,
-        navigationIcon = navigationIcon,
-        actions = actions,
-        scrollBehavior = scrollBehavior,
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background,
-            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer
-        )
+    val titleStyle = when (type) {
+        TopBarType.Small, TopBarType.Medium, TopBarType.Large -> MaterialTheme.typography.headlineSmall
+    }.copy(fontWeight = FontWeight.SemiBold)
+
+    val colors = TopAppBarDefaults.topAppBarColors(
+        containerColor = MaterialTheme.colorScheme.background,
+        scrolledContainerColor = MaterialTheme.colorScheme.background
     )
+
+    // Standard M3 TopAppBars have 16dp internal horizontal padding.
+    val barModifier = modifier
+
+    val titleContent = @Composable {
+        Text(
+            text = title,
+            style = titleStyle
+        )
+    }
+
+    val navIconContent = @Composable {
+        navigationIcon()
+    }
+
+    val actionsContent: @Composable RowScope.() -> Unit = {
+        Row(
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+        ) {
+            actions()
+        }
+    }
+
+    when (type) {
+        TopBarType.Small -> {
+            TopAppBar(
+                title = titleContent,
+                modifier = barModifier,
+                navigationIcon = navIconContent,
+                actions = actionsContent,
+                windowInsets = windowInsets,
+                scrollBehavior = scrollBehavior,
+                colors = colors
+            )
+        }
+        TopBarType.Medium -> {
+            MediumTopAppBar(
+                title = titleContent,
+                modifier = barModifier,
+                navigationIcon = navIconContent,
+                actions = actionsContent,
+                windowInsets = windowInsets,
+                scrollBehavior = scrollBehavior,
+                colors = colors
+            )
+        }
+        TopBarType.Large -> {
+            LargeTopAppBar(
+                title = titleContent,
+                modifier = barModifier,
+                navigationIcon = navIconContent,
+                actions = actionsContent,
+                windowInsets = windowInsets,
+                scrollBehavior = scrollBehavior,
+                colors = colors
+            )
+        }
+    }
 }
 
 /**
@@ -173,7 +235,7 @@ private fun AppNavigationPreview() {
         )
         
         Column {
-            AppTopBar(title = "PatFlow")
+            AppTopBar(title = "PatFlow", type = TopBarType.Large)
             Spacer(modifier = Modifier.weight(1f))
             BottomNavigationBar(
                 items = items,

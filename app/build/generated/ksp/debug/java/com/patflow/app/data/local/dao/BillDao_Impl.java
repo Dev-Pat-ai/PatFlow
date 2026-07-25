@@ -68,7 +68,7 @@ public final class BillDao_Impl implements BillDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "INSERT OR ABORT INTO `bill` (`id`,`category_id`,`name`,`default_amount`,`currency_code`,`merchant`,`recurrence_type`,`recurrence_interval`,`due_day`,`start_date`,`end_date`,`is_active`,`is_favorite`,`notes`,`is_deleted`,`created_at`,`updated_at`,`is_installment`,`total_installments`,`remote_id`,`last_synced_at`,`sync_status`,`is_dirty`) VALUES (nullif(?, 0),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        return "INSERT OR ABORT INTO `bill` (`id`,`category_id`,`name`,`default_amount`,`currency_code`,`account_number`,`bill_reference`,`merchant`,`recurrence_type`,`recurrence_interval`,`due_day`,`start_date`,`end_date`,`is_active`,`is_favorite`,`notes`,`is_deleted`,`created_at`,`updated_at`,`is_installment`,`total_installments`,`remote_id`,`last_synced_at`,`sync_status`,`is_dirty`) VALUES (nullif(?, 0),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       }
 
       @Override
@@ -79,81 +79,91 @@ public final class BillDao_Impl implements BillDao {
         statement.bindString(3, entity.getName());
         statement.bindDouble(4, entity.getDefaultAmount());
         statement.bindString(5, entity.getCurrencyCode());
-        if (entity.getMerchant() == null) {
+        if (entity.getAccountNumber() == null) {
           statement.bindNull(6);
         } else {
-          statement.bindString(6, entity.getMerchant());
+          statement.bindString(6, entity.getAccountNumber());
         }
-        statement.bindString(7, entity.getRecurrenceType());
-        statement.bindLong(8, entity.getRecurrenceInterval());
-        if (entity.getDueDay() == null) {
-          statement.bindNull(9);
+        if (entity.getBillReference() == null) {
+          statement.bindNull(7);
         } else {
-          statement.bindLong(9, entity.getDueDay());
+          statement.bindString(7, entity.getBillReference());
+        }
+        if (entity.getMerchant() == null) {
+          statement.bindNull(8);
+        } else {
+          statement.bindString(8, entity.getMerchant());
+        }
+        statement.bindString(9, entity.getRecurrenceType());
+        statement.bindLong(10, entity.getRecurrenceInterval());
+        if (entity.getDueDay() == null) {
+          statement.bindNull(11);
+        } else {
+          statement.bindLong(11, entity.getDueDay());
         }
         final String _tmp = __converters.fromLocalDate(entity.getStartDate());
         if (_tmp == null) {
-          statement.bindNull(10);
+          statement.bindNull(12);
         } else {
-          statement.bindString(10, _tmp);
+          statement.bindString(12, _tmp);
         }
         final String _tmp_1 = __converters.fromLocalDate(entity.getEndDate());
         if (_tmp_1 == null) {
-          statement.bindNull(11);
+          statement.bindNull(13);
         } else {
-          statement.bindString(11, _tmp_1);
+          statement.bindString(13, _tmp_1);
         }
         final int _tmp_2 = entity.isActive() ? 1 : 0;
-        statement.bindLong(12, _tmp_2);
+        statement.bindLong(14, _tmp_2);
         final int _tmp_3 = entity.isFavorite() ? 1 : 0;
-        statement.bindLong(13, _tmp_3);
+        statement.bindLong(15, _tmp_3);
         if (entity.getNotes() == null) {
-          statement.bindNull(14);
-        } else {
-          statement.bindString(14, entity.getNotes());
-        }
-        final int _tmp_4 = entity.isDeleted() ? 1 : 0;
-        statement.bindLong(15, _tmp_4);
-        final String _tmp_5 = __converters.fromLocalDateTime(entity.getCreatedAt());
-        if (_tmp_5 == null) {
           statement.bindNull(16);
         } else {
-          statement.bindString(16, _tmp_5);
+          statement.bindString(16, entity.getNotes());
+        }
+        final int _tmp_4 = entity.isDeleted() ? 1 : 0;
+        statement.bindLong(17, _tmp_4);
+        final String _tmp_5 = __converters.fromLocalDateTime(entity.getCreatedAt());
+        if (_tmp_5 == null) {
+          statement.bindNull(18);
+        } else {
+          statement.bindString(18, _tmp_5);
         }
         final String _tmp_6 = __converters.fromLocalDateTime(entity.getUpdatedAt());
         if (_tmp_6 == null) {
-          statement.bindNull(17);
-        } else {
-          statement.bindString(17, _tmp_6);
-        }
-        final int _tmp_7 = entity.isInstallment() ? 1 : 0;
-        statement.bindLong(18, _tmp_7);
-        if (entity.getTotalInstallments() == null) {
           statement.bindNull(19);
         } else {
-          statement.bindLong(19, entity.getTotalInstallments());
+          statement.bindString(19, _tmp_6);
+        }
+        final int _tmp_7 = entity.isInstallment() ? 1 : 0;
+        statement.bindLong(20, _tmp_7);
+        if (entity.getTotalInstallments() == null) {
+          statement.bindNull(21);
+        } else {
+          statement.bindLong(21, entity.getTotalInstallments());
         }
         if (entity.getRemoteId() == null) {
-          statement.bindNull(20);
+          statement.bindNull(22);
         } else {
-          statement.bindString(20, entity.getRemoteId());
+          statement.bindString(22, entity.getRemoteId());
         }
         final String _tmp_8 = __converters.fromLocalDateTime(entity.getLastSyncedAt());
         if (_tmp_8 == null) {
-          statement.bindNull(21);
+          statement.bindNull(23);
         } else {
-          statement.bindString(21, _tmp_8);
+          statement.bindString(23, _tmp_8);
         }
-        statement.bindString(22, entity.getSyncStatus());
+        statement.bindString(24, entity.getSyncStatus());
         final int _tmp_9 = entity.isDirty() ? 1 : 0;
-        statement.bindLong(23, _tmp_9);
+        statement.bindLong(25, _tmp_9);
       }
     };
     this.__insertionAdapterOfBillEntity_1 = new EntityInsertionAdapter<BillEntity>(__db) {
       @Override
       @NonNull
       protected String createQuery() {
-        return "INSERT OR REPLACE INTO `bill` (`id`,`category_id`,`name`,`default_amount`,`currency_code`,`merchant`,`recurrence_type`,`recurrence_interval`,`due_day`,`start_date`,`end_date`,`is_active`,`is_favorite`,`notes`,`is_deleted`,`created_at`,`updated_at`,`is_installment`,`total_installments`,`remote_id`,`last_synced_at`,`sync_status`,`is_dirty`) VALUES (nullif(?, 0),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        return "INSERT OR REPLACE INTO `bill` (`id`,`category_id`,`name`,`default_amount`,`currency_code`,`account_number`,`bill_reference`,`merchant`,`recurrence_type`,`recurrence_interval`,`due_day`,`start_date`,`end_date`,`is_active`,`is_favorite`,`notes`,`is_deleted`,`created_at`,`updated_at`,`is_installment`,`total_installments`,`remote_id`,`last_synced_at`,`sync_status`,`is_dirty`) VALUES (nullif(?, 0),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
       }
 
       @Override
@@ -164,74 +174,84 @@ public final class BillDao_Impl implements BillDao {
         statement.bindString(3, entity.getName());
         statement.bindDouble(4, entity.getDefaultAmount());
         statement.bindString(5, entity.getCurrencyCode());
-        if (entity.getMerchant() == null) {
+        if (entity.getAccountNumber() == null) {
           statement.bindNull(6);
         } else {
-          statement.bindString(6, entity.getMerchant());
+          statement.bindString(6, entity.getAccountNumber());
         }
-        statement.bindString(7, entity.getRecurrenceType());
-        statement.bindLong(8, entity.getRecurrenceInterval());
-        if (entity.getDueDay() == null) {
-          statement.bindNull(9);
+        if (entity.getBillReference() == null) {
+          statement.bindNull(7);
         } else {
-          statement.bindLong(9, entity.getDueDay());
+          statement.bindString(7, entity.getBillReference());
+        }
+        if (entity.getMerchant() == null) {
+          statement.bindNull(8);
+        } else {
+          statement.bindString(8, entity.getMerchant());
+        }
+        statement.bindString(9, entity.getRecurrenceType());
+        statement.bindLong(10, entity.getRecurrenceInterval());
+        if (entity.getDueDay() == null) {
+          statement.bindNull(11);
+        } else {
+          statement.bindLong(11, entity.getDueDay());
         }
         final String _tmp = __converters.fromLocalDate(entity.getStartDate());
         if (_tmp == null) {
-          statement.bindNull(10);
+          statement.bindNull(12);
         } else {
-          statement.bindString(10, _tmp);
+          statement.bindString(12, _tmp);
         }
         final String _tmp_1 = __converters.fromLocalDate(entity.getEndDate());
         if (_tmp_1 == null) {
-          statement.bindNull(11);
+          statement.bindNull(13);
         } else {
-          statement.bindString(11, _tmp_1);
+          statement.bindString(13, _tmp_1);
         }
         final int _tmp_2 = entity.isActive() ? 1 : 0;
-        statement.bindLong(12, _tmp_2);
+        statement.bindLong(14, _tmp_2);
         final int _tmp_3 = entity.isFavorite() ? 1 : 0;
-        statement.bindLong(13, _tmp_3);
+        statement.bindLong(15, _tmp_3);
         if (entity.getNotes() == null) {
-          statement.bindNull(14);
-        } else {
-          statement.bindString(14, entity.getNotes());
-        }
-        final int _tmp_4 = entity.isDeleted() ? 1 : 0;
-        statement.bindLong(15, _tmp_4);
-        final String _tmp_5 = __converters.fromLocalDateTime(entity.getCreatedAt());
-        if (_tmp_5 == null) {
           statement.bindNull(16);
         } else {
-          statement.bindString(16, _tmp_5);
+          statement.bindString(16, entity.getNotes());
+        }
+        final int _tmp_4 = entity.isDeleted() ? 1 : 0;
+        statement.bindLong(17, _tmp_4);
+        final String _tmp_5 = __converters.fromLocalDateTime(entity.getCreatedAt());
+        if (_tmp_5 == null) {
+          statement.bindNull(18);
+        } else {
+          statement.bindString(18, _tmp_5);
         }
         final String _tmp_6 = __converters.fromLocalDateTime(entity.getUpdatedAt());
         if (_tmp_6 == null) {
-          statement.bindNull(17);
-        } else {
-          statement.bindString(17, _tmp_6);
-        }
-        final int _tmp_7 = entity.isInstallment() ? 1 : 0;
-        statement.bindLong(18, _tmp_7);
-        if (entity.getTotalInstallments() == null) {
           statement.bindNull(19);
         } else {
-          statement.bindLong(19, entity.getTotalInstallments());
+          statement.bindString(19, _tmp_6);
+        }
+        final int _tmp_7 = entity.isInstallment() ? 1 : 0;
+        statement.bindLong(20, _tmp_7);
+        if (entity.getTotalInstallments() == null) {
+          statement.bindNull(21);
+        } else {
+          statement.bindLong(21, entity.getTotalInstallments());
         }
         if (entity.getRemoteId() == null) {
-          statement.bindNull(20);
+          statement.bindNull(22);
         } else {
-          statement.bindString(20, entity.getRemoteId());
+          statement.bindString(22, entity.getRemoteId());
         }
         final String _tmp_8 = __converters.fromLocalDateTime(entity.getLastSyncedAt());
         if (_tmp_8 == null) {
-          statement.bindNull(21);
+          statement.bindNull(23);
         } else {
-          statement.bindString(21, _tmp_8);
+          statement.bindString(23, _tmp_8);
         }
-        statement.bindString(22, entity.getSyncStatus());
+        statement.bindString(24, entity.getSyncStatus());
         final int _tmp_9 = entity.isDirty() ? 1 : 0;
-        statement.bindLong(23, _tmp_9);
+        statement.bindLong(25, _tmp_9);
       }
     };
     this.__deletionAdapterOfBillEntity = new EntityDeletionOrUpdateAdapter<BillEntity>(__db) {
@@ -251,7 +271,7 @@ public final class BillDao_Impl implements BillDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "UPDATE OR ABORT `bill` SET `id` = ?,`category_id` = ?,`name` = ?,`default_amount` = ?,`currency_code` = ?,`merchant` = ?,`recurrence_type` = ?,`recurrence_interval` = ?,`due_day` = ?,`start_date` = ?,`end_date` = ?,`is_active` = ?,`is_favorite` = ?,`notes` = ?,`is_deleted` = ?,`created_at` = ?,`updated_at` = ?,`is_installment` = ?,`total_installments` = ?,`remote_id` = ?,`last_synced_at` = ?,`sync_status` = ?,`is_dirty` = ? WHERE `id` = ?";
+        return "UPDATE OR ABORT `bill` SET `id` = ?,`category_id` = ?,`name` = ?,`default_amount` = ?,`currency_code` = ?,`account_number` = ?,`bill_reference` = ?,`merchant` = ?,`recurrence_type` = ?,`recurrence_interval` = ?,`due_day` = ?,`start_date` = ?,`end_date` = ?,`is_active` = ?,`is_favorite` = ?,`notes` = ?,`is_deleted` = ?,`created_at` = ?,`updated_at` = ?,`is_installment` = ?,`total_installments` = ?,`remote_id` = ?,`last_synced_at` = ?,`sync_status` = ?,`is_dirty` = ? WHERE `id` = ?";
       }
 
       @Override
@@ -262,75 +282,85 @@ public final class BillDao_Impl implements BillDao {
         statement.bindString(3, entity.getName());
         statement.bindDouble(4, entity.getDefaultAmount());
         statement.bindString(5, entity.getCurrencyCode());
-        if (entity.getMerchant() == null) {
+        if (entity.getAccountNumber() == null) {
           statement.bindNull(6);
         } else {
-          statement.bindString(6, entity.getMerchant());
+          statement.bindString(6, entity.getAccountNumber());
         }
-        statement.bindString(7, entity.getRecurrenceType());
-        statement.bindLong(8, entity.getRecurrenceInterval());
-        if (entity.getDueDay() == null) {
-          statement.bindNull(9);
+        if (entity.getBillReference() == null) {
+          statement.bindNull(7);
         } else {
-          statement.bindLong(9, entity.getDueDay());
+          statement.bindString(7, entity.getBillReference());
+        }
+        if (entity.getMerchant() == null) {
+          statement.bindNull(8);
+        } else {
+          statement.bindString(8, entity.getMerchant());
+        }
+        statement.bindString(9, entity.getRecurrenceType());
+        statement.bindLong(10, entity.getRecurrenceInterval());
+        if (entity.getDueDay() == null) {
+          statement.bindNull(11);
+        } else {
+          statement.bindLong(11, entity.getDueDay());
         }
         final String _tmp = __converters.fromLocalDate(entity.getStartDate());
         if (_tmp == null) {
-          statement.bindNull(10);
+          statement.bindNull(12);
         } else {
-          statement.bindString(10, _tmp);
+          statement.bindString(12, _tmp);
         }
         final String _tmp_1 = __converters.fromLocalDate(entity.getEndDate());
         if (_tmp_1 == null) {
-          statement.bindNull(11);
+          statement.bindNull(13);
         } else {
-          statement.bindString(11, _tmp_1);
+          statement.bindString(13, _tmp_1);
         }
         final int _tmp_2 = entity.isActive() ? 1 : 0;
-        statement.bindLong(12, _tmp_2);
+        statement.bindLong(14, _tmp_2);
         final int _tmp_3 = entity.isFavorite() ? 1 : 0;
-        statement.bindLong(13, _tmp_3);
+        statement.bindLong(15, _tmp_3);
         if (entity.getNotes() == null) {
-          statement.bindNull(14);
-        } else {
-          statement.bindString(14, entity.getNotes());
-        }
-        final int _tmp_4 = entity.isDeleted() ? 1 : 0;
-        statement.bindLong(15, _tmp_4);
-        final String _tmp_5 = __converters.fromLocalDateTime(entity.getCreatedAt());
-        if (_tmp_5 == null) {
           statement.bindNull(16);
         } else {
-          statement.bindString(16, _tmp_5);
+          statement.bindString(16, entity.getNotes());
+        }
+        final int _tmp_4 = entity.isDeleted() ? 1 : 0;
+        statement.bindLong(17, _tmp_4);
+        final String _tmp_5 = __converters.fromLocalDateTime(entity.getCreatedAt());
+        if (_tmp_5 == null) {
+          statement.bindNull(18);
+        } else {
+          statement.bindString(18, _tmp_5);
         }
         final String _tmp_6 = __converters.fromLocalDateTime(entity.getUpdatedAt());
         if (_tmp_6 == null) {
-          statement.bindNull(17);
-        } else {
-          statement.bindString(17, _tmp_6);
-        }
-        final int _tmp_7 = entity.isInstallment() ? 1 : 0;
-        statement.bindLong(18, _tmp_7);
-        if (entity.getTotalInstallments() == null) {
           statement.bindNull(19);
         } else {
-          statement.bindLong(19, entity.getTotalInstallments());
+          statement.bindString(19, _tmp_6);
+        }
+        final int _tmp_7 = entity.isInstallment() ? 1 : 0;
+        statement.bindLong(20, _tmp_7);
+        if (entity.getTotalInstallments() == null) {
+          statement.bindNull(21);
+        } else {
+          statement.bindLong(21, entity.getTotalInstallments());
         }
         if (entity.getRemoteId() == null) {
-          statement.bindNull(20);
+          statement.bindNull(22);
         } else {
-          statement.bindString(20, entity.getRemoteId());
+          statement.bindString(22, entity.getRemoteId());
         }
         final String _tmp_8 = __converters.fromLocalDateTime(entity.getLastSyncedAt());
         if (_tmp_8 == null) {
-          statement.bindNull(21);
+          statement.bindNull(23);
         } else {
-          statement.bindString(21, _tmp_8);
+          statement.bindString(23, _tmp_8);
         }
-        statement.bindString(22, entity.getSyncStatus());
+        statement.bindString(24, entity.getSyncStatus());
         final int _tmp_9 = entity.isDirty() ? 1 : 0;
-        statement.bindLong(23, _tmp_9);
-        statement.bindLong(24, entity.getId());
+        statement.bindLong(25, _tmp_9);
+        statement.bindLong(26, entity.getId());
       }
     };
     this.__preparedStmtOfDeleteAll = new SharedSQLiteStatement(__db) {
@@ -458,12 +488,12 @@ public final class BillDao_Impl implements BillDao {
         final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
         try {
           final int[][] _cursorIndices = AmbiguousColumnResolver.resolve(_cursor.getColumnNames(), new String[][] {{"id",
-              "category_id", "name", "default_amount", "currency_code", "merchant",
-              "recurrence_type", "recurrence_interval", "due_day", "start_date", "end_date",
-              "is_active", "is_favorite", "notes", "is_deleted", "created_at", "updated_at",
-              "is_installment", "total_installments", "remote_id", "last_synced_at", "sync_status",
-              "is_dirty"}, {"id", "name", "is_deleted", "remote_id", "sync_status", "icon_key",
-              "color_hex", "is_custom"}});
+              "category_id", "name", "default_amount", "currency_code", "account_number",
+              "bill_reference", "merchant", "recurrence_type", "recurrence_interval", "due_day",
+              "start_date", "end_date", "is_active", "is_favorite", "notes", "is_deleted",
+              "created_at", "updated_at", "is_installment", "total_installments", "remote_id",
+              "last_synced_at", "sync_status", "is_dirty"}, {"id", "name", "is_deleted",
+              "remote_id", "sync_status", "icon_key", "color_hex", "is_custom"}});
           final Map<BillEntity, BillCategoryEntity> _result = new LinkedHashMap<BillEntity, BillCategoryEntity>();
           while (_cursor.moveToNext()) {
             final BillEntity _key;
@@ -477,28 +507,40 @@ public final class BillDao_Impl implements BillDao {
             _tmpDefaultAmount = _cursor.getDouble(_cursorIndices[0][3]);
             final String _tmpCurrencyCode;
             _tmpCurrencyCode = _cursor.getString(_cursorIndices[0][4]);
-            final String _tmpMerchant;
+            final String _tmpAccountNumber;
             if (_cursor.isNull(_cursorIndices[0][5])) {
+              _tmpAccountNumber = null;
+            } else {
+              _tmpAccountNumber = _cursor.getString(_cursorIndices[0][5]);
+            }
+            final String _tmpBillReference;
+            if (_cursor.isNull(_cursorIndices[0][6])) {
+              _tmpBillReference = null;
+            } else {
+              _tmpBillReference = _cursor.getString(_cursorIndices[0][6]);
+            }
+            final String _tmpMerchant;
+            if (_cursor.isNull(_cursorIndices[0][7])) {
               _tmpMerchant = null;
             } else {
-              _tmpMerchant = _cursor.getString(_cursorIndices[0][5]);
+              _tmpMerchant = _cursor.getString(_cursorIndices[0][7]);
             }
             final String _tmpRecurrenceType;
-            _tmpRecurrenceType = _cursor.getString(_cursorIndices[0][6]);
+            _tmpRecurrenceType = _cursor.getString(_cursorIndices[0][8]);
             final int _tmpRecurrenceInterval;
-            _tmpRecurrenceInterval = _cursor.getInt(_cursorIndices[0][7]);
+            _tmpRecurrenceInterval = _cursor.getInt(_cursorIndices[0][9]);
             final Integer _tmpDueDay;
-            if (_cursor.isNull(_cursorIndices[0][8])) {
+            if (_cursor.isNull(_cursorIndices[0][10])) {
               _tmpDueDay = null;
             } else {
-              _tmpDueDay = _cursor.getInt(_cursorIndices[0][8]);
+              _tmpDueDay = _cursor.getInt(_cursorIndices[0][10]);
             }
             final LocalDate _tmpStartDate;
             final String _tmp;
-            if (_cursor.isNull(_cursorIndices[0][9])) {
+            if (_cursor.isNull(_cursorIndices[0][11])) {
               _tmp = null;
             } else {
-              _tmp = _cursor.getString(_cursorIndices[0][9]);
+              _tmp = _cursor.getString(_cursorIndices[0][11]);
             }
             final LocalDate _tmp_1 = __converters.toLocalDate(_tmp);
             if (_tmp_1 == null) {
@@ -508,36 +550,36 @@ public final class BillDao_Impl implements BillDao {
             }
             final LocalDate _tmpEndDate;
             final String _tmp_2;
-            if (_cursor.isNull(_cursorIndices[0][10])) {
+            if (_cursor.isNull(_cursorIndices[0][12])) {
               _tmp_2 = null;
             } else {
-              _tmp_2 = _cursor.getString(_cursorIndices[0][10]);
+              _tmp_2 = _cursor.getString(_cursorIndices[0][12]);
             }
             _tmpEndDate = __converters.toLocalDate(_tmp_2);
             final boolean _tmpIsActive;
             final int _tmp_3;
-            _tmp_3 = _cursor.getInt(_cursorIndices[0][11]);
+            _tmp_3 = _cursor.getInt(_cursorIndices[0][13]);
             _tmpIsActive = _tmp_3 != 0;
             final boolean _tmpIsFavorite;
             final int _tmp_4;
-            _tmp_4 = _cursor.getInt(_cursorIndices[0][12]);
+            _tmp_4 = _cursor.getInt(_cursorIndices[0][14]);
             _tmpIsFavorite = _tmp_4 != 0;
             final String _tmpNotes;
-            if (_cursor.isNull(_cursorIndices[0][13])) {
+            if (_cursor.isNull(_cursorIndices[0][15])) {
               _tmpNotes = null;
             } else {
-              _tmpNotes = _cursor.getString(_cursorIndices[0][13]);
+              _tmpNotes = _cursor.getString(_cursorIndices[0][15]);
             }
             final boolean _tmpIsDeleted;
             final int _tmp_5;
-            _tmp_5 = _cursor.getInt(_cursorIndices[0][14]);
+            _tmp_5 = _cursor.getInt(_cursorIndices[0][16]);
             _tmpIsDeleted = _tmp_5 != 0;
             final LocalDateTime _tmpCreatedAt;
             final String _tmp_6;
-            if (_cursor.isNull(_cursorIndices[0][15])) {
+            if (_cursor.isNull(_cursorIndices[0][17])) {
               _tmp_6 = null;
             } else {
-              _tmp_6 = _cursor.getString(_cursorIndices[0][15]);
+              _tmp_6 = _cursor.getString(_cursorIndices[0][17]);
             }
             final LocalDateTime _tmp_7 = __converters.toLocalDateTime(_tmp_6);
             if (_tmp_7 == null) {
@@ -547,10 +589,10 @@ public final class BillDao_Impl implements BillDao {
             }
             final LocalDateTime _tmpUpdatedAt;
             final String _tmp_8;
-            if (_cursor.isNull(_cursorIndices[0][16])) {
+            if (_cursor.isNull(_cursorIndices[0][18])) {
               _tmp_8 = null;
             } else {
-              _tmp_8 = _cursor.getString(_cursorIndices[0][16]);
+              _tmp_8 = _cursor.getString(_cursorIndices[0][18]);
             }
             final LocalDateTime _tmp_9 = __converters.toLocalDateTime(_tmp_8);
             if (_tmp_9 == null) {
@@ -560,35 +602,35 @@ public final class BillDao_Impl implements BillDao {
             }
             final boolean _tmpIsInstallment;
             final int _tmp_10;
-            _tmp_10 = _cursor.getInt(_cursorIndices[0][17]);
+            _tmp_10 = _cursor.getInt(_cursorIndices[0][19]);
             _tmpIsInstallment = _tmp_10 != 0;
             final Integer _tmpTotalInstallments;
-            if (_cursor.isNull(_cursorIndices[0][18])) {
+            if (_cursor.isNull(_cursorIndices[0][20])) {
               _tmpTotalInstallments = null;
             } else {
-              _tmpTotalInstallments = _cursor.getInt(_cursorIndices[0][18]);
+              _tmpTotalInstallments = _cursor.getInt(_cursorIndices[0][20]);
             }
             final String _tmpRemoteId;
-            if (_cursor.isNull(_cursorIndices[0][19])) {
+            if (_cursor.isNull(_cursorIndices[0][21])) {
               _tmpRemoteId = null;
             } else {
-              _tmpRemoteId = _cursor.getString(_cursorIndices[0][19]);
+              _tmpRemoteId = _cursor.getString(_cursorIndices[0][21]);
             }
             final LocalDateTime _tmpLastSyncedAt;
             final String _tmp_11;
-            if (_cursor.isNull(_cursorIndices[0][20])) {
+            if (_cursor.isNull(_cursorIndices[0][22])) {
               _tmp_11 = null;
             } else {
-              _tmp_11 = _cursor.getString(_cursorIndices[0][20]);
+              _tmp_11 = _cursor.getString(_cursorIndices[0][22]);
             }
             _tmpLastSyncedAt = __converters.toLocalDateTime(_tmp_11);
             final String _tmpSyncStatus;
-            _tmpSyncStatus = _cursor.getString(_cursorIndices[0][21]);
+            _tmpSyncStatus = _cursor.getString(_cursorIndices[0][23]);
             final boolean _tmpIsDirty;
             final int _tmp_12;
-            _tmp_12 = _cursor.getInt(_cursorIndices[0][22]);
+            _tmp_12 = _cursor.getInt(_cursorIndices[0][24]);
             _tmpIsDirty = _tmp_12 != 0;
-            _key = new BillEntity(_tmpId,_tmpCategoryId,_tmpName,_tmpDefaultAmount,_tmpCurrencyCode,_tmpMerchant,_tmpRecurrenceType,_tmpRecurrenceInterval,_tmpDueDay,_tmpStartDate,_tmpEndDate,_tmpIsActive,_tmpIsFavorite,_tmpNotes,_tmpIsDeleted,_tmpCreatedAt,_tmpUpdatedAt,_tmpIsInstallment,_tmpTotalInstallments,_tmpRemoteId,_tmpLastSyncedAt,_tmpSyncStatus,_tmpIsDirty);
+            _key = new BillEntity(_tmpId,_tmpCategoryId,_tmpName,_tmpDefaultAmount,_tmpCurrencyCode,_tmpAccountNumber,_tmpBillReference,_tmpMerchant,_tmpRecurrenceType,_tmpRecurrenceInterval,_tmpDueDay,_tmpStartDate,_tmpEndDate,_tmpIsActive,_tmpIsFavorite,_tmpNotes,_tmpIsDeleted,_tmpCreatedAt,_tmpUpdatedAt,_tmpIsInstallment,_tmpTotalInstallments,_tmpRemoteId,_tmpLastSyncedAt,_tmpSyncStatus,_tmpIsDirty);
             if (_cursor.isNull(_cursorIndices[1][0]) && _cursor.isNull(_cursorIndices[1][1]) &&
                 _cursor.isNull(_cursorIndices[1][2]) && _cursor.isNull(_cursorIndices[1][3]) &&
                 _cursor.isNull(_cursorIndices[1][4]) && _cursor.isNull(_cursorIndices[1][5]) &&
@@ -652,12 +694,12 @@ public final class BillDao_Impl implements BillDao {
         final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
         try {
           final int[][] _cursorIndices = AmbiguousColumnResolver.resolve(_cursor.getColumnNames(), new String[][] {{"id",
-              "category_id", "name", "default_amount", "currency_code", "merchant",
-              "recurrence_type", "recurrence_interval", "due_day", "start_date", "end_date",
-              "is_active", "is_favorite", "notes", "is_deleted", "created_at", "updated_at",
-              "is_installment", "total_installments", "remote_id", "last_synced_at", "sync_status",
-              "is_dirty"}, {"id", "name", "is_deleted", "remote_id", "sync_status", "icon_key",
-              "color_hex", "is_custom"}});
+              "category_id", "name", "default_amount", "currency_code", "account_number",
+              "bill_reference", "merchant", "recurrence_type", "recurrence_interval", "due_day",
+              "start_date", "end_date", "is_active", "is_favorite", "notes", "is_deleted",
+              "created_at", "updated_at", "is_installment", "total_installments", "remote_id",
+              "last_synced_at", "sync_status", "is_dirty"}, {"id", "name", "is_deleted",
+              "remote_id", "sync_status", "icon_key", "color_hex", "is_custom"}});
           final Map<BillEntity, BillCategoryEntity> _result = new LinkedHashMap<BillEntity, BillCategoryEntity>();
           while (_cursor.moveToNext()) {
             final BillEntity _key;
@@ -671,28 +713,40 @@ public final class BillDao_Impl implements BillDao {
             _tmpDefaultAmount = _cursor.getDouble(_cursorIndices[0][3]);
             final String _tmpCurrencyCode;
             _tmpCurrencyCode = _cursor.getString(_cursorIndices[0][4]);
-            final String _tmpMerchant;
+            final String _tmpAccountNumber;
             if (_cursor.isNull(_cursorIndices[0][5])) {
+              _tmpAccountNumber = null;
+            } else {
+              _tmpAccountNumber = _cursor.getString(_cursorIndices[0][5]);
+            }
+            final String _tmpBillReference;
+            if (_cursor.isNull(_cursorIndices[0][6])) {
+              _tmpBillReference = null;
+            } else {
+              _tmpBillReference = _cursor.getString(_cursorIndices[0][6]);
+            }
+            final String _tmpMerchant;
+            if (_cursor.isNull(_cursorIndices[0][7])) {
               _tmpMerchant = null;
             } else {
-              _tmpMerchant = _cursor.getString(_cursorIndices[0][5]);
+              _tmpMerchant = _cursor.getString(_cursorIndices[0][7]);
             }
             final String _tmpRecurrenceType;
-            _tmpRecurrenceType = _cursor.getString(_cursorIndices[0][6]);
+            _tmpRecurrenceType = _cursor.getString(_cursorIndices[0][8]);
             final int _tmpRecurrenceInterval;
-            _tmpRecurrenceInterval = _cursor.getInt(_cursorIndices[0][7]);
+            _tmpRecurrenceInterval = _cursor.getInt(_cursorIndices[0][9]);
             final Integer _tmpDueDay;
-            if (_cursor.isNull(_cursorIndices[0][8])) {
+            if (_cursor.isNull(_cursorIndices[0][10])) {
               _tmpDueDay = null;
             } else {
-              _tmpDueDay = _cursor.getInt(_cursorIndices[0][8]);
+              _tmpDueDay = _cursor.getInt(_cursorIndices[0][10]);
             }
             final LocalDate _tmpStartDate;
             final String _tmp;
-            if (_cursor.isNull(_cursorIndices[0][9])) {
+            if (_cursor.isNull(_cursorIndices[0][11])) {
               _tmp = null;
             } else {
-              _tmp = _cursor.getString(_cursorIndices[0][9]);
+              _tmp = _cursor.getString(_cursorIndices[0][11]);
             }
             final LocalDate _tmp_1 = __converters.toLocalDate(_tmp);
             if (_tmp_1 == null) {
@@ -702,36 +756,36 @@ public final class BillDao_Impl implements BillDao {
             }
             final LocalDate _tmpEndDate;
             final String _tmp_2;
-            if (_cursor.isNull(_cursorIndices[0][10])) {
+            if (_cursor.isNull(_cursorIndices[0][12])) {
               _tmp_2 = null;
             } else {
-              _tmp_2 = _cursor.getString(_cursorIndices[0][10]);
+              _tmp_2 = _cursor.getString(_cursorIndices[0][12]);
             }
             _tmpEndDate = __converters.toLocalDate(_tmp_2);
             final boolean _tmpIsActive;
             final int _tmp_3;
-            _tmp_3 = _cursor.getInt(_cursorIndices[0][11]);
+            _tmp_3 = _cursor.getInt(_cursorIndices[0][13]);
             _tmpIsActive = _tmp_3 != 0;
             final boolean _tmpIsFavorite;
             final int _tmp_4;
-            _tmp_4 = _cursor.getInt(_cursorIndices[0][12]);
+            _tmp_4 = _cursor.getInt(_cursorIndices[0][14]);
             _tmpIsFavorite = _tmp_4 != 0;
             final String _tmpNotes;
-            if (_cursor.isNull(_cursorIndices[0][13])) {
+            if (_cursor.isNull(_cursorIndices[0][15])) {
               _tmpNotes = null;
             } else {
-              _tmpNotes = _cursor.getString(_cursorIndices[0][13]);
+              _tmpNotes = _cursor.getString(_cursorIndices[0][15]);
             }
             final boolean _tmpIsDeleted;
             final int _tmp_5;
-            _tmp_5 = _cursor.getInt(_cursorIndices[0][14]);
+            _tmp_5 = _cursor.getInt(_cursorIndices[0][16]);
             _tmpIsDeleted = _tmp_5 != 0;
             final LocalDateTime _tmpCreatedAt;
             final String _tmp_6;
-            if (_cursor.isNull(_cursorIndices[0][15])) {
+            if (_cursor.isNull(_cursorIndices[0][17])) {
               _tmp_6 = null;
             } else {
-              _tmp_6 = _cursor.getString(_cursorIndices[0][15]);
+              _tmp_6 = _cursor.getString(_cursorIndices[0][17]);
             }
             final LocalDateTime _tmp_7 = __converters.toLocalDateTime(_tmp_6);
             if (_tmp_7 == null) {
@@ -741,10 +795,10 @@ public final class BillDao_Impl implements BillDao {
             }
             final LocalDateTime _tmpUpdatedAt;
             final String _tmp_8;
-            if (_cursor.isNull(_cursorIndices[0][16])) {
+            if (_cursor.isNull(_cursorIndices[0][18])) {
               _tmp_8 = null;
             } else {
-              _tmp_8 = _cursor.getString(_cursorIndices[0][16]);
+              _tmp_8 = _cursor.getString(_cursorIndices[0][18]);
             }
             final LocalDateTime _tmp_9 = __converters.toLocalDateTime(_tmp_8);
             if (_tmp_9 == null) {
@@ -754,35 +808,35 @@ public final class BillDao_Impl implements BillDao {
             }
             final boolean _tmpIsInstallment;
             final int _tmp_10;
-            _tmp_10 = _cursor.getInt(_cursorIndices[0][17]);
+            _tmp_10 = _cursor.getInt(_cursorIndices[0][19]);
             _tmpIsInstallment = _tmp_10 != 0;
             final Integer _tmpTotalInstallments;
-            if (_cursor.isNull(_cursorIndices[0][18])) {
+            if (_cursor.isNull(_cursorIndices[0][20])) {
               _tmpTotalInstallments = null;
             } else {
-              _tmpTotalInstallments = _cursor.getInt(_cursorIndices[0][18]);
+              _tmpTotalInstallments = _cursor.getInt(_cursorIndices[0][20]);
             }
             final String _tmpRemoteId;
-            if (_cursor.isNull(_cursorIndices[0][19])) {
+            if (_cursor.isNull(_cursorIndices[0][21])) {
               _tmpRemoteId = null;
             } else {
-              _tmpRemoteId = _cursor.getString(_cursorIndices[0][19]);
+              _tmpRemoteId = _cursor.getString(_cursorIndices[0][21]);
             }
             final LocalDateTime _tmpLastSyncedAt;
             final String _tmp_11;
-            if (_cursor.isNull(_cursorIndices[0][20])) {
+            if (_cursor.isNull(_cursorIndices[0][22])) {
               _tmp_11 = null;
             } else {
-              _tmp_11 = _cursor.getString(_cursorIndices[0][20]);
+              _tmp_11 = _cursor.getString(_cursorIndices[0][22]);
             }
             _tmpLastSyncedAt = __converters.toLocalDateTime(_tmp_11);
             final String _tmpSyncStatus;
-            _tmpSyncStatus = _cursor.getString(_cursorIndices[0][21]);
+            _tmpSyncStatus = _cursor.getString(_cursorIndices[0][23]);
             final boolean _tmpIsDirty;
             final int _tmp_12;
-            _tmp_12 = _cursor.getInt(_cursorIndices[0][22]);
+            _tmp_12 = _cursor.getInt(_cursorIndices[0][24]);
             _tmpIsDirty = _tmp_12 != 0;
-            _key = new BillEntity(_tmpId,_tmpCategoryId,_tmpName,_tmpDefaultAmount,_tmpCurrencyCode,_tmpMerchant,_tmpRecurrenceType,_tmpRecurrenceInterval,_tmpDueDay,_tmpStartDate,_tmpEndDate,_tmpIsActive,_tmpIsFavorite,_tmpNotes,_tmpIsDeleted,_tmpCreatedAt,_tmpUpdatedAt,_tmpIsInstallment,_tmpTotalInstallments,_tmpRemoteId,_tmpLastSyncedAt,_tmpSyncStatus,_tmpIsDirty);
+            _key = new BillEntity(_tmpId,_tmpCategoryId,_tmpName,_tmpDefaultAmount,_tmpCurrencyCode,_tmpAccountNumber,_tmpBillReference,_tmpMerchant,_tmpRecurrenceType,_tmpRecurrenceInterval,_tmpDueDay,_tmpStartDate,_tmpEndDate,_tmpIsActive,_tmpIsFavorite,_tmpNotes,_tmpIsDeleted,_tmpCreatedAt,_tmpUpdatedAt,_tmpIsInstallment,_tmpTotalInstallments,_tmpRemoteId,_tmpLastSyncedAt,_tmpSyncStatus,_tmpIsDirty);
             if (_cursor.isNull(_cursorIndices[1][0]) && _cursor.isNull(_cursorIndices[1][1]) &&
                 _cursor.isNull(_cursorIndices[1][2]) && _cursor.isNull(_cursorIndices[1][3]) &&
                 _cursor.isNull(_cursorIndices[1][4]) && _cursor.isNull(_cursorIndices[1][5]) &&
@@ -850,6 +904,8 @@ public final class BillDao_Impl implements BillDao {
           final int _cursorIndexOfName = CursorUtil.getColumnIndexOrThrow(_cursor, "name");
           final int _cursorIndexOfDefaultAmount = CursorUtil.getColumnIndexOrThrow(_cursor, "default_amount");
           final int _cursorIndexOfCurrencyCode = CursorUtil.getColumnIndexOrThrow(_cursor, "currency_code");
+          final int _cursorIndexOfAccountNumber = CursorUtil.getColumnIndexOrThrow(_cursor, "account_number");
+          final int _cursorIndexOfBillReference = CursorUtil.getColumnIndexOrThrow(_cursor, "bill_reference");
           final int _cursorIndexOfMerchant = CursorUtil.getColumnIndexOrThrow(_cursor, "merchant");
           final int _cursorIndexOfRecurrenceType = CursorUtil.getColumnIndexOrThrow(_cursor, "recurrence_type");
           final int _cursorIndexOfRecurrenceInterval = CursorUtil.getColumnIndexOrThrow(_cursor, "recurrence_interval");
@@ -881,6 +937,18 @@ public final class BillDao_Impl implements BillDao {
             _tmpDefaultAmount = _cursor.getDouble(_cursorIndexOfDefaultAmount);
             final String _tmpCurrencyCode;
             _tmpCurrencyCode = _cursor.getString(_cursorIndexOfCurrencyCode);
+            final String _tmpAccountNumber;
+            if (_cursor.isNull(_cursorIndexOfAccountNumber)) {
+              _tmpAccountNumber = null;
+            } else {
+              _tmpAccountNumber = _cursor.getString(_cursorIndexOfAccountNumber);
+            }
+            final String _tmpBillReference;
+            if (_cursor.isNull(_cursorIndexOfBillReference)) {
+              _tmpBillReference = null;
+            } else {
+              _tmpBillReference = _cursor.getString(_cursorIndexOfBillReference);
+            }
             final String _tmpMerchant;
             if (_cursor.isNull(_cursorIndexOfMerchant)) {
               _tmpMerchant = null;
@@ -992,7 +1060,7 @@ public final class BillDao_Impl implements BillDao {
             final int _tmp_12;
             _tmp_12 = _cursor.getInt(_cursorIndexOfIsDirty);
             _tmpIsDirty = _tmp_12 != 0;
-            _item = new BillEntity(_tmpId,_tmpCategoryId,_tmpName,_tmpDefaultAmount,_tmpCurrencyCode,_tmpMerchant,_tmpRecurrenceType,_tmpRecurrenceInterval,_tmpDueDay,_tmpStartDate,_tmpEndDate,_tmpIsActive,_tmpIsFavorite,_tmpNotes,_tmpIsDeleted,_tmpCreatedAt,_tmpUpdatedAt,_tmpIsInstallment,_tmpTotalInstallments,_tmpRemoteId,_tmpLastSyncedAt,_tmpSyncStatus,_tmpIsDirty);
+            _item = new BillEntity(_tmpId,_tmpCategoryId,_tmpName,_tmpDefaultAmount,_tmpCurrencyCode,_tmpAccountNumber,_tmpBillReference,_tmpMerchant,_tmpRecurrenceType,_tmpRecurrenceInterval,_tmpDueDay,_tmpStartDate,_tmpEndDate,_tmpIsActive,_tmpIsFavorite,_tmpNotes,_tmpIsDeleted,_tmpCreatedAt,_tmpUpdatedAt,_tmpIsInstallment,_tmpTotalInstallments,_tmpRemoteId,_tmpLastSyncedAt,_tmpSyncStatus,_tmpIsDirty);
             _result.add(_item);
           }
           return _result;
@@ -1026,6 +1094,8 @@ public final class BillDao_Impl implements BillDao {
             final int _cursorIndexOfName = CursorUtil.getColumnIndexOrThrow(_cursor, "name");
             final int _cursorIndexOfDefaultAmount = CursorUtil.getColumnIndexOrThrow(_cursor, "default_amount");
             final int _cursorIndexOfCurrencyCode = CursorUtil.getColumnIndexOrThrow(_cursor, "currency_code");
+            final int _cursorIndexOfAccountNumber = CursorUtil.getColumnIndexOrThrow(_cursor, "account_number");
+            final int _cursorIndexOfBillReference = CursorUtil.getColumnIndexOrThrow(_cursor, "bill_reference");
             final int _cursorIndexOfMerchant = CursorUtil.getColumnIndexOrThrow(_cursor, "merchant");
             final int _cursorIndexOfRecurrenceType = CursorUtil.getColumnIndexOrThrow(_cursor, "recurrence_type");
             final int _cursorIndexOfRecurrenceInterval = CursorUtil.getColumnIndexOrThrow(_cursor, "recurrence_interval");
@@ -1073,6 +1143,18 @@ public final class BillDao_Impl implements BillDao {
               _tmpDefaultAmount = _cursor.getDouble(_cursorIndexOfDefaultAmount);
               final String _tmpCurrencyCode;
               _tmpCurrencyCode = _cursor.getString(_cursorIndexOfCurrencyCode);
+              final String _tmpAccountNumber;
+              if (_cursor.isNull(_cursorIndexOfAccountNumber)) {
+                _tmpAccountNumber = null;
+              } else {
+                _tmpAccountNumber = _cursor.getString(_cursorIndexOfAccountNumber);
+              }
+              final String _tmpBillReference;
+              if (_cursor.isNull(_cursorIndexOfBillReference)) {
+                _tmpBillReference = null;
+              } else {
+                _tmpBillReference = _cursor.getString(_cursorIndexOfBillReference);
+              }
               final String _tmpMerchant;
               if (_cursor.isNull(_cursorIndexOfMerchant)) {
                 _tmpMerchant = null;
@@ -1184,7 +1266,7 @@ public final class BillDao_Impl implements BillDao {
               final int _tmp_12;
               _tmp_12 = _cursor.getInt(_cursorIndexOfIsDirty);
               _tmpIsDirty = _tmp_12 != 0;
-              _tmpBill = new BillEntity(_tmpId,_tmpCategoryId,_tmpName,_tmpDefaultAmount,_tmpCurrencyCode,_tmpMerchant,_tmpRecurrenceType,_tmpRecurrenceInterval,_tmpDueDay,_tmpStartDate,_tmpEndDate,_tmpIsActive,_tmpIsFavorite,_tmpNotes,_tmpIsDeleted,_tmpCreatedAt,_tmpUpdatedAt,_tmpIsInstallment,_tmpTotalInstallments,_tmpRemoteId,_tmpLastSyncedAt,_tmpSyncStatus,_tmpIsDirty);
+              _tmpBill = new BillEntity(_tmpId,_tmpCategoryId,_tmpName,_tmpDefaultAmount,_tmpCurrencyCode,_tmpAccountNumber,_tmpBillReference,_tmpMerchant,_tmpRecurrenceType,_tmpRecurrenceInterval,_tmpDueDay,_tmpStartDate,_tmpEndDate,_tmpIsActive,_tmpIsFavorite,_tmpNotes,_tmpIsDeleted,_tmpCreatedAt,_tmpUpdatedAt,_tmpIsInstallment,_tmpTotalInstallments,_tmpRemoteId,_tmpLastSyncedAt,_tmpSyncStatus,_tmpIsDirty);
               final BillCategoryEntity _tmpCategory;
               final long _tmpKey_2;
               _tmpKey_2 = _cursor.getLong(_cursorIndexOfCategoryId);
@@ -1229,6 +1311,8 @@ public final class BillDao_Impl implements BillDao {
           final int _cursorIndexOfName = CursorUtil.getColumnIndexOrThrow(_cursor, "name");
           final int _cursorIndexOfDefaultAmount = CursorUtil.getColumnIndexOrThrow(_cursor, "default_amount");
           final int _cursorIndexOfCurrencyCode = CursorUtil.getColumnIndexOrThrow(_cursor, "currency_code");
+          final int _cursorIndexOfAccountNumber = CursorUtil.getColumnIndexOrThrow(_cursor, "account_number");
+          final int _cursorIndexOfBillReference = CursorUtil.getColumnIndexOrThrow(_cursor, "bill_reference");
           final int _cursorIndexOfMerchant = CursorUtil.getColumnIndexOrThrow(_cursor, "merchant");
           final int _cursorIndexOfRecurrenceType = CursorUtil.getColumnIndexOrThrow(_cursor, "recurrence_type");
           final int _cursorIndexOfRecurrenceInterval = CursorUtil.getColumnIndexOrThrow(_cursor, "recurrence_interval");
@@ -1260,6 +1344,18 @@ public final class BillDao_Impl implements BillDao {
             _tmpDefaultAmount = _cursor.getDouble(_cursorIndexOfDefaultAmount);
             final String _tmpCurrencyCode;
             _tmpCurrencyCode = _cursor.getString(_cursorIndexOfCurrencyCode);
+            final String _tmpAccountNumber;
+            if (_cursor.isNull(_cursorIndexOfAccountNumber)) {
+              _tmpAccountNumber = null;
+            } else {
+              _tmpAccountNumber = _cursor.getString(_cursorIndexOfAccountNumber);
+            }
+            final String _tmpBillReference;
+            if (_cursor.isNull(_cursorIndexOfBillReference)) {
+              _tmpBillReference = null;
+            } else {
+              _tmpBillReference = _cursor.getString(_cursorIndexOfBillReference);
+            }
             final String _tmpMerchant;
             if (_cursor.isNull(_cursorIndexOfMerchant)) {
               _tmpMerchant = null;
@@ -1371,7 +1467,7 @@ public final class BillDao_Impl implements BillDao {
             final int _tmp_12;
             _tmp_12 = _cursor.getInt(_cursorIndexOfIsDirty);
             _tmpIsDirty = _tmp_12 != 0;
-            _item = new BillEntity(_tmpId,_tmpCategoryId,_tmpName,_tmpDefaultAmount,_tmpCurrencyCode,_tmpMerchant,_tmpRecurrenceType,_tmpRecurrenceInterval,_tmpDueDay,_tmpStartDate,_tmpEndDate,_tmpIsActive,_tmpIsFavorite,_tmpNotes,_tmpIsDeleted,_tmpCreatedAt,_tmpUpdatedAt,_tmpIsInstallment,_tmpTotalInstallments,_tmpRemoteId,_tmpLastSyncedAt,_tmpSyncStatus,_tmpIsDirty);
+            _item = new BillEntity(_tmpId,_tmpCategoryId,_tmpName,_tmpDefaultAmount,_tmpCurrencyCode,_tmpAccountNumber,_tmpBillReference,_tmpMerchant,_tmpRecurrenceType,_tmpRecurrenceInterval,_tmpDueDay,_tmpStartDate,_tmpEndDate,_tmpIsActive,_tmpIsFavorite,_tmpNotes,_tmpIsDeleted,_tmpCreatedAt,_tmpUpdatedAt,_tmpIsInstallment,_tmpTotalInstallments,_tmpRemoteId,_tmpLastSyncedAt,_tmpSyncStatus,_tmpIsDirty);
             _result.add(_item);
           }
           return _result;

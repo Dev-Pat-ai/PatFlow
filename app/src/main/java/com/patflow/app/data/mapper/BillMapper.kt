@@ -35,6 +35,8 @@ fun BillEntity.toDomain(category: Category): Bill = Bill(
     category = category,
     defaultAmount = defaultAmount,
     currencyCode = currencyCode,
+    accountNumber = accountNumber,
+    billReference = billReference,
     merchant = merchant,
     recurrence = Recurrence(
         type = RecurrenceType.valueOf(recurrenceType),
@@ -56,6 +58,8 @@ fun Bill.toEntity(): BillEntity {
         name = name,
         defaultAmount = defaultAmount,
         currencyCode = currencyCode,
+        accountNumber = accountNumber,
+        billReference = billReference,
         merchant = merchant,
         recurrenceType = recurrence.type.name,
         recurrenceInterval = recurrence.interval,

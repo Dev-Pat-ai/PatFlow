@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.patflow.app.core.components.*
+import com.patflow.app.core.components.TopBarType
 import com.patflow.app.core.theme.PatFlowSpacing
 import kotlinx.datetime.LocalDate
 
@@ -43,6 +44,7 @@ fun AddEditSavingsGoalScreen(
         topBar = {
             AppTopBar(
                 title = if (uiState.isEditMode) "Edit Goal" else "New Goal",
+                type = TopBarType.Small,
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back")
@@ -56,7 +58,7 @@ fun AddEditSavingsGoalScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
-                .padding(PatFlowSpacing.space4),
+                .padding(PatFlowSpacing.space5),
             verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space4)
         ) {
             AppTextField(

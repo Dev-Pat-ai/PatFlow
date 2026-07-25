@@ -42,6 +42,12 @@ data class BillEntity(
     @ColumnInfo(name = "currency_code", defaultValue = "PHP")
     val currencyCode: String = "PHP",
 
+    @ColumnInfo(name = "account_number")
+    val accountNumber: String? = null,
+
+    @ColumnInfo(name = "bill_reference")
+    val billReference: String? = null,
+
     /** e.g. "Meralco", "PLDT", landlord's name — search target (FR-17.1). */
     val merchant: String? = null,
 

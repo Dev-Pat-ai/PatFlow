@@ -36,6 +36,7 @@ import com.patflow.app.core.components.AppButton
 import com.patflow.app.core.components.AppDatePickerDialog
 import com.patflow.app.core.components.AppTextField
 import com.patflow.app.core.components.AppTopBar
+import com.patflow.app.core.components.TopBarType
 import com.patflow.app.core.components.CategoryChip
 import com.patflow.app.core.components.CategoryType
 import com.patflow.app.core.theme.PatFlowSpacing
@@ -73,6 +74,7 @@ fun AddEditBillScreen(
         topBar = {
             AppTopBar(
                 title = if (uiState.isEditMode) "Edit Bill" else "Add Bill",
+                type = TopBarType.Small,
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back")
@@ -86,7 +88,7 @@ fun AddEditBillScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
-                .padding(PatFlowSpacing.space4),
+                .padding(PatFlowSpacing.space5),
             verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space4)
         ) {
             AppTextField(

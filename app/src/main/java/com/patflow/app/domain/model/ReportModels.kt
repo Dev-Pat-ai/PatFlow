@@ -10,7 +10,8 @@ data class ReportData(
     val categoryAnalysis: CategoryAnalysis,
     val trendAnalysis: TrendAnalysis,
     val performance: PaymentPerformance,
-    val insights: List<String>
+    val insights: List<String>,
+    val recentTransactions: List<PaymentHistory>
 )
 
 data class FinancialSummary(

@@ -87,7 +87,8 @@ fun PatFlowNavGraph(
                     }
                 )
             }
-        }
+        },
+        contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0)
     ) { padding ->
         NavHost(
             navController = navController,

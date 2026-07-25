@@ -61,7 +61,7 @@ interface PaymentDao {
         
         // 2. Adjust cycle
         val newPaid = (cycle.amountPaid - payment.amount).coerceAtLeast(0.0)
-        val newStatus = if (newPaid >= cycle.amountDue) "PAID" else if (newPaid > 0) "PARTIALLY_PAID" else "UNPAID"
+        val newStatus = if (newPaid >= cycle.amountDue) "PAID" else "UNPAID"
         
         cycleDao.update(cycle.copy(
             amountPaid = newPaid,

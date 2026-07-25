@@ -1,7 +1,7 @@
-C:\Users\charm\Documents\GitHub\PatFlow\app\src\main\AndroidManifest.xml:34: Warning: Consider splitting data tag into multiple tags with individual attributes to avoid confusion [IntentFilterUniqueDataAttributes]
+C:\Users\charm\Documents\GitHub\PatFlow\app\src\main\AndroidManifest.xml:35: Warning: Consider splitting data tag into multiple tags with individual attributes to avoid confusion [IntentFilterUniqueDataAttributes]
                 <data
                 ^
-C:\Users\charm\Documents\GitHub\PatFlow\app\src\main\AndroidManifest.xml:37: Warning: Consider splitting data tag into multiple tags with individual attributes to avoid confusion [IntentFilterUniqueDataAttributes]
+C:\Users\charm\Documents\GitHub\PatFlow\app\src\main\AndroidManifest.xml:38: Warning: Consider splitting data tag into multiple tags with individual attributes to avoid confusion [IntentFilterUniqueDataAttributes]
                 <data
                 ^
 
@@ -54,46 +54,49 @@ C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:59: Warning: A newe
 C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:60: Warning: A newer version of androidx.compose:compose-bom than 2024.10.01 is available: 2026.06.01 [GradleDependency]
     implementation(platform("androidx.compose:compose-bom:2024.10.01"))
                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:69: Warning: A newer version of androidx.navigation:navigation-compose than 2.8.3 is available: 2.9.8 [GradleDependency]
+C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:65: Warning: A newer version of com.google.android.material:material than 1.12.0 is available: 1.14.0 [GradleDependency]
+    implementation("com.google.android.material:material:1.12.0")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:70: Warning: A newer version of androidx.navigation:navigation-compose than 2.8.3 is available: 2.9.8 [GradleDependency]
     implementation("androidx.navigation:navigation-compose:2.8.3")
                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:74: Warning: A newer version of androidx.hilt:hilt-navigation-compose than 1.2.0 is available: 1.4.0 [GradleDependency]
+C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:75: Warning: A newer version of androidx.hilt:hilt-navigation-compose than 1.2.0 is available: 1.4.0 [GradleDependency]
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:75: Warning: A newer version of androidx.hilt:hilt-work than 1.2.0 is available: 1.4.0 [GradleDependency]
+C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:76: Warning: A newer version of androidx.hilt:hilt-work than 1.2.0 is available: 1.4.0 [GradleDependency]
     implementation("androidx.hilt:hilt-work:1.2.0")
                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:76: Warning: A newer version of androidx.hilt:hilt-compiler than 1.2.0 is available: 1.4.0 [GradleDependency]
+C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:77: Warning: A newer version of androidx.hilt:hilt-compiler than 1.2.0 is available: 1.4.0 [GradleDependency]
     ksp("androidx.hilt:hilt-compiler:1.2.0")
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:79: Warning: A newer version of androidx.room:room-runtime than 2.6.1 is available: 2.8.4 [GradleDependency]
+C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:80: Warning: A newer version of androidx.room:room-runtime than 2.6.1 is available: 2.8.4 [GradleDependency]
     implementation("androidx.room:room-runtime:2.6.1")
                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:80: Warning: A newer version of androidx.room:room-ktx than 2.6.1 is available: 2.8.4 [GradleDependency]
+C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:81: Warning: A newer version of androidx.room:room-ktx than 2.6.1 is available: 2.8.4 [GradleDependency]
     implementation("androidx.room:room-ktx:2.6.1")
                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:81: Warning: A newer version of androidx.room:room-compiler than 2.6.1 is available: 2.8.4 [GradleDependency]
+C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:82: Warning: A newer version of androidx.room:room-compiler than 2.6.1 is available: 2.8.4 [GradleDependency]
     ksp("androidx.room:room-compiler:2.6.1")
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:84: Warning: A newer version of androidx.datastore:datastore-preferences than 1.1.1 is available: 1.2.1 [GradleDependency]
+C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:85: Warning: A newer version of androidx.datastore:datastore-preferences than 1.1.1 is available: 1.2.1 [GradleDependency]
     implementation("androidx.datastore:datastore-preferences:1.1.1")
                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:91: Warning: A newer version of androidx.work:work-runtime-ktx than 2.10.0 is available: 2.11.2 [GradleDependency]
+C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:92: Warning: A newer version of androidx.work:work-runtime-ktx than 2.10.0 is available: 2.11.2 [GradleDependency]
     implementation("androidx.work:work-runtime-ktx:2.10.0")
                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:97: Warning: A newer version of androidx.security:security-crypto than 1.1.0-alpha06 is available: 1.1.0 [GradleDependency]
+C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:98: Warning: A newer version of androidx.security:security-crypto than 1.1.0-alpha06 is available: 1.1.0 [GradleDependency]
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:102: Warning: A newer version of androidx.room:room-testing than 2.6.1 is available: 2.8.4 [GradleDependency]
+C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:103: Warning: A newer version of androidx.room:room-testing than 2.6.1 is available: 2.8.4 [GradleDependency]
     testImplementation("androidx.room:room-testing:2.6.1")
                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:106: Warning: A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0 [GradleDependency]
+C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:107: Warning: A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0 [GradleDependency]
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:107: Warning: A newer version of androidx.test.espresso:espresso-core than 3.6.1 is available: 3.7.0 [GradleDependency]
+C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:108: Warning: A newer version of androidx.test.espresso:espresso-core than 3.6.1 is available: 3.7.0 [GradleDependency]
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:108: Warning: A newer version of androidx.compose:compose-bom than 2024.10.01 is available: 2026.06.01 [GradleDependency]
+C:\Users\charm\Documents\GitHub\PatFlow\app\build.gradle.kts:109: Warning: A newer version of androidx.compose:compose-bom than 2024.10.01 is available: 2026.06.01 [GradleDependency]
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.10.01"))
                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -137,6 +140,24 @@ C:\Users\charm\Documents\GitHub\PatFlow\app\src\main\res\mipmap-anydpi-v26: Warn
    where the version qualifier is less than or equal to the minSdkVersion,
    where the contents should be merged into the best folder.
 
+C:\Users\charm\Documents\GitHub\PatFlow\app\src\main\res\values\colors.xml:5: Warning: The resource R.color.black appears to be unused [UnusedResources]
+    <color name="black">#000000</color>
+           ~~~~~~~~~~~~
+
+   Explanation for issues of type "UnusedResources":
+   Unused resources make applications larger and slow down builds.
+
+
+   The unused resource check can ignore tests. If you want to include
+   resources that are only referenced from tests, consider packaging them in a
+   test source set instead.
+
+   You can include test sources in the unused resource check by setting the
+   system property lint.unused-resources.include-tests =true, and to exclude
+   them (usually for performance reasons), use
+   lint.unused-resources.exclude-tests =true.
+   ,
+
 C:\Users\charm\Documents\GitHub\PatFlow\app\src\main\res\mipmap-anydpi-v26\ic_launcher.xml:2: Warning: The application adaptive icon is missing a monochrome tag [MonochromeLauncherIcon]
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
 ^
@@ -156,4 +177,4 @@ C:\Users\charm\Documents\GitHub\PatFlow\app\src\main\res\mipmap-anydpi-v26\ic_la
    application iconwill not show if your monochrome attribute is not also
    specified in android:roundIcon.
 
-0 errors, 26 warnings
+0 errors, 28 warnings

@@ -177,9 +177,9 @@ document.getElementById(id).style.display = 'none';
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
   <header class="mdl-layout__header">
     <div class="mdl-layout__header-row">
-      <span class="mdl-layout-title">Lint Report: 26 warnings</span>
+      <span class="mdl-layout-title">Lint Report: 28 warnings</span>
       <div class="mdl-layout-spacer"></div>
-      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Thu Jul 23 17:41:47 CST 2026 by AGP (8.6.0)</nav>
+      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Fri Jul 24 15:27:53 CST 2026 by AGP (8.6.0)</nav>
     </div>
   </header>
   <div class="mdl-layout__drawer">
@@ -187,9 +187,10 @@ document.getElementById(id).style.display = 'none';
     <nav class="mdl-navigation">
       <a class="mdl-navigation__link" href="#overview"><i class="material-icons">dashboard</i>Overview</a>
       <a class="mdl-navigation__link" href="#IntentFilterUniqueDataAttributes"><i class="material-icons warning-icon">warning</i>Data tags should only declare unique attributes (2)</a>
-      <a class="mdl-navigation__link" href="#GradleDependency"><i class="material-icons warning-icon">warning</i>Obsolete Gradle Dependency (18)</a>
+      <a class="mdl-navigation__link" href="#GradleDependency"><i class="material-icons warning-icon">warning</i>Obsolete Gradle Dependency (19)</a>
       <a class="mdl-navigation__link" href="#ModifierParameter"><i class="material-icons warning-icon">warning</i>Guidelines for Modifier parameters in a Composable function (2)</a>
       <a class="mdl-navigation__link" href="#ObsoleteSdkInt"><i class="material-icons warning-icon">warning</i>Obsolete SDK_INT Version Check (2)</a>
+      <a class="mdl-navigation__link" href="#UnusedResources"><i class="material-icons warning-icon">warning</i>Unused resources (1)</a>
       <a class="mdl-navigation__link" href="#MonochromeLauncherIcon"><i class="material-icons warning-icon">warning</i>Monochrome icon is not defined (2)</a>
     </nav>
   </div>
@@ -209,7 +210,7 @@ document.getElementById(id).style.display = 'none';
 <td class="countColumn">2</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
 <a href="#IntentFilterUniqueDataAttributes">IntentFilterUniqueDataAttributes</a>: Data tags should only declare unique attributes</td></tr>
 <tr>
-<td class="countColumn">18</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<td class="countColumn">19</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
 <a href="#GradleDependency">GradleDependency</a>: Obsolete Gradle Dependency</td></tr>
 <tr>
 <td class="countColumn">2</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
@@ -219,6 +220,9 @@ document.getElementById(id).style.display = 'none';
 <tr>
 <td class="countColumn">2</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
 <a href="#ObsoleteSdkInt">ObsoleteSdkInt</a>: Obsolete SDK_INT Version Check</td></tr>
+<tr>
+<td class="countColumn">1</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<a href="#UnusedResources">UnusedResources</a>: Unused resources</td></tr>
 <tr><td class="countColumn"></td><td class="categoryColumn"><a href="#Usability:Icons">Usability:Icons</a>
 </td></tr>
 <tr>
@@ -245,23 +249,23 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../src/main/AndroidManifest.xml">../../src/main/AndroidManifest.xml</a>:34</span>: <span class="message">Consider splitting data tag into multiple tags with individual attributes to avoid confusion</span><br /><pre class="errorlines">
-<span class="lineno"> 31 </span>                <span class="tag">&lt;action</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.intent.action.VIEW"</span> />
-<span class="lineno"> 32 </span>                <span class="tag">&lt;category</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.intent.category.DEFAULT"</span> />
-<span class="lineno"> 33 </span>                <span class="tag">&lt;category</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.intent.category.BROWSABLE"</span> />
-<span class="caretline"><span class="lineno"> 34 </span>                <span class="warning"><span class="tag">&lt;data</span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="attribute">
-</span><span class="lineno"> 35 </span><span class="attribute">                    </span><span class="prefix">android:</span><span class="attribute">host</span>=<span class="value">"bill"</span>
-<span class="lineno"> 36 </span>                    <span class="prefix">android:</span><span class="attribute">scheme</span>=<span class="value">"patflow"</span> />
-<span class="lineno"> 37 </span>                <span class="tag">&lt;data</span></pre>
+<span class="location"><a href="../../src/main/AndroidManifest.xml">../../src/main/AndroidManifest.xml</a>:35</span>: <span class="message">Consider splitting data tag into multiple tags with individual attributes to avoid confusion</span><br /><pre class="errorlines">
+<span class="lineno"> 32 </span>                <span class="tag">&lt;action</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.intent.action.VIEW"</span> />
+<span class="lineno"> 33 </span>                <span class="tag">&lt;category</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.intent.category.DEFAULT"</span> />
+<span class="lineno"> 34 </span>                <span class="tag">&lt;category</span><span class="attribute"> </span><span class="prefix">android:</span><span class="attribute">name</span>=<span class="value">"android.intent.category.BROWSABLE"</span> />
+<span class="caretline"><span class="lineno"> 35 </span>                <span class="warning"><span class="tag">&lt;data</span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="attribute">
+</span><span class="lineno"> 36 </span><span class="attribute">                    </span><span class="prefix">android:</span><span class="attribute">host</span>=<span class="value">"bill"</span>
+<span class="lineno"> 37 </span>                    <span class="prefix">android:</span><span class="attribute">scheme</span>=<span class="value">"patflow"</span> />
+<span class="lineno"> 38 </span>                <span class="tag">&lt;data</span></pre>
 
-<span class="location"><a href="../../src/main/AndroidManifest.xml">../../src/main/AndroidManifest.xml</a>:37</span>: <span class="message">Consider splitting data tag into multiple tags with individual attributes to avoid confusion</span><br /><pre class="errorlines">
-<span class="lineno"> 34 </span>                <span class="tag">&lt;data</span><span class="attribute">
-</span><span class="lineno"> 35 </span><span class="attribute">                    </span><span class="prefix">android:</span><span class="attribute">host</span>=<span class="value">"bill"</span>
-<span class="lineno"> 36 </span>                    <span class="prefix">android:</span><span class="attribute">scheme</span>=<span class="value">"patflow"</span> />
-<span class="caretline"><span class="lineno"> 37 </span>                <span class="warning"><span class="tag">&lt;data</span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="attribute">
-</span><span class="lineno"> 38 </span><span class="attribute">                    </span><span class="prefix">android:</span><span class="attribute">host</span>=<span class="value">"payment"</span>
-<span class="lineno"> 39 </span>                    <span class="prefix">android:</span><span class="attribute">scheme</span>=<span class="value">"patflow"</span> />
-<span class="lineno"> 40 </span>            <span class="tag">&lt;/intent-filter></span></pre>
+<span class="location"><a href="../../src/main/AndroidManifest.xml">../../src/main/AndroidManifest.xml</a>:38</span>: <span class="message">Consider splitting data tag into multiple tags with individual attributes to avoid confusion</span><br /><pre class="errorlines">
+<span class="lineno"> 35 </span>                <span class="tag">&lt;data</span><span class="attribute">
+</span><span class="lineno"> 36 </span><span class="attribute">                    </span><span class="prefix">android:</span><span class="attribute">host</span>=<span class="value">"bill"</span>
+<span class="lineno"> 37 </span>                    <span class="prefix">android:</span><span class="attribute">scheme</span>=<span class="value">"patflow"</span> />
+<span class="caretline"><span class="lineno"> 38 </span>                <span class="warning"><span class="tag">&lt;data</span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="attribute">
+</span><span class="lineno"> 39 </span><span class="attribute">                    </span><span class="prefix">android:</span><span class="attribute">host</span>=<span class="value">"payment"</span>
+<span class="lineno"> 40 </span>                    <span class="prefix">android:</span><span class="attribute">scheme</span>=<span class="value">"patflow"</span> />
+<span class="lineno"> 41 </span>            <span class="tag">&lt;/intent-filter></span></pre>
 
 </div>
 <div class="metadata"><div class="explanation" id="explanationIntentFilterUniqueDataAttributes" style="display: none;">
@@ -367,143 +371,152 @@ Dismiss</button>            </div>
 <span class="lineno">  63 </span>    implementation("androidx.compose.ui:ui-tooling-preview")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:69</span>: <span class="message">A newer version of androidx.navigation:navigation-compose than 2.8.3 is available: 2.9.8</span><br /><pre class="errorlines">
-<span class="lineno">  66 </span>    debugImplementation("androidx.compose.ui:ui-tooling")
-<span class="lineno">  67 </span>
-<span class="lineno">  68 </span>    // --- Navigation Compose ---
-<span class="caretline"><span class="lineno">  69 </span>    implementation(<span class="warning">"androidx.navigation:navigation-compose:2.8.3"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  70 </span>
-<span class="lineno">  71 </span>    // --- Hilt ---
-<span class="lineno">  72 </span>    implementation("com.google.dagger:hilt-android:2.52")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:65</span>: <span class="message">A newer version of com.google.android.material:material than 1.12.0 is available: 1.14.0</span><br /><pre class="errorlines">
+<span class="lineno">  62 </span>    implementation("androidx.compose.ui:ui-graphics")
+<span class="lineno">  63 </span>    implementation("androidx.compose.ui:ui-tooling-preview")
+<span class="lineno">  64 </span>    implementation("androidx.compose.material3:material3")
+<span class="caretline"><span class="lineno">  65 </span>    implementation(<span class="warning">"com.google.android.material:material:1.12.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  66 </span>    implementation("androidx.compose.material:material-icons-extended")
+<span class="lineno">  67 </span>    debugImplementation("androidx.compose.ui:ui-tooling")
 </pre>
 
-<button class="mdl-button mdl-js-button mdl-button--primary" id="GradleDependencyDivLink" onclick="reveal('GradleDependencyDiv');" />+ 13 More Occurrences...</button>
+<button class="mdl-button mdl-js-button mdl-button--primary" id="GradleDependencyDivLink" onclick="reveal('GradleDependencyDiv');" />+ 14 More Occurrences...</button>
 <div id="GradleDependencyDiv" style="display: none">
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:74</span>: <span class="message">A newer version of androidx.hilt:hilt-navigation-compose than 1.2.0 is available: 1.4.0</span><br /><pre class="errorlines">
-<span class="lineno">  71 </span>    // --- Hilt ---
-<span class="lineno">  72 </span>    implementation("com.google.dagger:hilt-android:2.52")
-<span class="lineno">  73 </span>    ksp("com.google.dagger:hilt-android-compiler:2.52")
-<span class="caretline"><span class="lineno">  74 </span>    implementation(<span class="warning">"androidx.hilt:hilt-navigation-compose:1.2.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  75 </span>    implementation("androidx.hilt:hilt-work:1.2.0")
-<span class="lineno">  76 </span>    ksp("androidx.hilt:hilt-compiler:1.2.0")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:70</span>: <span class="message">A newer version of androidx.navigation:navigation-compose than 2.8.3 is available: 2.9.8</span><br /><pre class="errorlines">
+<span class="lineno">  67 </span>    debugImplementation("androidx.compose.ui:ui-tooling")
+<span class="lineno">  68 </span>
+<span class="lineno">  69 </span>    // --- Navigation Compose ---
+<span class="caretline"><span class="lineno">  70 </span>    implementation(<span class="warning">"androidx.navigation:navigation-compose:2.8.3"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  71 </span>
+<span class="lineno">  72 </span>    // --- Hilt ---
+<span class="lineno">  73 </span>    implementation("com.google.dagger:hilt-android:2.52")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:75</span>: <span class="message">A newer version of androidx.hilt:hilt-work than 1.2.0 is available: 1.4.0</span><br /><pre class="errorlines">
-<span class="lineno">  72 </span>    implementation("com.google.dagger:hilt-android:2.52")
-<span class="lineno">  73 </span>    ksp("com.google.dagger:hilt-android-compiler:2.52")
-<span class="lineno">  74 </span>    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-<span class="caretline"><span class="lineno">  75 </span>    implementation(<span class="warning">"androidx.hilt:hilt-work:1.2.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  76 </span>    ksp("androidx.hilt:hilt-compiler:1.2.0")
-<span class="lineno">  77 </span>
-<span class="lineno">  78 </span>    // --- Room ---
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:75</span>: <span class="message">A newer version of androidx.hilt:hilt-navigation-compose than 1.2.0 is available: 1.4.0</span><br /><pre class="errorlines">
+<span class="lineno">  72 </span>    // --- Hilt ---
+<span class="lineno">  73 </span>    implementation("com.google.dagger:hilt-android:2.52")
+<span class="lineno">  74 </span>    ksp("com.google.dagger:hilt-android-compiler:2.52")
+<span class="caretline"><span class="lineno">  75 </span>    implementation(<span class="warning">"androidx.hilt:hilt-navigation-compose:1.2.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  76 </span>    implementation("androidx.hilt:hilt-work:1.2.0")
+<span class="lineno">  77 </span>    ksp("androidx.hilt:hilt-compiler:1.2.0")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:76</span>: <span class="message">A newer version of androidx.hilt:hilt-compiler than 1.2.0 is available: 1.4.0</span><br /><pre class="errorlines">
-<span class="lineno">  73 </span>    ksp("com.google.dagger:hilt-android-compiler:2.52")
-<span class="lineno">  74 </span>    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-<span class="lineno">  75 </span>    implementation("androidx.hilt:hilt-work:1.2.0")
-<span class="caretline"><span class="lineno">  76 </span>    ksp(<span class="warning">"androidx.hilt:hilt-compiler:1.2.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  77 </span>
-<span class="lineno">  78 </span>    // --- Room ---
-<span class="lineno">  79 </span>    implementation("androidx.room:room-runtime:2.6.1")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:76</span>: <span class="message">A newer version of androidx.hilt:hilt-work than 1.2.0 is available: 1.4.0</span><br /><pre class="errorlines">
+<span class="lineno">  73 </span>    implementation("com.google.dagger:hilt-android:2.52")
+<span class="lineno">  74 </span>    ksp("com.google.dagger:hilt-android-compiler:2.52")
+<span class="lineno">  75 </span>    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+<span class="caretline"><span class="lineno">  76 </span>    implementation(<span class="warning">"androidx.hilt:hilt-work:1.2.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  77 </span>    ksp("androidx.hilt:hilt-compiler:1.2.0")
+<span class="lineno">  78 </span>
+<span class="lineno">  79 </span>    // --- Room ---
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:79</span>: <span class="message">A newer version of androidx.room:room-runtime than 2.6.1 is available: 2.8.4</span><br /><pre class="errorlines">
-<span class="lineno">  76 </span>    ksp("androidx.hilt:hilt-compiler:1.2.0")
-<span class="lineno">  77 </span>
-<span class="lineno">  78 </span>    // --- Room ---
-<span class="caretline"><span class="lineno">  79 </span>    implementation(<span class="warning">"androidx.room:room-runtime:2.6.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  80 </span>    implementation("androidx.room:room-ktx:2.6.1")
-<span class="lineno">  81 </span>    ksp("androidx.room:room-compiler:2.6.1")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:77</span>: <span class="message">A newer version of androidx.hilt:hilt-compiler than 1.2.0 is available: 1.4.0</span><br /><pre class="errorlines">
+<span class="lineno">  74 </span>    ksp("com.google.dagger:hilt-android-compiler:2.52")
+<span class="lineno">  75 </span>    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+<span class="lineno">  76 </span>    implementation("androidx.hilt:hilt-work:1.2.0")
+<span class="caretline"><span class="lineno">  77 </span>    ksp(<span class="warning">"androidx.hilt:hilt-compiler:1.2.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  78 </span>
+<span class="lineno">  79 </span>    // --- Room ---
+<span class="lineno">  80 </span>    implementation("androidx.room:room-runtime:2.6.1")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:80</span>: <span class="message">A newer version of androidx.room:room-ktx than 2.6.1 is available: 2.8.4</span><br /><pre class="errorlines">
-<span class="lineno">  77 </span>
-<span class="lineno">  78 </span>    // --- Room ---
-<span class="lineno">  79 </span>    implementation("androidx.room:room-runtime:2.6.1")
-<span class="caretline"><span class="lineno">  80 </span>    implementation(<span class="warning">"androidx.room:room-ktx:2.6.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  81 </span>    ksp("androidx.room:room-compiler:2.6.1")
-<span class="lineno">  82 </span>
-<span class="lineno">  83 </span>    // --- DataStore (Preferences) ---
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:80</span>: <span class="message">A newer version of androidx.room:room-runtime than 2.6.1 is available: 2.8.4</span><br /><pre class="errorlines">
+<span class="lineno">  77 </span>    ksp("androidx.hilt:hilt-compiler:1.2.0")
+<span class="lineno">  78 </span>
+<span class="lineno">  79 </span>    // --- Room ---
+<span class="caretline"><span class="lineno">  80 </span>    implementation(<span class="warning">"androidx.room:room-runtime:2.6.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  81 </span>    implementation("androidx.room:room-ktx:2.6.1")
+<span class="lineno">  82 </span>    ksp("androidx.room:room-compiler:2.6.1")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:81</span>: <span class="message">A newer version of androidx.room:room-compiler than 2.6.1 is available: 2.8.4</span><br /><pre class="errorlines">
-<span class="lineno">  78 </span>    // --- Room ---
-<span class="lineno">  79 </span>    implementation("androidx.room:room-runtime:2.6.1")
-<span class="lineno">  80 </span>    implementation("androidx.room:room-ktx:2.6.1")
-<span class="caretline"><span class="lineno">  81 </span>    ksp(<span class="warning">"androidx.room:room-compiler:2.6.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  82 </span>
-<span class="lineno">  83 </span>    // --- DataStore (Preferences) ---
-<span class="lineno">  84 </span>    implementation("androidx.datastore:datastore-preferences:1.1.1")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:81</span>: <span class="message">A newer version of androidx.room:room-ktx than 2.6.1 is available: 2.8.4</span><br /><pre class="errorlines">
+<span class="lineno">  78 </span>
+<span class="lineno">  79 </span>    // --- Room ---
+<span class="lineno">  80 </span>    implementation("androidx.room:room-runtime:2.6.1")
+<span class="caretline"><span class="lineno">  81 </span>    implementation(<span class="warning">"androidx.room:room-ktx:2.6.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  82 </span>    ksp("androidx.room:room-compiler:2.6.1")
+<span class="lineno">  83 </span>
+<span class="lineno">  84 </span>    // --- DataStore (Preferences) ---
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:84</span>: <span class="message">A newer version of androidx.datastore:datastore-preferences than 1.1.1 is available: 1.2.1</span><br /><pre class="errorlines">
-<span class="lineno">  81 </span>    ksp("androidx.room:room-compiler:2.6.1")
-<span class="lineno">  82 </span>
-<span class="lineno">  83 </span>    // --- DataStore (Preferences) ---
-<span class="caretline"><span class="lineno">  84 </span>    implementation(<span class="warning">"androidx.datastore:datastore-preferences:1.1.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  85 </span>
-<span class="lineno">  86 </span>    // --- kotlinx-datetime (Architecture §10 — domain layer stays free of java.time) ---
-<span class="lineno">  87 </span>    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:82</span>: <span class="message">A newer version of androidx.room:room-compiler than 2.6.1 is available: 2.8.4</span><br /><pre class="errorlines">
+<span class="lineno">  79 </span>    // --- Room ---
+<span class="lineno">  80 </span>    implementation("androidx.room:room-runtime:2.6.1")
+<span class="lineno">  81 </span>    implementation("androidx.room:room-ktx:2.6.1")
+<span class="caretline"><span class="lineno">  82 </span>    ksp(<span class="warning">"androidx.room:room-compiler:2.6.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  83 </span>
+<span class="lineno">  84 </span>    // --- DataStore (Preferences) ---
+<span class="lineno">  85 </span>    implementation("androidx.datastore:datastore-preferences:1.1.1")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:91</span>: <span class="message">A newer version of androidx.work:work-runtime-ktx than 2.10.0 is available: 2.11.2</span><br /><pre class="errorlines">
-<span class="lineno">  88 </span>    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
-<span class="lineno">  89 </span>
-<span class="lineno">  90 </span>    // --- WorkManager (bill cycle generation, reminders) ---
-<span class="caretline"><span class="lineno">  91 </span>    implementation(<span class="warning">"androidx.work:work-runtime-ktx:2.10.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  92 </span>
-<span class="lineno">  93 </span>    // --- Charts ---
-<span class="lineno">  94 </span>    implementation("com.patrykandpatrick.vico:compose-m3:2.0.0-alpha.28")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:85</span>: <span class="message">A newer version of androidx.datastore:datastore-preferences than 1.1.1 is available: 1.2.1</span><br /><pre class="errorlines">
+<span class="lineno">  82 </span>    ksp("androidx.room:room-compiler:2.6.1")
+<span class="lineno">  83 </span>
+<span class="lineno">  84 </span>    // --- DataStore (Preferences) ---
+<span class="caretline"><span class="lineno">  85 </span>    implementation(<span class="warning">"androidx.datastore:datastore-preferences:1.1.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  86 </span>
+<span class="lineno">  87 </span>    // --- kotlinx-datetime (Architecture §10 — domain layer stays free of java.time) ---
+<span class="lineno">  88 </span>    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:97</span>: <span class="message">A newer version of androidx.security:security-crypto than 1.1.0-alpha06 is available: 1.1.0</span><br /><pre class="errorlines">
-<span class="lineno">  94 </span>    implementation("com.patrykandpatrick.vico:compose-m3:2.0.0-alpha.28")
-<span class="lineno">  95 </span>
-<span class="lineno">  96 </span>    // --- Security ---
-<span class="caretline"><span class="lineno">  97 </span>    implementation(<span class="warning">"androidx.security:security-crypto:1.1.0-alpha06"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  98 </span>    implementation("androidx.biometric:biometric-ktx:1.2.0-alpha05")
-<span class="lineno">  99 </span>
-<span class="lineno"> 100 </span>    // --- Testing ---
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:92</span>: <span class="message">A newer version of androidx.work:work-runtime-ktx than 2.10.0 is available: 2.11.2</span><br /><pre class="errorlines">
+<span class="lineno">  89 </span>    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
+<span class="lineno">  90 </span>
+<span class="lineno">  91 </span>    // --- WorkManager (bill cycle generation, reminders) ---
+<span class="caretline"><span class="lineno">  92 </span>    implementation(<span class="warning">"androidx.work:work-runtime-ktx:2.10.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  93 </span>
+<span class="lineno">  94 </span>    // --- Charts ---
+<span class="lineno">  95 </span>    implementation("com.patrykandpatrick.vico:compose-m3:2.0.0-alpha.28")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:102</span>: <span class="message">A newer version of androidx.room:room-testing than 2.6.1 is available: 2.8.4</span><br /><pre class="errorlines">
-<span class="lineno">  99 </span>
-<span class="lineno"> 100 </span>    // --- Testing ---
-<span class="lineno"> 101 </span>    testImplementation("junit:junit:4.13.2")
-<span class="caretline"><span class="lineno"> 102 </span>    testImplementation(<span class="warning">"androidx.room:room-testing:2.6.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 103 </span>    testImplementation("io.mockk:mockk:1.13.12")
-<span class="lineno"> 104 </span>    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
-<span class="lineno"> 105 </span>    testImplementation("app.cash.turbine:turbine:1.1.0")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:98</span>: <span class="message">A newer version of androidx.security:security-crypto than 1.1.0-alpha06 is available: 1.1.0</span><br /><pre class="errorlines">
+<span class="lineno">  95 </span>    implementation("com.patrykandpatrick.vico:compose-m3:2.0.0-alpha.28")
+<span class="lineno">  96 </span>
+<span class="lineno">  97 </span>    // --- Security ---
+<span class="caretline"><span class="lineno">  98 </span>    implementation(<span class="warning">"androidx.security:security-crypto:1.1.0-alpha06"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  99 </span>    implementation("androidx.biometric:biometric-ktx:1.2.0-alpha05")
+<span class="lineno"> 100 </span>
+<span class="lineno"> 101 </span>    // --- Testing ---
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:106</span>: <span class="message">A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0</span><br /><pre class="errorlines">
-<span class="lineno"> 103 </span>    testImplementation("io.mockk:mockk:1.13.12")
-<span class="lineno"> 104 </span>    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
-<span class="lineno"> 105 </span>    testImplementation("app.cash.turbine:turbine:1.1.0")
-<span class="caretline"><span class="lineno"> 106 </span>    androidTestImplementation(<span class="warning">"androidx.test.ext:junit:1.2.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 107 </span>    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-<span class="lineno"> 108 </span>    androidTestImplementation(platform("androidx.compose:compose-bom:2024.10.01"))
-<span class="lineno"> 109 </span>    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:103</span>: <span class="message">A newer version of androidx.room:room-testing than 2.6.1 is available: 2.8.4</span><br /><pre class="errorlines">
+<span class="lineno"> 100 </span>
+<span class="lineno"> 101 </span>    // --- Testing ---
+<span class="lineno"> 102 </span>    testImplementation("junit:junit:4.13.2")
+<span class="caretline"><span class="lineno"> 103 </span>    testImplementation(<span class="warning">"androidx.room:room-testing:2.6.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 104 </span>    testImplementation("io.mockk:mockk:1.13.12")
+<span class="lineno"> 105 </span>    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+<span class="lineno"> 106 </span>    testImplementation("app.cash.turbine:turbine:1.1.0")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:107</span>: <span class="message">A newer version of androidx.test.espresso:espresso-core than 3.6.1 is available: 3.7.0</span><br /><pre class="errorlines">
-<span class="lineno"> 104 </span>    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
-<span class="lineno"> 105 </span>    testImplementation("app.cash.turbine:turbine:1.1.0")
-<span class="lineno"> 106 </span>    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-<span class="caretline"><span class="lineno"> 107 </span>    androidTestImplementation(<span class="warning">"androidx.test.espresso:espresso-core:3.6.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 108 </span>    androidTestImplementation(platform("androidx.compose:compose-bom:2024.10.01"))
-<span class="lineno"> 109 </span>    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-<span class="lineno"> 110 </span>}
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:107</span>: <span class="message">A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0</span><br /><pre class="errorlines">
+<span class="lineno"> 104 </span>    testImplementation("io.mockk:mockk:1.13.12")
+<span class="lineno"> 105 </span>    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+<span class="lineno"> 106 </span>    testImplementation("app.cash.turbine:turbine:1.1.0")
+<span class="caretline"><span class="lineno"> 107 </span>    androidTestImplementation(<span class="warning">"androidx.test.ext:junit:1.2.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 108 </span>    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+<span class="lineno"> 109 </span>    androidTestImplementation(platform("androidx.compose:compose-bom:2024.10.01"))
+<span class="lineno"> 110 </span>    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:108</span>: <span class="message">A newer version of androidx.compose:compose-bom than 2024.10.01 is available: 2026.06.01</span><br /><pre class="errorlines">
-<span class="lineno"> 105 </span>    testImplementation("app.cash.turbine:turbine:1.1.0")
-<span class="lineno"> 106 </span>    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-<span class="lineno"> 107 </span>    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-<span class="caretline"><span class="lineno"> 108 </span>    androidTestImplementation(<span class="warning">platform("androidx.compose:compose-bom:2024.10.01")</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 109 </span>    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-<span class="lineno"> 110 </span>}
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:108</span>: <span class="message">A newer version of androidx.test.espresso:espresso-core than 3.6.1 is available: 3.7.0</span><br /><pre class="errorlines">
+<span class="lineno"> 105 </span>    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+<span class="lineno"> 106 </span>    testImplementation("app.cash.turbine:turbine:1.1.0")
+<span class="lineno"> 107 </span>    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+<span class="caretline"><span class="lineno"> 108 </span>    androidTestImplementation(<span class="warning">"androidx.test.espresso:espresso-core:3.6.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 109 </span>    androidTestImplementation(platform("androidx.compose:compose-bom:2024.10.01"))
+<span class="lineno"> 110 </span>    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+<span class="lineno"> 111 </span>}
+</pre>
+
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:109</span>: <span class="message">A newer version of androidx.compose:compose-bom than 2024.10.01 is available: 2026.06.01</span><br /><pre class="errorlines">
+<span class="lineno"> 106 </span>    testImplementation("app.cash.turbine:turbine:1.1.0")
+<span class="lineno"> 107 </span>    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+<span class="lineno"> 108 </span>    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+<span class="caretline"><span class="lineno"> 109 </span>    androidTestImplementation(<span class="warning">platform("androidx.compose:compose-bom:2024.10.01")</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 110 </span>    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+<span class="lineno"> 111 </span>}
 </pre>
 
 </div>
@@ -646,6 +659,58 @@ To suppress this error, use the issue id "ObsoleteSdkInt" as explained in the <a
               <div class="mdl-card__actions mdl-card--border">
 <button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="explanationObsoleteSdkIntLink" onclick="reveal('explanationObsoleteSdkInt');">
 Explain</button><button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="ObsoleteSdkIntCardLink" onclick="hideid('ObsoleteSdkIntCard');">
+Dismiss</button>            </div>
+            </div>
+          </section><a name="UnusedResources"></a>
+<section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" id="UnusedResourcesCard" style="display: block;">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">Unused resources</h2>
+  </div>
+              <div class="mdl-card__supporting-text">
+<div class="issue">
+<div class="warningslist">
+<span class="location"><a href="../../src/main/res/values/colors.xml">../../src/main/res/values/colors.xml</a>:5</span>: <span class="message">The resource <code>R.color.black</code> appears to be unused</span><br /><pre class="errorlines">
+<span class="lineno">  2 </span><span class="tag">&lt;resources></span>
+<span class="lineno">  3 </span>    <span class="comment">&lt;!-- Common --></span>
+<span class="lineno">  4 </span>    <span class="tag">&lt;color</span><span class="attribute"> name</span>=<span class="value">"white"</span>>#FFFFFF<span class="tag">&lt;/color></span>
+<span class="caretline"><span class="lineno">  5 </span>    <span class="tag">&lt;color</span><span class="attribute"> </span><span class="warning"><span class="attribute">name</span>=<span class="value">"black"</span></span>>#000000<span class="tag">&lt;/color></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  6 </span>
+<span class="lineno">  7 </span>    <span class="comment">&lt;!-- Brand Color --></span>
+<span class="lineno">  8 </span>    <span class="tag">&lt;color</span><span class="attribute"> name</span>=<span class="value">"brand_blue"</span>>#3B82F6<span class="tag">&lt;/color></span>
+</pre>
+
+</div>
+<div class="metadata"><div class="explanation" id="explanationUnusedResources" style="display: none;">
+Unused resources make applications larger and slow down builds.<br/>
+<br/>
+<br/>
+The unused resource check can ignore tests. If you want to include resources that are only referenced from tests, consider packaging them in a test source set instead.<br/>
+<br/>
+You can include test sources in the unused resource check by setting the system property lint.unused-resources.include-tests =true, and to exclude them (usually for performance reasons), use lint.unused-resources.exclude-tests =true.<br/>
+,<br/>Note: This issue has an associated quickfix operation in Android Studio and IntelliJ IDEA.<br>
+To suppress this error, use the issue id "UnusedResources" as explained in the <a href="#SuppressInfo">Suppressing Warnings and Errors</a> section.<br/>
+<br/></div>
+</div>
+</div>
+<div class="chips">
+<span class="mdl-chip">
+    <span class="mdl-chip__text">UnusedResources</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Performance</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Warning</span>
+</span>
+<span class="mdl-chip">
+    <span class="mdl-chip__text">Priority 3/10</span>
+</span>
+</div>
+              </div>
+              <div class="mdl-card__actions mdl-card--border">
+<button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="explanationUnusedResourcesLink" onclick="reveal('explanationUnusedResources');">
+Explain</button><button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="UnusedResourcesCardLink" onclick="hideid('UnusedResourcesCard');">
 Dismiss</button>            </div>
             </div>
           </section>

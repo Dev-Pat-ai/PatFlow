@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.patflow.app.core.components.AppTopBar
+import com.patflow.app.core.components.TopBarType
 import com.patflow.app.core.components.LoadingState
 import com.patflow.app.core.components.SectionHeader
 import com.patflow.app.core.theme.PatFlowShapes
@@ -39,7 +40,8 @@ fun CalendarScreen(
     var currentMonth by remember { mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date) }
 
     Scaffold(
-        topBar = { AppTopBar(title = "Financial Calendar") }
+        topBar = { AppTopBar(title = "Financial Calendar", type = TopBarType.Small) },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { padding ->
         Column(modifier = modifier.fillMaxSize().padding(padding)) {
             when (val state = uiState) {
@@ -75,7 +77,7 @@ private fun CalendarHeader(
     onMonthChange: (LocalDate) -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(PatFlowSpacing.space4),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = PatFlowSpacing.space5, vertical = PatFlowSpacing.space4),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -107,7 +109,7 @@ private fun CalendarGrid(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = PatFlowSpacing.space4)
+            .padding(horizontal = PatFlowSpacing.space5)
             .background(MaterialTheme.colorScheme.surfaceContainerLow, shape = PatFlowShapes.lg)
             .padding(PatFlowSpacing.space4)
     ) {
@@ -224,7 +226,7 @@ private fun AgendaView(
     selectedDate: LocalDate,
     events: List<CalendarEvent>
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(horizontal = PatFlowSpacing.space4)) {
+    Column(modifier = Modifier.fillMaxSize().padding(horizontal = PatFlowSpacing.space5)) {
         SectionHeader(title = "Agenda: ${selectedDate}")
         if (events.isEmpty()) {
             Text(

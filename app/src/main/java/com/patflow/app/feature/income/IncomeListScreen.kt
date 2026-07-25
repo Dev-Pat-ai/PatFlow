@@ -140,7 +140,7 @@ private fun IncomeListHeader(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = PatFlowSpacing.space4, vertical = PatFlowSpacing.space2),
+            .padding(horizontal = PatFlowSpacing.space5, vertical = PatFlowSpacing.space2),
         verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)
     ) {
         SearchTextField(
@@ -151,8 +151,7 @@ private fun IncomeListHeader(
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space2),
-            contentPadding = PaddingValues(horizontal = PatFlowSpacing.space4)
+            horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space2)
         ) {
             items(categories) { category ->
                 val displayLabel = category.name.replace("Cash back", "Cashback")
@@ -194,7 +193,7 @@ private fun ContextualIncomeActionBar(
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = PatFlowSpacing.space4, vertical = PatFlowSpacing.space2)
+                .padding(horizontal = PatFlowSpacing.space5, vertical = PatFlowSpacing.space2)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space2)
@@ -225,7 +224,7 @@ private fun IncomeListContent(
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(PatFlowSpacing.space4),
+        contentPadding = PaddingValues(PatFlowSpacing.space5),
         verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)
     ) {
         items(entries, key = { it.entry.id }) { item ->

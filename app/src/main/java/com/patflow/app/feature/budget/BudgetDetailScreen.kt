@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.patflow.app.core.components.*
+import com.patflow.app.core.components.TopBarType
 import com.patflow.app.core.theme.PatFlowSpacing
 import com.patflow.app.core.utils.CurrencyFormatter
 
@@ -34,6 +35,7 @@ fun BudgetDetailScreen(
         topBar = {
             AppTopBar(
                 title = "Budget Details",
+                type = TopBarType.Small,
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back")
@@ -71,7 +73,7 @@ fun BudgetDetailScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
-                            .padding(PatFlowSpacing.space4),
+                            .padding(PatFlowSpacing.space5),
                         verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space5)
                     ) {
                         // 1. Progress Gauge (Simulated with CircularProgress)

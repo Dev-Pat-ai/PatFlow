@@ -141,7 +141,8 @@ class GetReportDataUseCase @Inject constructor(
                 categoryAnalysis = categoryAnalysis,
                 trendAnalysis = trendAnalysis,
                 performance = performance,
-                insights = insights
+                insights = insights,
+                recentTransactions = filteredPayments
             )
         }
     }

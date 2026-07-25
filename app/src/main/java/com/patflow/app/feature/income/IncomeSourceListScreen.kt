@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.patflow.app.core.components.AppFab
 import com.patflow.app.core.components.AppTopBar
+import com.patflow.app.core.components.TopBarType
 import com.patflow.app.core.components.CategoryChip
 import com.patflow.app.core.components.EmptyState
 import com.patflow.app.core.theme.PatFlowSpacing
@@ -52,6 +53,7 @@ fun IncomeSourceListScreen(
         topBar = {
             AppTopBar(
                 title = "Income Templates",
+                type = TopBarType.Small,
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back")
@@ -79,7 +81,7 @@ fun IncomeSourceListScreen(
                 modifier = modifier
                     .fillMaxSize()
                     .padding(padding),
-                contentPadding = PaddingValues(PatFlowSpacing.space4),
+                contentPadding = PaddingValues(PatFlowSpacing.space5),
                 verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)
             ) {
                 items(sources, key = { it.id }) { source ->

@@ -12,6 +12,8 @@ data class Bill(
     val category: Category,
     val defaultAmount: Double,
     val currencyCode: String = "PHP",
+    val accountNumber: String? = null,
+    val billReference: String? = null,
     val merchant: String? = null,
     val recurrence: Recurrence,
     val notes: String? = null,

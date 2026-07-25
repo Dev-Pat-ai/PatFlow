@@ -1,64 +1,33 @@
 package com.patflow.app.feature.bills
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ReceiptLong
 import androidx.compose.material.icons.automirrored.rounded.Sort
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.automirrored.rounded.ViewList
+import androidx.compose.material.icons.rounded.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.patflow.app.core.components.AppSnackbarHost
-import com.patflow.app.core.components.AppTextField
-import com.patflow.app.core.components.BillCard
-import com.patflow.app.core.components.CategoryType
-import com.patflow.app.core.components.DeleteConfirmationDialog
-import com.patflow.app.core.components.EmptyState
-import com.patflow.app.core.components.FullScreenError
-import com.patflow.app.core.components.SkeletonBox
-import com.patflow.app.core.components.SwipeableBillRow
+import com.patflow.app.core.components.*
+import com.patflow.app.core.theme.PatFlowShapes
 import com.patflow.app.core.theme.PatFlowSpacing
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material.icons.rounded.Search
-import com.patflow.app.core.components.SearchTextField
 import com.patflow.app.core.utils.CategoryMapper
 import com.patflow.app.core.utils.rememberHapticFeedbackController
 import com.patflow.app.domain.model.BillStatus
 import com.patflow.app.domain.model.BillWithCycle
-import java.util.Locale
+import com.patflow.app.feature.bills.components.AddBillBottomSheet
+import com.patflow.app.feature.bills.components.BillDetailBottomSheet
+import com.patflow.app.feature.bills.components.BillsOverviewCard
 
-/**
- * Screen for viewing a list of bills (Architecture §6).
- */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BillListScreen(
     onBillClick: (Long) -> Unit,
@@ -74,6 +43,8 @@ fun BillListScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showAddSheet by remember { mutableStateOf(false) }
+    var selectedBillForDetail by remember { mutableStateOf<BillWithCycle?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.eventFlow.collect { event ->
@@ -88,70 +59,163 @@ fun BillListScreen(
 
     Box(modifier = modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // Contextual Top Bar or Search/Filters
             if (selectedIds.isNotEmpty()) {
                 ContextualActionBar(
                     selectedCount = selectedIds.size,
                     onClose = viewModel::clearSelection,
                     onDelete = { showDeleteDialog = true },
-                    onMarkAsPaid = { 
-                        viewModel.markSelectedAsPaid()
-                    }
-                )
-            } else {
-                BillListHeader(
-                    searchQuery = searchQuery,
-                    onSearchQueryChange = viewModel::onSearchQueryChange,
-                    selectedStatus = selectedStatus,
-                    onStatusFilterChange = viewModel::onStatusFilterChange,
-                    onSortToggle = viewModel::toggleSortOrder
+                    onMarkAsPaid = { viewModel.markSelectedAsPaid() }
                 )
             }
 
-            when (val state = uiState) {
-                BillListUiState.Loading -> {
-                    BillListLoading()
-                }
-                is BillListUiState.Success -> {
-                    if (state.bills.isEmpty()) {
-                        EmptyState(
-                            title = "No bills found",
-                            description = if (searchQuery.isNotEmpty()) "Try a different search term." else "Add your first bill to get started.",
-                            icon = Icons.AutoMirrored.Rounded.ReceiptLong
-                        )
-                    } else {
-                        BillListContent(
-                            bills = state.bills,
-                            selectedIds = selectedIds,
-                            onBillClick = { id ->
-                                if (selectedIds.isNotEmpty()) {
-                                    haptic.tick()
-                                    viewModel.toggleSelection(id)
-                                } else {
-                                    onBillClick(id)
-                                }
-                            },
-                            onLongClick = { id ->
-                                haptic.confirm()
-                                viewModel.toggleSelection(id)
-                            },
-                            onMarkAsPaid = viewModel::markAsPaid,
-                            onEdit = onEditClick
-                        )
-                    }
-                }
-                is BillListUiState.Error -> {
-                    FullScreenError(
-                        title = "Error loading bills",
-                        description = state.message
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(bottom = 80.dp),
+                verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space4)
+            ) {
+                // 1. Overview Card
+                item {
+                    BillsOverviewCard(
+                        remainingAmount = 12450.0, // Mock for now
+                        remainingCount = 6,
+                        paidAmount = 8900.0,
+                        paidCount = 12,
+                        totalCount = 18,
+                        progress = 0.7f,
+                        modifier = Modifier.padding(horizontal = PatFlowSpacing.space5, vertical = PatFlowSpacing.space2)
                     )
                 }
+
+                // 2. Search and Filters
+                item {
+                    BillListHeader(
+                        searchQuery = searchQuery,
+                        onSearchQueryChange = viewModel::onSearchQueryChange,
+                        selectedStatus = selectedStatus,
+                        onStatusFilterChange = viewModel::onStatusFilterChange
+                    )
+                }
+
+                when (val state = uiState) {
+                    BillListUiState.Loading -> {
+                        item { BillListLoading() }
+                    }
+                    is BillListUiState.Success -> {
+                        val bills = state.bills
+                        
+                        // 3. Due Soon Section
+                        val dueSoon = bills.filter { it.currentCycle?.status == BillStatus.OVERDUE || it.currentCycle?.status == BillStatus.UNPAID }.take(3)
+                        if (dueSoon.isNotEmpty()) {
+                            item {
+                                SectionHeaderWithAction(
+                                    title = "Due Soon (${dueSoon.size})",
+                                    actionLabel = "View all",
+                                    onActionClick = { /* TODO */ }
+                                )
+                            }
+                            items(dueSoon) { item ->
+                                BillCardItem(
+                                    item = item,
+                                    isSelected = selectedIds.contains(item.bill.id),
+                                    showSelection = selectedIds.isNotEmpty(),
+                                    onBillClick = { selectedBillForDetail = item },
+                                    onLongClick = { 
+                                        haptic.confirm()
+                                        viewModel.toggleSelection(item.bill.id)
+                                    },
+                                    onMarkAsPaid = viewModel::markAsPaid,
+                                    onEdit = onEditClick
+                                )
+                            }
+                        }
+
+                        // 4. All Bills Section
+                        item {
+                            SectionHeaderWithAction(
+                                title = "All Bills",
+                                actionLabel = "Sort: Due Date",
+                                onActionClick = { viewModel.toggleSortOrder() }
+                            )
+                        }
+                        
+                        if (bills.isEmpty()) {
+                            item {
+                                EmptyState(
+                                    title = "No bills found",
+                                    description = if (searchQuery.isNotEmpty()) "Try a different search term." else "Add your first bill to get started.",
+                                    icon = Icons.AutoMirrored.Rounded.ReceiptLong
+                                )
+                            }
+                        } else {
+                            items(bills) { item ->
+                                BillCardItem(
+                                    item = item,
+                                    isSelected = selectedIds.contains(item.bill.id),
+                                    showSelection = selectedIds.isNotEmpty(),
+                                    onBillClick = { selectedBillForDetail = item },
+                                    onLongClick = { 
+                                        haptic.confirm()
+                                        viewModel.toggleSelection(item.bill.id)
+                                    },
+                                    onMarkAsPaid = viewModel::markAsPaid,
+                                    onEdit = onEditClick
+                                )
+                            }
+                        }
+                    }
+                    is BillListUiState.Error -> {
+                        item {
+                            FullScreenError(title = "Error loading bills", description = state.message)
+                        }
+                    }
+                }
             }
+        }
+
+        // Floating Action Button
+        ExtendedFloatingActionButton(
+            onClick = { showAddSheet = true },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(PatFlowSpacing.space5),
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            shape = PatFlowShapes.xl
+        ) {
+            Icon(Icons.Rounded.Add, contentDescription = null)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Add Bill")
         }
 
         AppSnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier.align(Alignment.BottomCenter)
+        )
+    }
+
+    // Bottom Sheets & Dialogs
+    if (showAddSheet) {
+        AddBillBottomSheet(
+            onDismiss = { showAddSheet = false },
+            onSave = { _, _, _, _, _ -> showAddSheet = false }
+        )
+    }
+
+    selectedBillForDetail?.let { item ->
+        BillDetailBottomSheet(
+            bill = item.bill,
+            status = item.currentCycle?.status ?: BillStatus.UNPAID,
+            amountDue = item.currentCycle?.amountDue ?: item.bill.defaultAmount,
+            dueDate = item.currentCycle?.dueDate?.toString() ?: "N/A",
+            onDismiss = { selectedBillForDetail = null },
+            onEdit = { 
+                selectedBillForDetail = null
+                onEditClick(item.bill.id) 
+            },
+            onMarkAsPaid = {
+                selectedBillForDetail = null
+                viewModel.markAsPaid(item.bill.id)
+            }
         )
     }
 
@@ -168,20 +232,76 @@ fun BillListScreen(
     }
 }
 
+@Composable
+private fun BillCardItem(
+    item: BillWithCycle,
+    isSelected: Boolean,
+    showSelection: Boolean,
+    onBillClick: () -> Unit,
+    onLongClick: () -> Unit,
+    onMarkAsPaid: (Long) -> Unit,
+    onEdit: (Long) -> Unit
+) {
+    SwipeableBillRow(
+        modifier = Modifier.padding(horizontal = PatFlowSpacing.space5),
+        onMarkAsPaid = { onMarkAsPaid(item.bill.id) },
+        onEdit = { onEdit(item.bill.id) }
+    ) {
+        BillCard(
+            name = item.bill.name,
+            amount = item.currentCycle?.amountDue ?: item.bill.defaultAmount,
+            dueDate = item.currentCycle?.dueDate?.toString() ?: "N/A",
+            category = CategoryMapper.mapToType(item.bill.category.name),
+            status = item.currentCycle?.status ?: BillStatus.UNPAID,
+            isSelected = isSelected,
+            showSelection = showSelection,
+            currencyCode = item.bill.currencyCode,
+            onClick = onBillClick,
+            onLongClick = onLongClick
+        )
+    }
+}
+
+@Composable
+private fun SectionHeaderWithAction(
+    title: String,
+    actionLabel: String,
+    onActionClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = PatFlowSpacing.space5, vertical = PatFlowSpacing.space2),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = actionLabel,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.clickable { onActionClick() }
+        )
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun BillListHeader(
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
     selectedStatus: BillStatus?,
-    onStatusFilterChange: (BillStatus?) -> Unit,
-    onSortToggle: () -> Unit
+    onStatusFilterChange: (BillStatus?) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = PatFlowSpacing.space4, vertical = PatFlowSpacing.space2),
-        verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3) // Increased spacing
+            .padding(horizontal = PatFlowSpacing.space5, vertical = PatFlowSpacing.space2),
+        verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -192,47 +312,60 @@ private fun BillListHeader(
                 value = searchQuery,
                 onValueChange = onSearchQueryChange,
                 placeholder = "Search bills...",
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                leadingIcon = { Icon(Icons.Rounded.Search, null) },
+                trailingIcon = { Icon(Icons.Rounded.Mic, null) }
             )
-            IconButton(onClick = onSortToggle) {
-                Icon(Icons.AutoMirrored.Rounded.Sort, contentDescription = "Sort")
+            IconButton(
+                onClick = { /* TODO: Filters */ },
+                colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+            ) {
+                Icon(Icons.Rounded.FilterList, contentDescription = "Filter")
             }
         }
 
-        LazyRow(
+        Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space2)
         ) {
-            items(BillStatus.entries.toTypedArray()) { status ->
-                val label = when (status) {
-                    BillStatus.UNPAID -> "Unpaid"
-                    BillStatus.PARTIALLY_PAID -> "Partially Paid"
-                    BillStatus.PAID -> "Paid"
+            val allStatus = listOf(null, BillStatus.OVERDUE, BillStatus.UNPAID, BillStatus.PAID)
+            allStatus.forEach { status ->
+                val actualLabel = when(status) {
+                    null -> "All"
                     BillStatus.OVERDUE -> "Overdue"
+                    BillStatus.UNPAID -> "Due Soon"
+                    BillStatus.PAID -> "Paid"
                 }
+
                 FilterChip(
+                    modifier = Modifier.weight(1f),
                     selected = selectedStatus == status,
-                    onClick = { 
-                        onStatusFilterChange(if (selectedStatus == status) null else status)
-                    },
+                    onClick = { onStatusFilterChange(status) },
                     label = { 
                         Text(
-                            text = label,
-                            modifier = Modifier.widthIn(min = 80.dp), // Minimum width for responsiveness
+                            text = actualLabel,
+                            modifier = Modifier.fillMaxWidth(),
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                            maxLines = 1,
-                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                            style = MaterialTheme.typography.labelMedium
                         ) 
                     },
                     leadingIcon = if (selectedStatus == status) {
-                        {
+                        { Icon(Icons.Rounded.Check, null, modifier = Modifier.size(16.dp)) }
+                    } else if (status != null) {
+                        { 
                             Icon(
-                                imageVector = Icons.Rounded.Check,
+                                imageVector = when(status) {
+                                    BillStatus.OVERDUE -> Icons.Rounded.ErrorOutline
+                                    BillStatus.UNPAID -> Icons.Rounded.Schedule
+                                    BillStatus.PAID -> Icons.Rounded.CheckCircleOutline
+                                },
                                 contentDescription = null,
                                 modifier = Modifier.size(16.dp)
                             )
                         }
-                    } else null
+                    } else {
+                        { Icon(Icons.AutoMirrored.Rounded.ViewList, null, modifier = Modifier.size(16.dp)) }
+                    }
                 )
             }
         }
@@ -253,7 +386,7 @@ private fun ContextualActionBar(
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = PatFlowSpacing.space4, vertical = PatFlowSpacing.space2)
+                .padding(horizontal = PatFlowSpacing.space5, vertical = PatFlowSpacing.space2)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space2)
@@ -277,48 +410,11 @@ private fun ContextualActionBar(
 }
 
 @Composable
-private fun BillListContent(
-    bills: List<BillWithCycle>,
-    selectedIds: Set<Long>,
-    onBillClick: (Long) -> Unit,
-    onLongClick: (Long) -> Unit,
-    onMarkAsPaid: (Long) -> Unit,
-    onEdit: (Long) -> Unit
-) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(PatFlowSpacing.space4),
-        verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)
-    ) {
-        items(bills, key = { it.bill.id }) { item ->
-            val isSelected = selectedIds.contains(item.bill.id)
-            SwipeableBillRow(
-                onMarkAsPaid = { onMarkAsPaid(item.bill.id) },
-                onEdit = { onEdit(item.bill.id) }
-            ) {
-                BillCard(
-                    name = item.bill.name,
-                    amount = item.currentCycle?.amountDue ?: item.bill.defaultAmount,
-                    dueDate = item.currentCycle?.dueDate?.toString() ?: "N/A",
-                    category = CategoryMapper.mapToType(item.bill.category.name),
-                    status = item.currentCycle?.status ?: BillStatus.UNPAID,
-                    isSelected = isSelected,
-                    showSelection = selectedIds.isNotEmpty(),
-                    currencyCode = item.bill.currencyCode,
-                    onClick = { onBillClick(item.bill.id) },
-                    onLongClick = { onLongClick(item.bill.id) }
-                )
-            }
-        }
-    }
-}
-
-@Composable
 private fun BillListLoading() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(PatFlowSpacing.space4),
+            .padding(PatFlowSpacing.space5),
         verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)
     ) {
         repeat(5) {

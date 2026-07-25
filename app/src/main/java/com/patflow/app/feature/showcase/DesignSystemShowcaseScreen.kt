@@ -87,7 +87,7 @@ fun DesignSystemShowcaseScreen() {
 
     Scaffold(
         topBar = {
-            AppTopBar(title = "Design System Showcase")
+            AppTopBar(title = "Design System Showcase", type = com.patflow.app.core.components.TopBarType.Large)
         },
         bottomBar = {
             BottomNavigationBar(
@@ -120,7 +120,7 @@ fun DesignSystemShowcaseScreen() {
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(scrollState)
-                .padding(PatFlowSpacing.space4),
+                .padding(PatFlowSpacing.space5),
             verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space5)
         ) {
             // --- Typography ---
@@ -222,7 +222,6 @@ fun DesignSystemShowcaseScreen() {
                     verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space2)
                 ) {
                     StatusChip(status = BillStatus.PAID)
-                    StatusChip(status = BillStatus.PARTIALLY_PAID)
                     StatusChip(status = BillStatus.UNPAID)
                     StatusChip(status = BillStatus.OVERDUE)
                 }

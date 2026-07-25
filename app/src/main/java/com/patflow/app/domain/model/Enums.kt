@@ -14,7 +14,6 @@ enum class RecurrenceType {
 /** Bill cycle status (Architecture §8.3 / FR-2.3). Derived by domain logic, never free-typed. */
 enum class BillStatus {
     UNPAID,
-    PARTIALLY_PAID,
     PAID,
     OVERDUE,
 }

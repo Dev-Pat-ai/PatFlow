@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.patflow.app.core.components.AppTextField
 import com.patflow.app.core.components.AppTopBar
+import com.patflow.app.core.components.TopBarType
 import com.patflow.app.core.components.CategoryChip
 import com.patflow.app.core.components.CategoryType
 import com.patflow.app.core.components.EmptyState
@@ -55,6 +56,7 @@ fun PaymentHistoryScreen(
         topBar = {
             AppTopBar(
                 title = "Payment History",
+                type = TopBarType.Small,
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back")
@@ -72,7 +74,7 @@ fun PaymentHistoryScreen(
                 value = searchQuery,
                 onValueChange = viewModel::onSearchQueryChange,
                 placeholder = "Search transactions...",
-                modifier = Modifier.padding(PatFlowSpacing.space4)
+                modifier = Modifier.padding(PatFlowSpacing.space5)
             )
 
             when (val state = uiState) {
@@ -108,7 +110,7 @@ private fun PaymentList(
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(PatFlowSpacing.space4),
+        contentPadding = PaddingValues(PatFlowSpacing.space5),
         verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)
     ) {
         items(payments, key = { it.payment.id }) { item ->
@@ -160,7 +162,7 @@ private fun PaymentHistoryLoading() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(PatFlowSpacing.space4),
+            .padding(PatFlowSpacing.space5),
         verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)
     ) {
         repeat(5) {

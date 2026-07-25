@@ -71,7 +71,7 @@ public final class PatFlowDatabase_Impl extends PatFlowDatabase {
       @Override
       public void createAllTables(@NonNull final SupportSQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS `bill_category` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `icon_key` TEXT NOT NULL, `color_hex` TEXT NOT NULL, `is_custom` INTEGER NOT NULL, `is_deleted` INTEGER NOT NULL DEFAULT 0, `remote_id` TEXT, `sync_status` TEXT NOT NULL DEFAULT 'LOCAL_ONLY')");
-        db.execSQL("CREATE TABLE IF NOT EXISTS `bill` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `category_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `default_amount` REAL NOT NULL, `currency_code` TEXT NOT NULL DEFAULT 'PHP', `merchant` TEXT, `recurrence_type` TEXT NOT NULL, `recurrence_interval` INTEGER NOT NULL DEFAULT 1, `due_day` INTEGER, `start_date` TEXT NOT NULL, `end_date` TEXT, `is_active` INTEGER NOT NULL DEFAULT 1, `is_favorite` INTEGER NOT NULL DEFAULT 0, `notes` TEXT, `is_deleted` INTEGER NOT NULL DEFAULT 0, `created_at` TEXT NOT NULL, `updated_at` TEXT NOT NULL, `is_installment` INTEGER NOT NULL DEFAULT 0, `total_installments` INTEGER, `remote_id` TEXT, `last_synced_at` TEXT, `sync_status` TEXT NOT NULL DEFAULT 'LOCAL_ONLY', `is_dirty` INTEGER NOT NULL DEFAULT 0, FOREIGN KEY(`category_id`) REFERENCES `bill_category`(`id`) ON UPDATE NO ACTION ON DELETE RESTRICT )");
+        db.execSQL("CREATE TABLE IF NOT EXISTS `bill` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `category_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `default_amount` REAL NOT NULL, `currency_code` TEXT NOT NULL DEFAULT 'PHP', `account_number` TEXT, `bill_reference` TEXT, `merchant` TEXT, `recurrence_type` TEXT NOT NULL, `recurrence_interval` INTEGER NOT NULL DEFAULT 1, `due_day` INTEGER, `start_date` TEXT NOT NULL, `end_date` TEXT, `is_active` INTEGER NOT NULL DEFAULT 1, `is_favorite` INTEGER NOT NULL DEFAULT 0, `notes` TEXT, `is_deleted` INTEGER NOT NULL DEFAULT 0, `created_at` TEXT NOT NULL, `updated_at` TEXT NOT NULL, `is_installment` INTEGER NOT NULL DEFAULT 0, `total_installments` INTEGER, `remote_id` TEXT, `last_synced_at` TEXT, `sync_status` TEXT NOT NULL DEFAULT 'LOCAL_ONLY', `is_dirty` INTEGER NOT NULL DEFAULT 0, FOREIGN KEY(`category_id`) REFERENCES `bill_category`(`id`) ON UPDATE NO ACTION ON DELETE RESTRICT )");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_bill_category_id` ON `bill` (`category_id`)");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_bill_merchant` ON `bill` (`merchant`)");
         db.execSQL("CREATE TABLE IF NOT EXISTS `bill_cycle` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `bill_id` INTEGER NOT NULL, `period_start` TEXT NOT NULL, `due_date` TEXT NOT NULL, `amount_due` REAL NOT NULL, `amount_paid` REAL NOT NULL DEFAULT 0, `status` TEXT NOT NULL, `created_at` TEXT NOT NULL, `updated_at` TEXT NOT NULL, `installment_number` INTEGER, FOREIGN KEY(`bill_id`) REFERENCES `bill`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )");
@@ -103,7 +103,7 @@ public final class PatFlowDatabase_Impl extends PatFlowDatabase {
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_recent_search_searched_at` ON `recent_search` (`searched_at`)");
         db.execSQL("CREATE VIRTUAL TABLE IF NOT EXISTS `bill_search_fts` USING FTS4(`billId` INTEGER NOT NULL, `name` TEXT NOT NULL, `notes` TEXT NOT NULL, `merchant` TEXT NOT NULL, `categoryName` TEXT NOT NULL, notindexed=`billId`)");
         db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '16f11bdd95fcceb636a871eca0d19126')");
+        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6d73c6de3308a372cbc7dc9d58c2f46a')");
       }
 
       @Override
@@ -184,12 +184,14 @@ public final class PatFlowDatabase_Impl extends PatFlowDatabase {
                   + " Expected:\n" + _infoBillCategory + "\n"
                   + " Found:\n" + _existingBillCategory);
         }
-        final HashMap<String, TableInfo.Column> _columnsBill = new HashMap<String, TableInfo.Column>(23);
+        final HashMap<String, TableInfo.Column> _columnsBill = new HashMap<String, TableInfo.Column>(25);
         _columnsBill.put("id", new TableInfo.Column("id", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsBill.put("category_id", new TableInfo.Column("category_id", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsBill.put("name", new TableInfo.Column("name", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsBill.put("default_amount", new TableInfo.Column("default_amount", "REAL", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsBill.put("currency_code", new TableInfo.Column("currency_code", "TEXT", true, 0, "'PHP'", TableInfo.CREATED_FROM_ENTITY));
+        _columnsBill.put("account_number", new TableInfo.Column("account_number", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsBill.put("bill_reference", new TableInfo.Column("bill_reference", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsBill.put("merchant", new TableInfo.Column("merchant", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsBill.put("recurrence_type", new TableInfo.Column("recurrence_type", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsBill.put("recurrence_interval", new TableInfo.Column("recurrence_interval", "INTEGER", true, 0, "1", TableInfo.CREATED_FROM_ENTITY));
@@ -457,7 +459,7 @@ public final class PatFlowDatabase_Impl extends PatFlowDatabase {
         }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "16f11bdd95fcceb636a871eca0d19126", "ef8dc36dc89c762f310fe6bf32c87ce3");
+    }, "6d73c6de3308a372cbc7dc9d58c2f46a", "642522661d2fed74e4e1e8a16f3aede4");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(config.context).name(config.name).callback(_openCallback).build();
     final SupportSQLiteOpenHelper _helper = config.sqliteOpenHelperFactory.create(_sqliteConfig);
     return _helper;

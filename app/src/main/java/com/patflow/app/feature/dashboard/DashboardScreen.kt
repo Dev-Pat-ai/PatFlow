@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.patflow.app.core.components.AppButton
 import com.patflow.app.core.components.AppTopBar
+import com.patflow.app.core.components.TopBarType
 import com.patflow.app.core.components.BillCard
 import com.patflow.app.core.components.BudgetProgressCard
 import com.patflow.app.core.components.EmptyState
@@ -58,11 +59,18 @@ import com.patflow.app.domain.model.DashboardData
 import com.patflow.app.domain.model.PaymentHistory
 import com.patflow.app.domain.model.UserPreferences
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import androidx.compose.ui.unit.sp
+import com.patflow.app.core.components.rememberMarker
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberColumnCartesianLayer
-import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
+import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
+import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.columnSeries
+import com.patrykandpatrick.vico.core.cartesian.layer.ColumnCartesianLayer
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -102,6 +110,7 @@ fun DashboardScreen(
         topBar = { 
             AppTopBar(
                 title = "Dashboard",
+                type = TopBarType.Small,
                 actions = {
                     IconButton(onClick = { /* TODO: Search */ }) {
                         Icon(Icons.Rounded.Search, contentDescription = "Search")
@@ -109,7 +118,8 @@ fun DashboardScreen(
                 }
             ) 
         },
-        floatingActionButton = { SpeedDialFab(actions = speedDialActions) }
+        floatingActionButton = { SpeedDialFab(actions = speedDialActions) },
+        contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0)
     ) { padding ->
         PullToRefreshBox(
             isRefreshing = isRefreshing,
@@ -141,7 +151,7 @@ private fun DashboardLoading() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(PatFlowSpacing.space4),
+            .padding(horizontal = PatFlowSpacing.space5, vertical = PatFlowSpacing.space4),
         verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space4)
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
@@ -185,7 +195,7 @@ private fun DashboardContent(
     LaunchedEffect(data.spendingTrend) {
         if (data.spendingTrend.isNotEmpty()) {
             trendModelProducer.runTransaction {
-                lineSeries { series(data.spendingTrend.values) }
+                columnSeries { series(data.spendingTrend.values) }
             }
         }
     }
@@ -200,7 +210,7 @@ private fun DashboardContent(
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(PatFlowSpacing.space4),
+        contentPadding = PaddingValues(horizontal = PatFlowSpacing.space5, vertical = PatFlowSpacing.space4),
         verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space4)
     ) {
         // 1. Financial Summary Section
@@ -283,7 +293,7 @@ private fun DashboardContent(
                             color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.4f),
                             shape = PatFlowShapes.lg
                         )
-                        .padding(PatFlowSpacing.space4),
+                        .padding(horizontal = PatFlowSpacing.space5, vertical = PatFlowSpacing.space4),
                     verticalArrangement = Arrangement.spacedBy(PatFlowSpacing.space2)
                 ) {
                     SectionHeader(title = "Financial Insights")
@@ -314,7 +324,32 @@ private fun DashboardContent(
                             Text(text = "Monthly Spending", style = MaterialTheme.typography.labelLarge)
                             Spacer(modifier = Modifier.height(PatFlowSpacing.space2))
                             CartesianChartHost(
-                                chart = rememberCartesianChart(rememberLineCartesianLayer()),
+                                chart = rememberCartesianChart(
+                                    rememberColumnCartesianLayer(
+                                        columnProvider = ColumnCartesianLayer.ColumnProvider.series(
+                                            rememberLineComponent(
+                                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
+                                                thickness = 12.dp,
+                                                shape = com.patrykandpatrick.vico.core.common.shape.Shape.rounded(allPercent = 40)
+                                            )
+                                        )
+                                    ),
+                                    startAxis = rememberStartAxis(
+                                        label = rememberTextComponent(
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            textSize = 10.sp
+                                        ),
+                                        horizontalLabelPosition = VerticalAxis.HorizontalLabelPosition.Outside,
+                                        itemPlacer = VerticalAxis.ItemPlacer.count(count = { 4 })
+                                    ),
+                                    bottomAxis = rememberBottomAxis(
+                                        label = rememberTextComponent(
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            textSize = 10.sp
+                                        )
+                                    ),
+                                    marker = rememberMarker()
+                                ),
                                 modelProducer = trendModelProducer,
                                 modifier = Modifier.height(160.dp)
                             )

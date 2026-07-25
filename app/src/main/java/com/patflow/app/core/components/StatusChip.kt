@@ -40,7 +40,6 @@ fun StatusChip(
     
     val (label, icon, colors) = when (status) {
         BillStatus.PAID -> Triple("Paid", Icons.Rounded.CheckCircle, statusColors.paid)
-        BillStatus.PARTIALLY_PAID -> Triple("Partially Paid", Icons.Rounded.Pending, statusColors.partiallyPaid)
         BillStatus.UNPAID -> Triple("Unpaid", Icons.Rounded.Schedule, statusColors.unpaid)
         BillStatus.OVERDUE -> Triple("Overdue", Icons.Rounded.Error, statusColors.overdue)
     }
@@ -95,7 +94,6 @@ private fun StatusChipPreview() {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             StatusChip(status = BillStatus.PAID)
-            StatusChip(status = BillStatus.PARTIALLY_PAID)
             StatusChip(status = BillStatus.UNPAID)
             StatusChip(status = BillStatus.OVERDUE)
         }
