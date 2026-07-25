@@ -67,11 +67,16 @@ fun BillsOverviewCard(
                                 Text(
                                     text = CurrencyFormatter.formatAmount(remainingAmount, currencyCode),
                                     style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1,
+                                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                                 )
                             }
                             Box(
-                                modifier = Modifier.size(32.dp).background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f), PatFlowShapes.sm),
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f), PatFlowShapes.sm)
+                                    .padding(4.dp),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(Icons.AutoMirrored.Rounded.ReceiptLong, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
@@ -94,11 +99,16 @@ fun BillsOverviewCard(
                                 Text(
                                     text = CurrencyFormatter.formatAmount(paidAmount, currencyCode),
                                     style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1,
+                                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                                 )
                             }
                             Box(
-                                modifier = Modifier.size(32.dp).background(Color(0xFF10B981).copy(alpha = 0.1f), PatFlowShapes.sm),
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .background(Color(0xFF10B981).copy(alpha = 0.1f), PatFlowShapes.sm)
+                                    .padding(4.dp),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(Icons.Rounded.CheckCircle, contentDescription = null, tint = Color(0xFF10B981), modifier = Modifier.size(18.dp))

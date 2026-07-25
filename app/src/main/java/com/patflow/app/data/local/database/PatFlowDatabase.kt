@@ -56,7 +56,7 @@ import com.patflow.app.data.local.entity.SavingsGoalEntity
         RecentSearchEntity::class,
         BillSearchFtsEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)

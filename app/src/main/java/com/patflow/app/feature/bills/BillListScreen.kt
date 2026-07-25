@@ -30,6 +30,8 @@ import com.patflow.app.feature.bills.components.BillsOverviewCard
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BillListScreen(
+    showAddSheet: Boolean,
+    onAddSheetDismiss: () -> Unit,
     onBillClick: (Long) -> Unit,
     onEditClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
@@ -43,7 +45,6 @@ fun BillListScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
-    var showAddSheet by remember { mutableStateOf(false) }
     var selectedBillForDetail by remember { mutableStateOf<BillWithCycle?>(null) }
 
     LaunchedEffect(Unit) {
@@ -75,13 +76,22 @@ fun BillListScreen(
             ) {
                 // 1. Overview Card
                 item {
+                    val allBills = (uiState as? BillListUiState.Success)?.bills ?: emptyList()
+                    val totalCount = allBills.size
+                    val paidCount = allBills.count { it.currentCycle?.status == BillStatus.PAID }
+                    val remainingCount = totalCount - paidCount
+                    val paidAmount = allBills.sumOf { it.currentCycle?.amountPaid ?: 0.0 }
+                    val remainingAmount = allBills.sumOf { (it.currentCycle?.amountDue ?: it.bill.defaultAmount) - (it.currentCycle?.amountPaid ?: 0.0) }
+                    val progress = if (totalCount > 0) paidCount.toFloat() / totalCount else 0f
+
                     BillsOverviewCard(
-                        remainingAmount = 12450.0, // Mock for now
-                        remainingCount = 6,
-                        paidAmount = 8900.0,
-                        paidCount = 12,
-                        totalCount = 18,
-                        progress = 0.7f,
+                        remainingAmount = remainingAmount,
+                        remainingCount = remainingCount,
+                        paidAmount = paidAmount,
+                        paidCount = paidCount,
+                        totalCount = totalCount,
+                        progress = progress,
+                        currencyCode = "PHP",
                         modifier = Modifier.padding(horizontal = PatFlowSpacing.space5, vertical = PatFlowSpacing.space2)
                     )
                 }
@@ -171,33 +181,13 @@ fun BillListScreen(
                 }
             }
         }
-
-        // Floating Action Button
-        ExtendedFloatingActionButton(
-            onClick = { showAddSheet = true },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(PatFlowSpacing.space5),
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            shape = PatFlowShapes.xl
-        ) {
-            Icon(Icons.Rounded.Add, contentDescription = null)
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Add Bill")
-        }
-
-        AppSnackbarHost(
-            hostState = snackbarHostState,
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
     }
 
     // Bottom Sheets & Dialogs
     if (showAddSheet) {
         AddBillBottomSheet(
-            onDismiss = { showAddSheet = false },
-            onSave = { _, _, _, _, _ -> showAddSheet = false }
+            onDismiss = onAddSheetDismiss,
+            onSave = { _, _, _, _, _ -> onAddSheetDismiss() }
         )
     }
 

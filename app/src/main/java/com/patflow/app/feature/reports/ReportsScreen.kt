@@ -27,6 +27,7 @@ import com.patflow.app.core.components.TopBarType
 import androidx.compose.foundation.lazy.LazyRow
 import com.patflow.app.core.theme.PatFlowShapes
 import com.patflow.app.core.theme.PatFlowSpacing
+import com.patflow.app.core.theme.patFlowCategoryColors
 import com.patflow.app.core.utils.CategoryMapper
 import com.patflow.app.core.utils.CurrencyFormatter
 import com.patflow.app.domain.model.ReportData
@@ -314,6 +315,23 @@ private fun OverviewTab(data: ReportData, currencyCode: String) {
 
 @Composable
 private fun CategoryRow(categoryName: String, amount: Double, percentage: Int, currencyCode: String) {
+    val categoryColors = patFlowCategoryColors()
+    val categoryType = try { CategoryType.valueOf(categoryName.uppercase().replace(" ", "_")) } catch(_: Exception) { CategoryType.OTHER }
+    val colors = when (categoryType) {
+        CategoryType.ELECTRICITY -> categoryColors.electricity
+        CategoryType.WATER -> categoryColors.water
+        CategoryType.INTERNET -> categoryColors.internet
+        CategoryType.RENT -> categoryColors.rent
+        CategoryType.PHONE -> categoryColors.phone
+        CategoryType.INSURANCE -> categoryColors.insurance
+        CategoryType.TUITION -> categoryColors.tuition
+        CategoryType.SUBSCRIPTION -> categoryColors.subscription
+        CategoryType.LOAN -> categoryColors.loan
+        CategoryType.SAVINGS -> categoryColors.savings
+        CategoryType.HOA_FEES -> categoryColors.hoaFees
+        else -> categoryColors.other
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -323,10 +341,28 @@ private fun CategoryRow(categoryName: String, amount: Double, percentage: Int, c
         Box(
             modifier = Modifier
                 .size(40.dp)
-                .background(MaterialTheme.colorScheme.secondaryContainer, PatFlowShapes.md),
+                .background(colors.containerColor, PatFlowShapes.md),
             contentAlignment = Alignment.Center
         ) {
-            Icon(Icons.Rounded.PieChart, contentDescription = null, tint = MaterialTheme.colorScheme.onSecondaryContainer, modifier = Modifier.size(20.dp))
+            Icon(
+                imageVector = when(categoryType) {
+                    CategoryType.ELECTRICITY -> Icons.Rounded.Bolt
+                    CategoryType.WATER -> Icons.Rounded.WaterDrop
+                    CategoryType.INTERNET -> Icons.Rounded.Wifi
+                    CategoryType.RENT -> Icons.Rounded.House
+                    CategoryType.PHONE -> Icons.Rounded.Smartphone
+                    CategoryType.INSURANCE -> Icons.Rounded.Shield
+                    CategoryType.TUITION -> Icons.Rounded.School
+                    CategoryType.SUBSCRIPTION -> Icons.Rounded.Subscriptions
+                    CategoryType.LOAN -> Icons.Rounded.AccountBalance
+                    CategoryType.SAVINGS -> Icons.Rounded.Savings
+                    CategoryType.HOA_FEES -> Icons.Rounded.Apartment
+                    else -> Icons.Rounded.PieChart
+                }, 
+                contentDescription = null, 
+                tint = colors.onColor, 
+                modifier = Modifier.size(20.dp)
+            )
         }
         Spacer(modifier = Modifier.width(12.dp))
         Text(text = categoryName, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))

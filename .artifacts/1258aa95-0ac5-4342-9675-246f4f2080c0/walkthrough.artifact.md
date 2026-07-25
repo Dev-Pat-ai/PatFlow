@@ -1,46 +1,36 @@
-# Walkthrough - Money Section (Bills) Overhaul
+# Walkthrough - High-Trust Category Color Overhaul
 
-I have completely refactored the **Money** section, specifically the **Bills** tab, to match the provided high-fidelity design. The new interface is clean, organized, and utilizes premium Material 3 components like bottom sheets and pill-based navigation.
+I have completely refreshed the category color palette to build user trust and improve the visual "pop" of the application, moving away from muted tones to a more vibrant and professional Material 3 High-Contrast style.
 
 ## Changes Made
 
-### 1. Data Model Enhancements
-- **[BillEntity.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/data/local/entity/BillEntity.kt)** & **[Bill.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/domain/model/Bill.kt)**: Added `accountNumber` and `billReference` fields to support detailed record-keeping as seen in the design.
-- **[BillMapper.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/data/mapper/BillMapper.kt)**: Updated mapping logic to ensure these new fields persist correctly.
+### 1. High-Trust Color Palette
+- **[Color.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/core/theme/Color.kt)**:
+    - Redefined the `PatFlowCategoryColors` for both Light and Dark modes.
+    - Switched to more saturated, intentional hues that signal security and reliability:
+        - **Insurance**: Royal Navy (Security/Protection)
+        - **Savings**: Emerald Green (Wealth/Growth)
+        - **Electricity**: Vivid Orange (Energy)
+        - **Water**: Deep Azure (Utility)
+        - **Internet**: Electric Violet (Modern Tech)
+        - **Loan**: Deep Burgundy (Financial Seriousness)
+    - Ensured all colors have high-contrast text ratios for maximum readability.
 
-### 2. New Overview Card
-- **[BillsOverviewCard.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/feature/bills/components/BillsOverviewCard.kt)**: Implemented a new summary card at the top of the Bills tab.
-    - Shows "Remaining" vs "Paid" amounts.
-    - Includes a linear progress bar reflecting the percentage of bills paid for the month.
-
-### 3. Refined Bill List & Cards
-- **[BillCard.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/core/components/BillCard.kt)**: Redesigned the bill list items.
-    - Prominent category icons on the left.
-    - Bold names and amounts.
-    - Integrated status chips and due-date text for clarity.
-- **[BillListScreen.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/feature/bills/BillListScreen.kt)**: Organized the list into logical sections:
-    - **Search & Filters**: Full-width search bar with mic/filter icons and balanced status chips (All, Overdue, Due Soon, Paid).
-    - **Due Soon**: Highlights urgent bills at the top.
-    - **All Bills**: A comprehensive list with sorting options.
-
-### 4. Interactive Bottom Sheets
-- **[BillSheets.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/feature/bills/components/BillSheets.kt)**: Replaced full-screen transitions with premium bottom sheets.
-    - **Bill Detail**: A grid-based metadata view showing account numbers, frequency, and notes, with "Mark as Paid" and "Edit" actions.
-    - **Add Bill**: A streamlined category picker grid and simplified form fields.
-
-### 5. Unified Money Header
-- **[MoneyScreen.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/feature/money/MoneyScreen.kt)**: Updated the tab navigation to use the pill-shaped design from the reference. The active tab is now clearly highlighted with its own icon and primary color.
+### 2. UI Component Synchronization
+- **[ReportsScreen.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/feature/reports/ReportsScreen.kt)**:
+    - Updated the `CategoryRow` component to use the new dynamic category colors instead of a generic gray background. This makes the category breakdown in reports much more visual and easier to scan.
+- **[BillCard.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/core/components/BillCard.kt)** & **[BillSheets.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/feature/bills/components/BillSheets.kt)**:
+    - Confirmed these components correctly consume the updated theme colors. The icon circles across the app now "pop" with their respective vivid branding.
 
 ## Verification Results
 
-### Visual Comparison
-- **Tabs**: Now use a pill-style background instead of a traditional bar.
-- **Cards**: All cards now use the updated spacing and typography.
-- **Density**: More information is visible on the screen without feeling crowded.
+### Visual Audit
+- The "Add Bill" sheet now feels more premium with a vibrant grid of categories.
+- Icons are much easier to distinguish at a glance due to the higher saturation.
+- Dark mode has been optimized with "glowing" versions of the trust palette for a modern, high-tech look.
 
 ### Automated Tests
 - **Build**: Successfully completed `:app:assembleDebug`.
-- **Navigation**: Verified that clicking a bill opens the Detail sheet and "Add Bill" opens the creation sheet.
 
 > [!TIP]
-> The new "Due Soon" section helps users focus on immediate financial obligations, while the "Overview" card provides positive reinforcement as they pay off their bills throughout the month.
+> Using intentional, vivid colors like Royal Navy and Emerald Green is a proven design pattern for financial apps to build "professional trust." It makes the app feel established and reliable rather than experimental.

@@ -39,6 +39,8 @@ fun MoneyScreen(
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = remember { listOf("Bills", "Income", "Savings", "Budgets") }
     val snackbarHostState = remember { SnackbarHostState() }
+    
+    var showAddBillSheet by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -111,6 +113,33 @@ fun MoneyScreen(
                 }
             }
         },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = {
+                    when (selectedTabIndex) {
+                        0 -> showAddBillSheet = true
+                        1 -> onAddIncomeClick()
+                        2 -> onAddSavingsGoalClick()
+                        3 -> onAddBudgetClick()
+                    }
+                },
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                shape = com.patflow.app.core.theme.PatFlowShapes.xl
+            ) {
+                Icon(Icons.Rounded.Add, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = when (selectedTabIndex) {
+                        0 -> "Add Bill"
+                        1 -> "Add Income"
+                        2 -> "Add Goal"
+                        3 -> "Add Budget"
+                        else -> "Add"
+                    }
+                )
+            }
+        },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { padding ->
@@ -121,6 +150,8 @@ fun MoneyScreen(
         ) {
             when (selectedTabIndex) {
                 0 -> BillListScreen(
+                    showAddSheet = showAddBillSheet,
+                    onAddSheetDismiss = { showAddBillSheet = false },
                     onBillClick = onBillClick,
                     onEditClick = onEditBillClick
                 )

@@ -1,60 +1,46 @@
-# Implementation Plan - Money Section Overhaul (Bills Tab)
+# Implementation Plan - Category Color Refresh for User Trust
 
-Overhaul the "Bills" tab in the Money section to match the provided high-fidelity design, including a new overview card, sectioned lists, and comprehensive bottom sheets for adding and viewing bills.
+Overhaul the application's category color palette to be more vibrant, professional, and trustworthy, addressing feedback that the current icons feel "dull."
 
 ## User Review Required
 
 > [!IMPORTANT]
-> - **Schema Change**: I will add `accountNumber` and `billReference` fields to the Bill database table. This will require a database migration or a clear-all-data step if auto-migration is enabled.
-> - **Navigation Change**: The top-level tabs (**Bills, Income, Savings, Budgets**) will be styled to match the pill-based design in the screenshot.
-> - **UX Change**: Adding a bill will now be handled via a bottom sheet instead of a separate screen (or updating the existing screen to look like the sheet).
+> - **Brand Identity**: We are shifting from a muted/pastel palette to a more vivid "Material 3 High Contrast" palette. This is designed to build trust by using clear, intentional colors associated with financial stability and modern tech.
+> - **Consistency**: These changes will affect every screen where categories are shown (Dashboard, Money, Reports, Add/Edit sheets).
 
 ## Proposed Changes
 
-### Data & Domain
-#### [MODIFY] [BillEntity.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/data/local/entity/BillEntity.kt)
-- Add `account_number: String?` and `bill_reference: String?` columns.
+### Theme & Colors
+#### [MODIFY] [Color.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/core/theme/Color.kt)
+- Redefine `PatFlowCategoryColors` with more vibrant, distinct pairings.
+- Ensure `containerColor` has enough saturation to "pop" without being overwhelming.
+- Maintain accessibility by keeping high contrast between `onColor` and `containerColor`.
 
-#### [MODIFY] [Bill.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/domain/model/Bill.kt)
-- Add `accountNumber: String?` and `billReference: String?` to the domain model.
+**New Color Strategy (Light Mode Examples):**
+| Category | Current Style | New "Trust" Style | Reason |
+| :--- | :--- | :--- | :--- |
+| **Electricity** | Muted Gold | **Vivid Amber (0xFFFFAB00)** | Energy & Awareness |
+| **Water** | Soft Blue | **Deep Azure (0xFF0288D1)** | Reliable Utility |
+| **Insurance** | Sky Blue | **Royal Navy (0xFF1A237E)** | Security & Protection |
+| **Savings** | Pale Teal | **Emerald Green (0xFF00C853)** | Wealth & Growth |
+| **Loan** | Muted Red | **Deep Burgundy (0xFFB71C1C)** | Financial Seriousness |
+| **Internet** | Indigo | **Electric Violet (0xFF6200EA)** | Modern Technology |
 
-#### [MODIFY] [BillMappers.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/data/mapper/BillMappers.kt) (and related)
-- Update mapping logic to include the new fields.
-
-### UI Components
-#### [NEW] [BillsOverviewCard.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/feature/bills/components/BillsOverviewCard.kt)
-- Remaining vs Paid bills stats.
-- Linear progress bar.
-- Total count.
-
+### UI Polish (Subtle Enhancements)
 #### [MODIFY] [BillCard.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/core/components/BillCard.kt)
-- Update to support the new layout: Icon on left, Title/Category/Amount in center/right, Status chip at the bottom left of text.
+- Ensure the icon background container uses the new vibrant colors.
+- (Optional) Slightly increase the icon size or weight if needed for more presence.
 
-#### [NEW] [BillSheets.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/feature/bills/components/BillSheets.kt)
-- `BillDetailBottomSheet`: Grid of bill metadata + actions.
-- `AddBillBottomSheet`: Category grid + form fields.
-
-### Feature: Money
-#### [MODIFY] [MoneyScreen.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/feature/money/MoneyScreen.kt)
-- Refine header layout and tab styling.
-
-#### [MODIFY] [BillListScreen.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/feature/bills/BillListScreen.kt)
-- Implement the sectioned layout:
-    - Search & Filter row.
-    - "Due Soon" section (with "View all").
-    - "All Bills" section (with sorting).
-    - Integrated bottom sheets for Detail and Add actions.
+#### [MODIFY] [BillSheets.kt](file:///C:/Users/charm/Documents/GitHub/PatFlow/app/src/main/java/com/patflow/app/feature/bills/components/BillSheets.kt)
+- Update the category picker grid to use the new palette.
+- Ensure the detail view's header icon reflects the high-trust colors.
 
 ## Verification Plan
 
 ### Automated Tests
 - Build check: `gradle_build(":app:assembleDebug")`.
-- Verify database migration by launching the app and checking for crashes.
 
 ### Manual Verification
-- **Visual Audit**: Compare the new Bills tab against the provided screenshot (spacing, colors, typography).
-- **Functionality**:
-    - Tap a bill to open the **Detail Bottom Sheet**.
-    - Click "+ Add Bill" to open the **Add Bottom Sheet**.
-    - Swipe a bill row to verify **Edit/Delete** actions.
-    - Toggle filters (Overdue, Due Soon, Paid) and verify list updates.
+- **Visual Audit**: Compare "Before vs After" of the category list in the Add Bill sheet.
+- **Accessibility Check**: Verify text readability on all new category containers using standard contrast ratios.
+- **Theme Check**: Switch between Light and Dark mode to ensure the "trust" palette remains effective in both.

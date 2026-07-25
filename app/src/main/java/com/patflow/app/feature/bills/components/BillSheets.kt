@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import com.patflow.app.core.components.*
@@ -153,11 +154,16 @@ private fun DetailRow(icon: ImageVector, label: String, value: String, valueColo
 @Composable
 fun AddBillBottomSheet(
     onDismiss: () -> Unit,
-    onSave: (name: String, amount: Double, category: CategoryType, dueDate: kotlinx.datetime.LocalDate, recurrence: RecurrenceType) -> Unit
+    onSave: (name: String, amount: Double, category: CategoryType, dueDate: LocalDate, recurrence: RecurrenceType) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf<CategoryType?>(null) }
+    var selectedDate by remember { mutableStateOf(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date) }
+    var selectedFrequency by remember { mutableStateOf(RecurrenceType.MONTHLY) }
+    
+    var showDatePicker by remember { mutableStateOf(false) }
+    var showFrequencyPicker by remember { mutableStateOf(false) }
     
     AppModalBottomSheet(onDismissRequest = onDismiss) {
         Column(
@@ -201,13 +207,35 @@ fun AddBillBottomSheet(
             AmountTextField(value = amount, onValueChange = { amount = it }, label = "Amount")
             Spacer(modifier = Modifier.height(PatFlowSpacing.space3))
             
-            // Due Date and Frequency (Simplified)
+            // Due Date and Frequency
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(PatFlowSpacing.space3)) {
-                Box(modifier = Modifier.weight(1f)) {
-                     AppTextField(value = "", onValueChange = {}, label = "Due Date", trailingIcon = { Icon(Icons.Rounded.CalendarToday, null) }, readOnly = true)
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable { showDatePicker = true }
+                ) {
+                    AppTextField(
+                        value = "${selectedDate.month.name.lowercase().replaceFirstChar { it.uppercase() }} ${selectedDate.dayOfMonth}, ${selectedDate.year}", 
+                        onValueChange = {}, 
+                        label = "Due Date", 
+                        trailingIcon = { Icon(Icons.Rounded.CalendarToday, null) }, 
+                        readOnly = true
+                    )
+                    Box(modifier = Modifier.matchParentSize().clickable { showDatePicker = true })
                 }
-                Box(modifier = Modifier.weight(1f)) {
-                     AppTextField(value = "Monthly", onValueChange = {}, label = "Frequency", trailingIcon = { Icon(Icons.Rounded.ArrowDropDown, null) }, readOnly = true)
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable { showFrequencyPicker = true }
+                ) {
+                    AppTextField(
+                        value = selectedFrequency.name.lowercase().replaceFirstChar { it.titlecase() }, 
+                        onValueChange = {}, 
+                        label = "Frequency", 
+                        trailingIcon = { Icon(Icons.Rounded.ArrowDropDown, null) }, 
+                        readOnly = true
+                    )
+                    Box(modifier = Modifier.matchParentSize().clickable { showFrequencyPicker = true })
                 }
             }
             
@@ -217,15 +245,57 @@ fun AddBillBottomSheet(
                 onClick = { 
                     val amt = amount.toDoubleOrNull() ?: 0.0
                     selectedCategory?.let { cat ->
-                        onSave(name, amt, cat, Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date, RecurrenceType.MONTHLY)
+                        onSave(name, amt, cat, selectedDate, selectedFrequency)
                     }
                 }, 
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                enabled = name.isNotBlank() && amount.isNotBlank() && selectedCategory != null
             ) {
                 Text("Save Bill")
             }
             Spacer(modifier = Modifier.height(PatFlowSpacing.space6))
         }
+    }
+    
+    if (showDatePicker) {
+        AppDatePickerDialog(
+            onDateSelected = { date ->
+                if (date != null) selectedDate = date
+                showDatePicker = false
+            },
+            onDismiss = { showDatePicker = false },
+            initialDate = selectedDate
+        )
+    }
+    
+    if (showFrequencyPicker) {
+        AlertDialog(
+            onDismissRequest = { showFrequencyPicker = false },
+            title = { Text("Select Frequency") },
+            text = {
+                Column {
+                    listOf(RecurrenceType.MONTHLY, RecurrenceType.WEEKLY, RecurrenceType.BIWEEKLY, RecurrenceType.YEARLY, RecurrenceType.ONE_TIME).forEach { freq ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { 
+                                    selectedFrequency = freq
+                                    showFrequencyPicker = false
+                                }
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(selected = selectedFrequency == freq, onClick = null)
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Text(text = freq.name.lowercase().replaceFirstChar { it.titlecase() })
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showFrequencyPicker = false }) { Text("Cancel") }
+            }
+        )
     }
 }
 

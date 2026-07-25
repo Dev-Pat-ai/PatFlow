@@ -1,14 +1,7 @@
-# Tasks - Money Section Overhaul (Bills)
+# Tasks - High-Trust Color Refresh
 
-- `[x]` Data & Domain Updates
-    - `[x]` Update `BillEntity.kt` with new fields
-    - `[x]` Update `Bill.kt` domain model
-    - `[x]` Update mappers (`BillMappers.kt`)
+- `[x]` Update `Color.kt` with vibrant category palette
+    - `[x]` Verify contrast and accessibility
 - `[x]` UI Component Refinement
-    - `[x]` Create `BillsOverviewCard.kt`
-    - `[x]` Update `BillCard.kt` to match design
-    - `[x]` Implement `BillDetailBottomSheet` and `AddBillBottomSheet`
-- `[x]` Feature Screen Overhaul
-    - `[x]` Update `MoneyScreen.kt` tabs and header
-    - `[x]` Implement sectioned layout in `BillListScreen.kt`
+    - `[x]` Update `ReportsScreen.kt` to use category colors
 - `[x]` Final Verification & Build
